@@ -1,0 +1,8 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="ActionBar.lua" />
+    <Script file="Aura.lua" />
+    <Script file="Friends.lua" />
+    <Script file="QuestVendo.lua" />
+    <Script file="ChatFrame.lua" />
+</Ui>
