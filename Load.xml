@@ -7,4 +7,5 @@
     <Script file="ChatFrame.lua" />
     <Script file="Skada.lua" />
     <Script file="Battlefield.lua" />
+    <Script file="MonkeyQuest.lua" />
 </Ui>
