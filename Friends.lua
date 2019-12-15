@@ -35,8 +35,7 @@ local BNET_CLIENT_WOW = BNET_CLIENT_WOW
 local FRIENDS_TOOLTIP_WOW_TOON_TEMPLATE = FRIENDS_TOOLTIP_WOW_TOON_TEMPLATE
 
 local CLASS_FILENAMES = tInvert(FillLocalizedClassList({}))
-local BNET_NAME_FORMATTER = '%s ' .. FRIENDS_OTHER_NAME_COLOR_CODE .. '(' .. FONT_COLOR_CODE_CLOSE .. '%s' ..
-                                FRIENDS_OTHER_NAME_COLOR_CODE .. ')' .. FONT_COLOR_CODE_CLOSE
+local FRIENDS_LEVEL_TEMPLATE = FRIENDS_LEVEL_TEMPLATE:gsub('%%d', '%%s')
 
 local function ColorStr(text, color)
     if color.colorStr then
@@ -175,7 +174,23 @@ hooksecurefunc('WhoList_Update', GenerateUpdateList{
     end,
 })
 
-local FRIENDS_LEVEL_TEMPLATE = FRIENDS_LEVEL_TEMPLATE:gsub('%%d', '%%s')
+local function GetBNFriendInfo(id)
+    local _, accountName, _, _, _, bnetIdGameAccount, client, online = BNGetFriendInfo(id)
+
+    if not online or not accountName or client ~= BNET_CLIENT_WOW then
+        return
+    end
+
+    local _, characterName, _, _, realmId, faction, race, class, _, _, level, _, _, _, _, _, _, _, _, _, wowProjectId =
+        BNGetGameAccountInfo(bnetIdGameAccount)
+
+    if not characterName or not class or not CLASS_FILENAMES[class] or wowProjectId ~= WOW_PROJECT_ID or not realmId or
+        realmId < 0 or realmId ~= GetRealmID() or faction ~= UnitFactionGroup('player') then
+        return
+    end
+
+    return accountName, characterName, class, level, race
+end
 
 hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)
     local nameText
@@ -189,15 +204,9 @@ hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)
                                   ColorStr(info.className, classColor))
         end
     elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
-        local bnetIDAccount, accountName, _, _, _, bnetIDGameAccount, client, online = BNGetFriendInfo(button.id)
-
-        if online and accountName and bnetIDGameAccount and client == BNET_CLIENT_WOW then
-            local _, characterName, client, _, realmID, faction, _, class, _, _, level =
-                BNGetGameAccountInfo(bnetIDGameAccount)
-
-            if characterName and class and realmID and realmID > 0 and faction == UnitFactionGroup('player') then
-                nameText = format(BNET_NAME_FORMATTER, accountName, ColorStr(characterName, GetClassColor(class)))
-            end
+        local accountName, characterName, class, level, race = GetBNFriendInfo(button.id)
+        if accountName then
+            nameText = format('%s %s', accountName, ColorStr('(' .. characterName .. ')', GetClassColor(class)))
         end
     end
 
@@ -216,21 +225,14 @@ local function FriendsFrameTooltip_Show(button)
                                                ColorStr(info.className, GetClassColor(info.className))))
         end
     elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
-        local bnetIDAccount, accountName, _, _, characterName, bnetIDGameAccount, client, online =
-            BNGetFriendInfo(button.id)
-        if online and accountName and bnetIDGameAccount and client == BNET_CLIENT_WOW then
-            local hasFocus, characterName, client, realmName, realmID, faction, race, class, _, zoneName, level =
-                BNGetGameAccountInfo(bnetIDGameAccount)
+        local accountName, characterName, class, level, race = GetBNFriendInfo(button.id)
+        if accountName then
+            local classColor = GetClassColor(class)
 
-            if characterName and class and realmID and realmID > 0 and faction == UnitFactionGroup('player') then
-                local classColor = GetClassColor(class)
-
-                FriendsFrameTooltip_SetLine(FriendsTooltipGameAccount1Name, nil,
-                                            format(FRIENDS_TOOLTIP_WOW_TOON_TEMPLATE,
-                                                   ColorStr(characterName, classColor),
-                                                   ColorStr(level, GetQuestDifficultyColor(level)), race,
-                                                   ColorStr(class, GetClassColor(class))))
-            end
+            FriendsFrameTooltip_SetLine(FriendsTooltipGameAccount1Name, nil,
+                                        format(FRIENDS_TOOLTIP_WOW_TOON_TEMPLATE, ColorStr(characterName, classColor),
+                                               ColorStr(level, GetQuestDifficultyColor(level)), race,
+                                               ColorStr(class, classColor)))
         end
     end
 end

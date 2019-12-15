@@ -5,4 +5,6 @@
     <Script file="Friends.lua" />
     <Script file="QuestVendo.lua" />
     <Script file="ChatFrame.lua" />
+    <Script file="Skada.lua" />
+    <Script file="Battlefield.lua" />
 </Ui>
