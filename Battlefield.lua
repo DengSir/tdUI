@@ -14,11 +14,13 @@ Input.DecrementButton:Hide()
 Input:HookScript('OnEnterPressed', function()
     Button:Click()
 end)
+Input:HookScript('OnShow', function(self)
+    self:SetText('0')
+    BattlefieldListScrollFrame.ScrollBar:SetValue(0)
+end)
 
 local function JumpTo(index)
-    local buttonHeight = BATTLEFIELD_ZONES_HEIGHT
-    local maxCount = BATTLEFIELD_ZONES_DISPLAYED
-    local height = buttonHeight * (index - 1)
+    local height = BATTLEFIELD_ZONES_HEIGHT * index
     FauxScrollFrame_SetOffset(BattlefieldListScrollFrame, height)
     BattlefieldListScrollFrame.ScrollBar:SetValue(height)
 end

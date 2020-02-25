@@ -1,11 +1,16 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+    <Include file="Libs\Libs.xml" />
+    <Script file="Api.lua" />
     <Script file="ActionBar.lua" />
+    <Script file="ReturnPage.lua" />
     <Script file="Aura.lua" />
     <Script file="Friends.lua" />
     <Script file="QuestVendo.lua" />
     <Script file="ChatFrame.lua" />
-    <Script file="Skada.lua" />
-    <Script file="Battlefield.lua" />
+    <!-- <Script file="Battlefield.lua" /> -->
+    <Script file="Glow.lua" />
+    <Script file="WorldMap.lua" />
     <Script file="MonkeyQuest.lua" />
+    <Script file="Channel.lua" />
 </Ui>

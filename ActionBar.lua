@@ -11,7 +11,9 @@ local IsConsumableAction = IsConsumableAction
 local IsItemAction = IsItemAction
 local IsStackableAction = IsStackableAction
 
-local frames = ActionBarButtonEventsFrame.frames
+local LibClassicSpellActionCount = LibStub('LibClassicSpellActionCount-1.0')
+
+local buttons = ActionBarButtonEventsFrame.frames
 
 local function InitActionButton(button)
     button.HotKey:SetFontObject('NumberFontNormal')
@@ -21,14 +23,14 @@ local function InitActionButton(button)
     end
 end
 
-for _, button in ipairs(frames) do
+for _, button in ipairs(buttons) do
     InitActionButton(button)
 end
 
 hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
 
 hooksecurefunc('ActionButton_ShowGrid', function()
-    for _, button in pairs(frames) do
+    for _, button in pairs(buttons) do
         if button.Name then
             button.Name:Show()
         end
@@ -36,22 +38,21 @@ hooksecurefunc('ActionButton_ShowGrid', function()
 end)
 
 hooksecurefunc('ActionButton_HideGrid', function()
-    for _, button in pairs(frames) do
+    for _, button in pairs(buttons) do
         if button.Name then
             button.Name:Hide()
         end
     end
 end)
 
--- hooksecurefunc('ActionButton_UpdateCount', function(button)
---     local action = button.action
---     if not IsItemAction(action) and (IsConsumableAction(action) or IsStackableAction(action)) then
---         local count = GetActionCount(action)
---         print(count)
---         if count > (button.maxDisplayCount or 9999) then
---             button.Count:SetText('*')
---         else
---             button.Count:SetText(count)
---         end
---     end
--- end)
+hooksecurefunc('ActionButton_UpdateCount', function(button)
+    local action = button.action
+    if not IsItemAction(action) and (IsConsumableAction(action) or IsStackableAction(action)) then
+        local count = LibClassicSpellActionCount:GetActionCount(action)
+        if count > (button.maxDisplayCount or 9999) then
+            button.Count:SetText('*')
+        else
+            button.Count:SetText(count)
+        end
+    end
+end)

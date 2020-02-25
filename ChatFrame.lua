@@ -5,6 +5,7 @@
 
 local _G = _G
 local ipairs, pairs = ipairs, pairs
+local hooksecurefunc = hooksecurefunc
 
 local GameTooltip = GameTooltip
 
@@ -56,7 +57,6 @@ local function OnHyperlinkLeave(self)
 end
 
 local function InitChatFrame(self)
-    print(self)
     self:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
     self:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
     self.UpdateTooltip = UpdateTooltip
