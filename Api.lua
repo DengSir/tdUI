@@ -8,6 +8,7 @@ local next = next
 local tinsert = table.insert
 
 local CreateFrame = CreateFrame
+local IsAddOnLoaded = IsAddOnLoaded
 
 ---@class ns
 local ns = select(2, ...)
@@ -16,6 +17,10 @@ local events
 local callbacks = {}
 
 function ns.WithAddon(addon, callback)
+    if IsAddOnLoaded(addon) then
+        return callback()
+    end
+
     if not events then
         events = CreateFrame('Frame')
         events:RegisterEvent('ADDON_LOADED')
