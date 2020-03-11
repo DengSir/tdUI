@@ -18,40 +18,33 @@ QUEST_TAG_RAID25 = 0
 QUEST_TAG_SCENARIO = 98
 QUEST_TAG_ACCOUNT = 102
 
-local function Hide(obj)
-    obj:Hide()
-    obj.Show = nop
-end
+MONKEYQUEST_TITLE = QUESTS_LABEL
 
 MonkeyQuestFrame:EnableMouse(false)
 MonkeyQuestFrame:SetMouseMotionEnabled(true)
 MonkeyQuestFrame:SetMouseClickEnabled(false)
 MonkeyQuestFrame:SetFrameStrata('BACKGROUND')
 
-Hide(MonkeyQuestCloseButton)
-Hide(MonkeyQuestShowHiddenCheckButton)
+MonkeyQuestCloseButton:Hide()
+MonkeyQuestCloseButton.Show = nop
 
-MONKEYQUEST_TITLE = QUESTS_LABEL
+MonkeyQuestShowHiddenCheckButton:Hide()
+MonkeyQuestShowHiddenCheckButton.Show = nop
 
 MonkeyQuestTitleButton:EnableMouse(false)
-
 local bg = MonkeyQuestTitleButton:CreateTexture(nil, 'BACKGROUND')
 bg:SetAtlas('Objective-Header', true)
 bg:SetPoint('TOPLEFT', -15, 20)
-bg:SetWidth(267)
+bg:SetWidth(280)
 
 MonkeyQuestTitleText:SetFontObject('GameFontNormal')
-MonkeyQuestTitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 MonkeyQuestTitleText:SetPoint('TOPLEFT', 10, 0)
+MonkeyQuestTitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 MonkeyQuestTitleText.SetTextHeight = nop
-MonkeyQuestTitleText.SetTextColor = nop
 
 MonkeyQuestButton1:SetPoint('TOPLEFT', MonkeyQuestTitleButton, 'BOTTOMLEFT', 0, -10)
 
-local MinimizeLabel = MonkeyQuestMinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-MinimizeLabel:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT')
-MinimizeLabel:SetText(QUESTS_LABEL)
-
+MonkeyQuestMinimizeButton:SetPoint(MonkeyQuestCloseButton:GetPoint())
 MonkeyQuestMinimizeButton:SetSize(16, 16)
 MonkeyQuestMinimizeButton:SetNormalTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
 MonkeyQuestMinimizeButton:SetPushedTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
@@ -59,6 +52,10 @@ MonkeyQuestMinimizeButton:SetHighlightTexture([[Interface\Buttons\UI-Panel-Minim
 MonkeyQuestMinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 1)
 MonkeyQuestMinimizeButton:GetPushedTexture():SetTexCoord(0.5, 1, 0.5, 1)
 MonkeyQuestMinimizeButton.SetNormalTexture = nop
+
+local MinimizeLabel = MonkeyQuestMinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+MinimizeLabel:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT', -5, 0)
+MinimizeLabel:SetText(QUESTS_LABEL)
 
 hooksecurefunc('MonkeyQuest_Refresh', function()
     if MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized then
@@ -80,11 +77,12 @@ hooksecurefunc('MonkeyQuest_Resize', function()
 end)
 
 hooksecurefunc('MonkeyQuestInit_LoadConfig', function()
-    if MonkeyQuestConfig[MonkeyQuest.m_global].__tdloaded then
+    local db = MonkeyQuestConfig[MonkeyQuest.m_global]
+    if db.__tdloaded then
         return
     end
 
-    MonkeyQuestConfig[MonkeyQuest.m_global].__tdloaded = true
+    db.__tdloaded = true
 
     local CONFIG = {
         ['m_bAllowRightClick'] = true,
@@ -93,10 +91,9 @@ hooksecurefunc('MonkeyQuestInit_LoadConfig', function()
         ['m_bColourSubObjectivesByProgress'] = false,
         ['m_bColourTitle'] = true,
         ['m_bCrashBorder'] = false,
-        ['m_bDefaultAnchor'] = false,
         ['m_bDisplay'] = true,
         ['m_bGrowUp'] = false,
-        ['m_bHideCompletedObjectives'] = true,
+        ['m_bHideCompletedObjectives'] = false,
         ['m_bHideCompletedQuests'] = false,
         ['m_bHideHeader'] = false,
         ['m_bHideQuestsEnabled'] = false,
@@ -121,13 +118,12 @@ hooksecurefunc('MonkeyQuestInit_LoadConfig', function()
         ['m_iFont'] = 2,
         ['m_iFontHeight'] = 15,
         ['m_iFrameAlpha'] = 1,
-        ['m_iFrameWidth'] = 255,
         ['m_iHighlightAlpha'] = 1,
         ['m_iQuestPadding'] = 2,
     }
 
     for k, v in pairs(CONFIG) do
-        MonkeyQuestConfig[MonkeyQuest.m_global][k] = v
+        db[k] = v
     end
 
     MonkeyQuestInit_ApplySettings()
