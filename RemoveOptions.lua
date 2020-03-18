@@ -3,19 +3,25 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 3/12/2020, 11:44:59 AM
 
-C_Timer.After(1, function()
-    local SET = tInvert{ --
-        'MonkeyQuest', --
-        'Leatrix Maps', --
-        'Details', --
-    }
+---@type ns
+local ns = select(2, ...)
 
-    local TBL = INTERFACEOPTIONS_ADDONCATEGORIES
+ns.OnceEvent('PLAYER_LOGIN', function()
+    C_Timer.After(0, function()
+        local REMOVES = tInvert{ --
+            'MonkeyQuest', --
+            'Leatrix Maps', --
+            'Details', --
+            'MikScrollingBattleText', --
+        }
 
-    for i = #TBL, 1, -1 do
-        local v = TBL[i]
-        if SET[v.name] then
-            tremove(TBL, i)
+        local TBL = INTERFACEOPTIONS_ADDONCATEGORIES
+
+        for i = #TBL, 1, -1 do
+            local v = TBL[i]
+            if not v.parent and REMOVES[v.name] then
+                tremove(TBL, i)
+            end
         end
-    end
+    end)
 end)

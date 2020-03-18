@@ -108,7 +108,7 @@ end
 
 Hook('MonkeyQuest_Resize', function()
     MonkeyQuestFrame:ClearAllPoints()
-    MonkeyQuestFrame:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT', 0, 10)
+    MonkeyQuestFrame:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT', 0, 0)
 end)
 
 Hook('MonkeyQuestInit_LoadConfig', function()
@@ -132,7 +132,7 @@ Hook('MonkeyQuestInit_LoadConfig', function()
         ['m_bHideCompletedQuests'] = false,
         ['m_bHideHeader'] = false,
         ['m_bHideQuestsEnabled'] = false,
-        ['m_bHideTitle'] = false,
+        ['m_bHideTitle'] = true,
         ['m_bHideTitleButtons'] = false,
         ['m_bItemsEnabled'] = false,
         ['m_bItemsOnLeft'] = false,
@@ -168,3 +168,15 @@ Hook('MonkeyQuestInit_ApplySettings', function()
     MonkeyQuestMinimizeButton:Update()
 end)
 
+Hook('MonkeyQuest_OnEvent', function(_, event)
+    if event == 'QUEST_LOG_UPDATE' then
+        local shouldShow = GetNumQuestLogEntries() > 0
+        if shouldShow ~= MonkeyQuestFrame:IsShown() then
+            MonkeyQuestFrame:SetShown(GetNumQuestLogEntries() > 0)
+
+            if shouldShow then
+                MonkeyQuest_Refresh()
+            end
+        end
+    end
+end)

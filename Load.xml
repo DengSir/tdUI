@@ -14,5 +14,6 @@
     <Script file="MonkeyQuest.lua" />
     <Script file="Channel.lua" />
     <Script file="RemoveOptions.lua" />
+    <Script file="CastingBar.lua" />
     <!-- <Script file="WeakAuras.lua" /> -->
 </Ui>
