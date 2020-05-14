@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 3/14/2020, 6:48:09 PM
 
-CastingBarFrame:SetAttribute('ignoreFramePositionManager', true)
+-- CastingBarFrame:SetAttribute('ignoreFramePositionManager', true)
 
-UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
-UIPARENT_MANAGED_FRAME_POSITIONS.ArcheologyDigsiteProgressBar.castingBar = nil
+-- UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
+-- UIPARENT_MANAGED_FRAME_POSITIONS.ArcheologyDigsiteProgressBar.castingBar = nil

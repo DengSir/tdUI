@@ -3,6 +3,9 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/2/2019, 3:15:18 PM
 
+---@type ns
+local ns = select(2, ...)
+
 local ipairs, pairs = ipairs, pairs
 local hooksecurefunc = hooksecurefunc
 
@@ -27,25 +30,28 @@ for _, button in ipairs(buttons) do
     InitActionButton(button)
 end
 
-hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
-
-hooksecurefunc('ActionButton_ShowGrid', function()
+local function ShowGrid()
     for _, button in pairs(buttons) do
         if button.Name then
             button.Name:Show()
         end
     end
-end)
+end
 
-hooksecurefunc('ActionButton_HideGrid', function()
+local function HideGrid()
     for _, button in pairs(buttons) do
         if button.Name then
             button.Name:Hide()
         end
     end
-end)
+end
 
-hooksecurefunc('ActionButton_UpdateCount', function(button)
+HideGrid()
+
+ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
+ns.event('ACTIONBAR_HIDEGRID', HideGrid)
+ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
+ns.securehook('ActionButton_UpdateCount', function(button)
     local action = button.action
     if not IsItemAction(action) and (IsConsumableAction(action) or IsStackableAction(action)) then
         local count = LibClassicSpellActionCount:GetActionCount(action)

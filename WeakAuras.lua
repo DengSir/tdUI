@@ -3,9 +3,10 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 3/2/2020, 8:43:24 PM
 
+---@type ns
 local ns = select(2, ...)
 
-ns.WithAddon('WeakAuras', function()
+ns.addon('WeakAuras', function()
     local ipairs = ipairs
 
     local GetActionInfo = GetActionInfo

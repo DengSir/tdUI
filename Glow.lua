@@ -3,66 +3,129 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/8/2020, 11:38:04 PM
 
+---@type ns
 local ns = select(2, ...)
+
+local _G = _G
+
+local ipairs = ipairs
+local format = string.format
 
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetItemQualityColor = GetItemQualityColor
+local GetInventoryItemDurability = GetInventoryItemDurability
 
-local function InitButtons(buttons)
-    for _, button in ipairs(buttons) do
-        button.IconBorder:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
-        button.IconBorder:SetBlendMode('ADD')
-        button.IconBorder:ClearAllPoints()
-        button.IconBorder:SetPoint('CENTER')
-        button.IconBorder:SetSize(67, 67)
-        button.__tdglow = true
+local SLOTS = {
+    'Back', 'Chest', 'Feet', 'Finger0', 'Finger1', 'Hands', 'Head', 'Legs', 'MainHand', 'Neck', 'Ranged',
+    'SecondaryHand', 'Shirt', 'Shoulder', 'Tabard', 'Trinket0', 'Trinket1', 'Waist', 'Wrist',
+}
+
+local BUTTONS = {}
+
+local function IsOurButton(button)
+    return BUTTONS[button]
+end
+
+local function InitButton(button, unit)
+    button.IconBorder:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
+    button.IconBorder:SetBlendMode('ADD')
+    button.IconBorder:ClearAllPoints()
+    button.IconBorder:SetPoint('CENTER')
+    button.IconBorder:SetSize(67, 67)
+
+    button.Durability = _G[button:GetName() .. 'Stock']
+    button.Durability:ClearAllPoints()
+    button.Durability:SetPoint('BOTTOM', 0, 3)
+
+    BUTTONS[button] = unit
+end
+
+local function InitButtons(formatter, unit)
+    for i, slot in ipairs(SLOTS) do
+        InitButton(_G[format(formatter, slot)], unit)
     end
 end
 
-hooksecurefunc('PaperDollItemSlotButton_Update', function(self)
-    if not self.__tdglow then
-        return
+local function GetPrecColor(value)
+    local r, g, b
+    if value > 0.5 then
+        r = (1.0 - value) * 2
+        g = 1.0
+    else
+        r = 1.0
+        g = value * 2
     end
+    b = 0.0
+    return r, g, b
+end
 
-    local quality = GetInventoryItemQuality('player', self:GetID())
+local function GetQuality(button)
+    local unit = BUTTONS[button]
+    if unit == 'inspect' then
+        unit = InspectFrame.unit
+    end
+    return GetInventoryItemQuality(unit, button:GetID())
+end
+
+local function UpdateQuality(button)
+    local quality = GetQuality(button)
     if quality and quality > 1 then
         local r, g, b = GetItemQualityColor(quality)
-        self.IconBorder:SetVertexColor(r, g, b, 0.5)
-        self.IconBorder:Show()
+        button.IconBorder:SetVertexColor(r, g, b, 0.5)
+        button.IconBorder:Show()
     else
-        self.IconBorder:Hide()
+        button.IconBorder:Hide()
+    end
+end
+
+local function UpdateDurability(button)
+    local cur, max = GetInventoryItemDurability(button:GetID())
+    if not cur or cur == max then
+        button.Durability:Hide()
+    else
+        local perc = cur / max
+        button.Durability:SetText(format('%d%%', perc * 100))
+        button.Durability:SetTextColor(GetPrecColor(perc))
+        button.Durability:Show()
+    end
+end
+
+local function gen(f)
+    return function(self, ...)
+        if not IsOurButton(self) then
+            return
+        end
+        return f(self, ...)
+    end
+end
+
+local function hook(k, v)
+    return ns.securehook(k, gen(v))
+end
+
+hook('PaperDollItemSlotButton_Update', function(self)
+    UpdateQuality(self)
+    UpdateDurability(self)
+end)
+
+hook('PaperDollItemSlotButton_OnShow', function(self)
+    self:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
+end)
+
+hook('PaperDollItemSlotButton_OnHide', function(self)
+    self:UnregisterEvent('UPDATE_INVENTORY_DURABILITY')
+end)
+
+hook('PaperDollItemSlotButton_OnEvent', function(self, event)
+    if event == 'UPDATE_INVENTORY_DURABILITY' then
+        UpdateDurability(self)
     end
 end)
 
-InitButtons{
-    CharacterHeadSlot, CharacterNeckSlot, CharacterShoulderSlot, CharacterBackSlot, CharacterChestSlot,
-    CharacterShirtSlot, CharacterTabardSlot, CharacterWristSlot, CharacterHandsSlot, CharacterWaistSlot,
-    CharacterLegsSlot, CharacterFeetSlot, CharacterFinger0Slot, CharacterFinger1Slot, CharacterTrinket0Slot,
-    CharacterTrinket1Slot, CharacterMainHandSlot, CharacterSecondaryHandSlot, CharacterRangedSlot,
-}
+InitButtons('Character%sSlot', 'player')
 
-ns.WithAddon('Blizzard_InspectUI', function()
-    local InspectFrame = InspectFrame
+ns.addon('Blizzard_InspectUI', function()
+    hook('InspectPaperDollItemSlotButton_Update', UpdateQuality)
 
-    hooksecurefunc('InspectPaperDollItemSlotButton_Update', function(self)
-        if not self.__tdglow then
-            return
-        end
-
-        local quality = GetInventoryItemQuality(InspectFrame.unit, self:GetID())
-        if quality and quality > 1 then
-            local r, g, b = GetItemQualityColor(quality)
-            self.IconBorder:SetVertexColor(r, g, b, 0.5)
-            self.IconBorder:Show()
-        else
-            self.IconBorder:Hide()
-        end
-    end)
-
-    InitButtons{
-        InspectHeadSlot, InspectNeckSlot, InspectShoulderSlot, InspectBackSlot, InspectChestSlot, InspectShirtSlot,
-        InspectTabardSlot, InspectWristSlot, InspectHandsSlot, InspectWaistSlot, InspectLegsSlot, InspectFeetSlot,
-        InspectFinger0Slot, InspectFinger1Slot, InspectTrinket0Slot, InspectTrinket1Slot, InspectMainHandSlot,
-        InspectSecondaryHandSlot, InspectRangedSlot,
-    }
+    InitButtons('Inspect%sSlot', 'inspect')
 end)

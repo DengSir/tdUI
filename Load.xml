@@ -3,7 +3,7 @@
     <Include file="Libs\Libs.xml" />
     <Script file="Api.lua" />
     <Script file="ActionBar.lua" />
-    <Script file="ReturnPage.lua" />
+    <!-- <Script file="ReturnPage.lua" /> -->
     <Script file="Aura.lua" />
     <Script file="Friends.lua" />
     <Script file="QuestVendo.lua" />
@@ -15,5 +15,7 @@
     <Script file="Channel.lua" />
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
+    <Script file="CVars.lua" />
+    <Script file="Minimap.lua" />
     <!-- <Script file="WeakAuras.lua" /> -->
 </Ui>

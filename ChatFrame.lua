@@ -3,6 +3,9 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/5/2019, 3:55:56 PM
 
+---@type ns
+local ns = select(2, ...)
+
 local _G = _G
 local ipairs, pairs = ipairs, pairs
 local hooksecurefunc = hooksecurefunc
@@ -67,10 +70,10 @@ for _, name in ipairs(CHAT_FRAMES) do
     InitChatFrame(_G[name])
 end
 
-hooksecurefunc('FloatingChatFrame_OnLoad', InitChatFrame)
+ns.securehook('FloatingChatFrame_OnLoad', InitChatFrame)
 
 ---- tabs size
-hooksecurefunc('FCFDock_UpdateTabs', function(dock)
+ns.securehook('FCFDock_UpdateTabs', function(dock)
     for index, chatFrame in ipairs(dock.DOCKED_CHAT_FRAMES) do
         if not chatFrame.isStaticDocked then
             local chatTab = _G[chatFrame:GetName() .. 'Tab']
@@ -86,7 +89,7 @@ local function BiggerChatFrame(frame)
     end
 end
 
-hooksecurefunc('RedockChatWindows', BiggerChatFrame)
-hooksecurefunc('FCF_ResetChatWindows', BiggerChatFrame)
-hooksecurefunc('FCF_RestorePositionAndDimensions', BiggerChatFrame)
-C_Timer.After(0, BiggerChatFrame)
+ns.securehook('RedockChatWindows', BiggerChatFrame)
+ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
+ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
+ns.login(BiggerChatFrame)

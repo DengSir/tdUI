@@ -24,9 +24,7 @@ local function JoinChannel(name)
 end
 
 if not GetChannelId('大脚世界频道') then
-    ns.OnceEvent('CHANNEL_UI_UPDATE', function()
-        C_Timer.After(5, function()
-            JoinChannel('大脚世界频道')
-        end)
+    ns.onceeventdelay('CHANNEL_UI_UPDATE', 5, function()
+        JoinChannel('大脚世界频道')
     end)
 end
