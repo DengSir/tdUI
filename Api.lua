@@ -12,6 +12,7 @@ local unpack = unpack
 local tinsert = table.insert
 
 local IsAddOnLoaded = IsAddOnLoaded
+local GetAddOnInfo = GetAddOnInfo
 local After = C_Timer.After
 
 ---@class ns
@@ -85,6 +86,7 @@ end
 
 function ns.addon(addon, func)
     assert(type(func) == 'function')
+    assert(select(5, GetAddOnInfo(addon)) ~= 'MISSING')
 
     if IsAddOnLoaded(addon) then
         func()

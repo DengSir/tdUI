@@ -2,20 +2,26 @@
 ..\FrameXML\UI.xsd">
     <Include file="Libs\Libs.xml" />
     <Script file="Api.lua" />
-    <Script file="ActionBar.lua" />
-    <!-- <Script file="ReturnPage.lua" /> -->
     <Script file="Aura.lua" />
     <Script file="Friends.lua" />
-    <Script file="QuestVendo.lua" />
-    <Script file="ChatFrame.lua" />
-    <!-- <Script file="Battlefield.lua" /> -->
-    <Script file="Glow.lua" />
-    <Script file="WorldMap.lua" />
-    <Script file="MonkeyQuest.lua" />
     <Script file="Channel.lua" />
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
-    <Script file="Minimap.lua" />
-    <!-- <Script file="WeakAuras.lua" /> -->
+    <Script file="Emu.lua" />
+
+    <Script file="ActionBar\ActionBar.lua" />
+    <Script file="ActionBar\ReturnPage.lua" />
+
+    <Script file="PaperDoll\Glow.lua" />
+
+    <Script file="Chat\ChatFrame.lua" />
+    <Script file="Chat\Link.lua" />
+    <Script file="Chat\Tab.lua" />
+
+    <Script file="Quest\MonkeyQuest.lua" />
+    <Script file="Quest\Vendo.lua" />
+
+    <Script file="Map\WorldMap.lua" />
+    <Script file="Map\Minimap.lua" />
 </Ui>

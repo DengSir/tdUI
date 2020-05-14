@@ -9,10 +9,14 @@ local ns = select(2, ...)
 local _G = _G
 local ipairs, pairs = ipairs, pairs
 local hooksecurefunc = hooksecurefunc
+local tIndexOf = tIndexOf
 
 local GameTooltip = GameTooltip
 
 local IsModifiedClick = IsModifiedClick
+local IsShiftKeyDown = IsShiftKeyDown
+
+local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
 local GameTooltip_ShowCompareItem = GameTooltip_ShowCompareItem
 local PanelTemplates_TabResize = PanelTemplates_TabResize
 
@@ -93,3 +97,5 @@ ns.securehook('RedockChatWindows', BiggerChatFrame)
 ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
 ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
 ns.login(BiggerChatFrame)
+
+---- fix link color

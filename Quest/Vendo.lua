@@ -1,4 +1,4 @@
--- QuestVendo.lua
+-- Vendo.lua
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/5/2019, 3:47:59 PM
@@ -12,16 +12,18 @@ local GetQuestItemInfo = GetQuestItemInfo
 local GetQuestItemLink = GetQuestItemLink
 local QuestInfo_GetRewardButton = QuestInfo_GetRewardButton
 
-local QuestVendo = CreateFrame('Frame', nil, QuestRewardScrollChildFrame)
-QuestVendo:Hide()
-QuestVendo:SetSize(18, 18)
-QuestVendo:RegisterEvent('QUEST_COMPLETE')
-QuestVendo:RegisterEvent('QUEST_ITEM_UPDATE')
-QuestVendo:RegisterEvent('GET_ITEM_INFO_RECEIVED')
-local icon = QuestVendo:CreateTexture(nil, 'OVERLAY')
-icon:SetAllPoints(QuestVendo)
+local Vendo = CreateFrame('Frame', nil, QuestRewardScrollChildFrame)
+Vendo:Hide()
+Vendo:SetSize(18, 18)
+Vendo:RegisterEvent('QUEST_COMPLETE')
+Vendo:RegisterEvent('QUEST_ITEM_UPDATE')
+Vendo:RegisterEvent('GET_ITEM_INFO_RECEIVED')
+
+local icon = Vendo:CreateTexture(nil, 'OVERLAY')
+icon:SetAllPoints(Vendo)
 icon:SetTexture([[Interface\BUTTONS\UI-GroupLoot-Coin-Up]])
-QuestVendo:SetScript('OnEvent', function(self)
+
+Vendo:SetScript('OnEvent', function(self)
     self:Hide()
 
     local choice = GetNumQuestChoices()

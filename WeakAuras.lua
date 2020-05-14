@@ -7,6 +7,10 @@
 local ns = select(2, ...)
 
 ns.addon('WeakAuras', function()
+    if not WeakAuras then
+        return
+    end
+
     local ipairs = ipairs
 
     local GetActionInfo = GetActionInfo
