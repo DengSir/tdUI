@@ -13,7 +13,8 @@
     <Script file="ActionBar\ActionBar.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
 
-    <Script file="PaperDoll\Glow.lua" />
+    <Script file="PaperDoll\PaperDoll.lua" />
+    <Script file="PaperDoll\Inspect.lua" />
 
     <Script file="Chat\ChatFrame.lua" />
     <Script file="Chat\Link.lua" />
@@ -24,4 +25,7 @@
 
     <Script file="Map\WorldMap.lua" />
     <Script file="Map\Minimap.lua" />
+    <Script file="Map\Coords.lua" />
+
+    <Script file="Tooltip\TinyTooltip.lua" />
 </Ui>

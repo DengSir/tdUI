@@ -96,6 +96,19 @@ function ns.addon(addon, func)
     end
 end
 
+local repeaterPool = {}
+function ns.repeater(n, func)
+    local frame = CreateFrame('Frame')
+    local timer = 0
+    frame:SetScript('OnUpdate', function(self, elasped)
+        timer = timer - elasped
+        if timer < 0 then
+            timer = n
+            func()
+        end
+    end)
+end
+
 function ns.delayed(n, func)
     return function(...)
         local args = {...}
