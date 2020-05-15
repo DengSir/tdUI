@@ -18,8 +18,8 @@ MinimapBorder:SetSize(210, 210)
 MinimapBorder:SetPoint('CENTER', Minimap, 'CENTER', 0, 14)
 MinimapBorder:SetTexture([[Interface\AddOns\tdUI\Media\minimap.tga]])
 MinimapBorder:SetTexCoord(0, 1, 0, 1)
-MinimapBorder:SetDrawLayer('ARTWORK')
-MinimapBorder:SetVertexColor(0.7, 0.7, 0.7, 1)
+
+MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 
 MinimapZoneTextButton:SetWidth(155)
 MinimapZoneTextButton:SetPoint('CENTER', Minimap, 'TOP', 0, 20)
@@ -52,5 +52,5 @@ ns.addon('Blizzard_TimeManager', function()
 
     TimeManagerClockButton:ClearAllPoints()
     TimeManagerClockButton:SetPoint('CENTER', Minimap, 'BOTTOM', 0, -8)
-    TimeManagerClockButton:SetFrameLevel(Minimap:GetFrameLevel() + 100)
+    TimeManagerClockButton:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 end)

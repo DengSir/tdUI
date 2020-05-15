@@ -124,4 +124,16 @@ function ns.spawned(func)
     return ns.delayed(0, func)
 end
 
+function ns.hook(t, k, v)
+    if type(t) ~= 'table' then
+        t, k, v = _G, t, k
+    end
+
+    local orig = t[k]
+
+    t[k] = function(...)
+        return v(orig, ...)
+    end
+end
+
 ns.securehook = hooksecurefunc
