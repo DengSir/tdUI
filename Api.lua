@@ -137,3 +137,31 @@ function ns.hook(t, k, v)
 end
 
 ns.securehook = hooksecurefunc
+
+do
+    local updaters = {}
+
+    ns.event('GET_ITEM_INFO_RECEIVED', function(id, ok)
+        if not ok then
+            return
+        end
+
+        local objects = updaters[id]
+        if objects then
+            for obj, func in pairs(objects) do
+                func(obj)
+            end
+            updaters[id] = nil
+        end
+    end)
+
+    local function parseItem(item)
+        return tonumber(item) or tonumber(item:match('item:(%d+)'))
+    end
+
+    function ns.waititem(item, obj, func, ...)
+        item = parseItem(item)
+        updaters[item] = updaters[item] or {}
+        updaters[item][obj] = func
+    end
+end
