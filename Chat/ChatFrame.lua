@@ -97,5 +97,3 @@ ns.securehook('RedockChatWindows', BiggerChatFrame)
 ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
 ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
 ns.login(BiggerChatFrame)
-
----- fix link color

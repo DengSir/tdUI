@@ -159,9 +159,28 @@ do
         return tonumber(item) or tonumber(item:match('item:(%d+)'))
     end
 
-    function ns.waititem(item, obj, func, ...)
+    function ns.waititem(item, obj, func)
         item = parseItem(item)
         updaters[item] = updaters[item] or {}
         updaters[item][obj] = func
     end
+end
+
+function ns.strcolor(str, r, g, b)
+    return format('|cff%02x%02x%02x%s|r', r * 255, g * 255, b * 255, str)
+end
+
+function ns.GetFullName(name, realm)
+    if name:find('-', nil, true) then
+        return name
+    end
+
+    if not realm or realm == '' then
+        realm = GetRealmName()
+    end
+    return name .. '-' .. realm
+end
+
+function ns.UnitName(unit)
+    return ns.GetFullName(UnitFullName(unit))
 end
