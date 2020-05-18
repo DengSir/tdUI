@@ -14,14 +14,6 @@
     <Script file="ActionBar\ReturnPage.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
-    <!-- <Script file="PaperDoll\Inspect.lua" /> -->
-
-    <Script file="Inspect\Core.lua" />
-    <Script file="Inspect\Menu.lua" />
-    <Script file="Inspect\UI.lua" />
-    <Script file="Inspect\PaperDoll.lua" />
-    <Script file="Inspect\Modal.lua" />
-    <Script file="Inspect\Equip.lua" />
 
     <Script file="Chat\ChatFrame.lua" />
     <Script file="Chat\Link.lua" />

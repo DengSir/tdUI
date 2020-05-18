@@ -123,9 +123,3 @@ hook('PaperDollItemSlotButton_OnEvent', function(self, event)
 end)
 
 InitButtons('Character%sSlot', 'player')
-
-ns.addon('Blizzard_InspectUI', function()
-    hook('InspectPaperDollItemSlotButton_Update', UpdateQuality)
-
-    InitButtons('Inspect%sSlot', 'inspect')
-end)
