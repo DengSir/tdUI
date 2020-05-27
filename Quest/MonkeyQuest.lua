@@ -11,6 +11,8 @@ ns.addon('MonkeyQuest', function()
         return
     end
 
+    ns.WatchManager:Register(MonkeyQuestFrame)
+
     --- fix for quest tag
     QUEST_TAG_GROUP = 1
     QUEST_TAG_PVP = 41
@@ -55,13 +57,15 @@ ns.addon('MonkeyQuest', function()
     end
 
     do -- title
+        MonkeyQuestTitleButton:ClearAllPoints()
+        MonkeyQuestTitleButton:SetPoint('TOPLEFT', 0, -10)
         MonkeyQuestTitleButton:EnableMouse(false)
         local bg = MonkeyQuestTitleButton:CreateTexture(nil, 'BACKGROUND')
         bg:SetAtlas('Objective-Header', true)
         bg:SetPoint('TOPLEFT', -25, 20)
 
         MonkeyQuestFrame:HookScript('OnSizeChanged', function(self)
-            bg:SetWidth(self:GetWidth() + 20)
+            bg:SetWidth(self:GetWidth() + 40)
         end)
 
         MonkeyQuestTitleText:SetFontObject('GameFontNormal')
@@ -103,8 +107,9 @@ ns.addon('MonkeyQuest', function()
     end
 
     ns.securehook('MonkeyQuest_Resize', function()
-        MonkeyQuestFrame:ClearAllPoints()
-        MonkeyQuestFrame:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT', 0, 0)
+        -- MonkeyQuestFrame:ClearAllPoints()
+        -- MonkeyQuestFrame:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT', 0, 0)
+        ns.WatchManager:UpdateFrames()
     end)
 
     ns.securehook('MonkeyQuestInit_LoadConfig', function()

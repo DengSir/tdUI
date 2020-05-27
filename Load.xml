@@ -9,6 +9,9 @@
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
     <Script file="Emu.lua" />
+    <Script file="WatchManager.lua" />
+
+    <Script file="Watcher\Recount.lua" />
 
     <Script file="ActionBar\ActionBar.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -27,4 +30,5 @@
     <Script file="Map\Coords.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
+
 </Ui>
