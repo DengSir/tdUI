@@ -50,39 +50,31 @@ ns.addon('Recount', function()
         local WIDTH = 240
         local HEIGHT
 
-        local function SetFont(fontString, font, size, outline)
-            fontString:origSetFont(font, 15) -- , 'OUTLINE')
-        end
+        -- local function SetFont(fontString, font, size, outline)
+        --     fontString:origSetFont(font, 12, 'OUTLINE')
+        -- end
 
         local function HookFontString(fontString)
-            fontString.origSetFont = fontString.SetFont
-            fontString.SetFont = SetFont
-            SetFont(fontString, fontString:GetFont())
+            -- fontString.origSetFont = fontString.SetFont
+            fontString:SetFont(ChatFontNormal:GetFont(), 13, 'OUTLINE')
+            fontString:SetAlpha(0.6)
+            fontString.SetFont = nop
+            -- SetFont(fontString, fontString:GetFont())
         end
 
         local function SetupRow(_, row)
             row.StatusBar:ClearAllPoints()
             row.StatusBar:SetPoint('BOTTOMLEFT')
             row.StatusBar:SetPoint('BOTTOMRIGHT')
-            row.StatusBar:SetHeight(3)
+            row.StatusBar:SetHeight(8)
 
             row.LeftText:ClearAllPoints()
-            row.LeftText:SetPoint('BOTTOMLEFT', row.StatusBar, 'TOPLEFT')
+            row.LeftText:SetPoint('BOTTOMLEFT', row.StatusBar, 'BOTTOMLEFT', 0, 2)
             HookFontString(row.LeftText)
 
             row.RightText:ClearAllPoints()
-            row.RightText:SetPoint('BOTTOMRIGHT', row.StatusBar, 'TOPRIGHT')
+            row.RightText:SetPoint('BOTTOMRIGHT', row.StatusBar, 'BOTTOMRIGHT', 0, 2)
             HookFontString(row.RightText)
-
-            row.StatusBar.origSetStatusBarColor = row.StatusBar.SetStatusBarColor
-            row.StatusBar.SetStatusBarColor = function(self, r, g, b)
-                self:origSetStatusBarColor(r, g, b)
-                row.LeftText:origSetTextColor(r, g, b)
-            end
-            row.StatusBar.SetVertexColor = row.StatusBar.SetStatusBarColor
-
-            row.LeftText.origSetTextColor = row.LeftText.SetTextColor
-            row.LeftText.SetTextColor = nop
         end
 
         local function LockMainWindow()
@@ -145,6 +137,7 @@ ns.addon('Recount', function()
 
             Window.Title:SetPoint('TOPLEFT', -5, -10)
             Window.Title:SetParent(Window.TitleClick)
+            Window.Title:SetFont(GameFontNormal:GetFont())
             Window.Title:SetTextColor(1, 0.82, 0)
             Window.Title.SetFont = nop
             Window.Title.SetTextColor = nop
