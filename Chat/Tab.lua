@@ -13,28 +13,50 @@ local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
 
 local CHAT_TYPES = {'SAY', 'YELL', 'GUILD', 'PARTY', 'RAID'}
 
-ns.securehook('ChatEdit_SecureTabPressed', function(self)
-    if self.tabCompleteText and self.tabCompleteText:sub(1, 1) == '/' then
-        return
-    end
+local WHISPERS = {WHISPER = true, BN_WHISPER = true}
 
+local function UpdateChatType(frame, chatType, tellTarget)
+    if tellTarget then
+        frame:SetAttribute('')
+    end
+    frame:SetAttribute('chatType', chatType)
+    ChatEdit_UpdateHeader(frame)
+end
+
+function ChatEdit_CustomTabPressed(self)
     local chatType = self:GetAttribute('chatType')
-    if chatType ~= 'WHISPER' and chatType ~= 'BN_WHISPER' then
-        local index = tIndexOf(CHAT_TYPES, chatType)
-        if not index then
-            index = 1
+    local isWhisper = WHISPERS[chatType]
+
+    if IsControlKeyDown() then
+        if isWhisper then
+            UpdateChatType(self, 'SAY')
         else
-            index = index + (IsShiftKeyDown() and -1 or 1)
+            local target, newChatType = ChatEdit_GetLastToldTarget()
+            UpdateChatType(self, newChatType, target)
         end
-
-        if index == 0 then
-            index = #CHAT_TYPES
-        elseif index > #CHAT_TYPES then
-            index = 1
-        end
-
-        self:SetAttribute('chatType', CHAT_TYPES[index])
-        ChatEdit_UpdateHeader(self)
         return true
+    else
+        if not isWhisper then
+            local text = self.tabCompleteText or self:GetText()
+            if text:sub(1, 1) == '/' then
+                return false
+            end
+
+            local index = tIndexOf(CHAT_TYPES, chatType)
+            if not index then
+                index = 1
+            else
+                index = index + (IsShiftKeyDown() and -1 or 1)
+            end
+
+            if index == 0 then
+                index = #CHAT_TYPES
+            elseif index > #CHAT_TYPES then
+                index = 1
+            end
+
+            UpdateChatType(self, CHAT_TYPES[index])
+            return true
+        end
     end
-end)
+end
