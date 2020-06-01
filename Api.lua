@@ -9,7 +9,7 @@ local assert = assert
 local ipairs = ipairs
 local select = select
 local unpack = unpack
-local tinsert = table.insert
+local tinsert, tconcat = table.insert, table.concat
 
 local IsAddOnLoaded = IsAddOnLoaded
 local GetAddOnInfo = GetAddOnInfo
@@ -23,6 +23,7 @@ local events = CreateFrame('Frame')
 local addonCallbacks = {}
 local eventCallbacks = {}
 local onceEventCallbacks = {}
+local configCallbacks = {}
 
 local function append(t, k, v)
     t[k] = t[k] or {}
@@ -81,12 +82,17 @@ function ns.event(event, func)
 end
 
 function ns.login(func)
+    if IsLoggedIn() then
+        return ns.spawned(func)()
+    end
     return ns.onceeventspawn('PLAYER_LOGIN', func)
 end
 
 function ns.addon(addon, func)
     assert(type(func) == 'function')
-    assert(select(5, GetAddOnInfo(addon)) ~= 'MISSING')
+    if select(5, GetAddOnInfo(addon)) == 'MISSING' then
+        return
+    end
 
     if IsAddOnLoaded(addon) then
         func()
@@ -94,6 +100,13 @@ function ns.addon(addon, func)
         append(addonCallbacks, addon, func)
         events:RegisterEvent('ADDON_LOADED')
     end
+end
+
+function ns.addonlogin(addon, func)
+    return ns.login(function()
+        print(addon)
+        return ns.addon(addon, func)
+    end)
 end
 
 local repeaterPool = {}
@@ -136,6 +149,14 @@ function ns.hook(t, k, v)
     end
 end
 
+function ns.override(t, k, v)
+    if type(t) ~= 'table' then
+        t, k, v = _G, t, k
+    end
+
+    t[k] = v
+end
+
 ns.securehook = hooksecurefunc
 
 do
@@ -166,21 +187,37 @@ do
     end
 end
 
-function ns.strcolor(str, r, g, b)
-    return format('|cff%02x%02x%02x%s|r', r * 255, g * 255, b * 255, str)
+local function setvalue(value, db, ...)
+    local n = select('#', ...)
+    if n == 1 then
+        db[...] = value
+    else
+        return setvalue(value, db[...], select(2, ...))
+    end
 end
 
-function ns.GetFullName(name, realm)
-    if name:find('-', nil, true) then
-        return name
+function ns.config(paths, ...)
+    if select('#', ...) == 0 then
+        local value = TDDB_UI
+        for i, path in ipairs(paths) do
+            value = value[path]
+            if not value then
+                return
+            end
+        end
+        return value
+    elseif type(...) == 'function' then
+        append(configCallbacks, table.concat(paths, '.'), (...))
+    else
+        local n = #paths
+        local db = TDDB_UI
+        for i, v in ipairs(paths) do
+            if i < n then
+                db = db[v]
+            else
+                db[v] = ...
+                call(configCallbacks, table.concat(paths, '.'))
+            end
+        end
     end
-
-    if not realm or realm == '' then
-        realm = GetRealmName()
-    end
-    return name .. '-' .. realm
-end
-
-function ns.UnitName(unit)
-    return ns.GetFullName(UnitFullName(unit))
 end

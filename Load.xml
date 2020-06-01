@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
     <Include file="Libs\Libs.xml" />
     <Script file="Api.lua" />
+    <Script file="Config.lua" />
     <Script file="Aura.lua" />
     <Script file="Friends.lua" />
     <Script file="Channel.lua" />
@@ -9,9 +10,6 @@
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
     <Script file="Emu.lua" />
-    <Script file="WatchManager.lua" />
-
-    <Script file="Watcher\Recount.lua" />
 
     <Script file="ActionBar\ActionBar.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -22,7 +20,6 @@
     <Script file="Chat\Link.lua" />
     <Script file="Chat\Tab.lua" />
 
-    <Script file="Quest\MonkeyQuest.lua" />
     <Script file="Quest\Vendo.lua" />
 
     <Script file="Map\WorldMap.lua" />
@@ -31,4 +28,8 @@
 
     <Script file="Tooltip\TinyTooltip.lua" />
 
+    <Script file="Watch\WatchManager.lua" />
+    <Script file="Watch\Recount.lua" />
+    <Script file="Watch\ThreatClassic2.lua" />
+    <Script file="Watch\MonkeyQuest.lua" />
 </Ui>

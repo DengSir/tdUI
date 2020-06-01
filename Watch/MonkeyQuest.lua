@@ -6,12 +6,12 @@
 ---@type ns
 local ns = select(2, ...)
 
-ns.addon('MonkeyQuest', function()
+ns.addonlogin('MonkeyQuest', function()
     if not MonkeyQuestFrame then
         return
     end
 
-    ns.WatchManager:Register(MonkeyQuestFrame)
+    local C = TDDB_UI.Watch
 
     --- fix for quest tag
     QUEST_TAG_GROUP = 1
@@ -32,20 +32,24 @@ ns.addon('MonkeyQuest', function()
     ---- local
     local nop = nop
 
-    local MonkeyQuestFrame = MonkeyQuestFrame
-    local MonkeyQuestTitleText = MonkeyQuestTitleText
-    local MonkeyQuestTitleButton = MonkeyQuestTitleButton
+    local Window = MonkeyQuestFrame
+    local TitleButton = MonkeyQuestTitleButton
     local MonkeyQuestCloseButton = MonkeyQuestCloseButton
     local MonkeyQuestMinimizeButton = MonkeyQuestMinimizeButton
     local MonkeyQuestShowHiddenCheckButton = MonkeyQuestShowHiddenCheckButton
 
     local MonkeyQuestButton1 = MonkeyQuestButton1
 
+    ns.WatchManager:Register(MonkeyQuestFrame, 4, { --
+        minimizeButton = MonkeyQuestMinimizeButton,
+        header = TitleButton,
+    })
+
     do -- frame
-        MonkeyQuestFrame:SetFrameStrata('BACKGROUND')
-        MonkeyQuestFrame:EnableMouse(false)
-        MonkeyQuestFrame:SetMouseMotionEnabled(true)
-        MonkeyQuestFrame:SetMouseClickEnabled(false)
+        Window:SetFrameStrata('BACKGROUND')
+        Window:EnableMouse(false)
+        Window:SetMouseMotionEnabled(true)
+        Window:SetMouseClickEnabled(false)
     end
 
     do -- header buttons
@@ -57,48 +61,29 @@ ns.addon('MonkeyQuest', function()
     end
 
     do -- title
-        MonkeyQuestTitleButton:ClearAllPoints()
-        MonkeyQuestTitleButton:SetPoint('TOPLEFT', 0, -10)
-        MonkeyQuestTitleButton:EnableMouse(false)
-        local bg = MonkeyQuestTitleButton:CreateTexture(nil, 'BACKGROUND')
-        bg:SetAtlas('Objective-Header', true)
-        bg:SetPoint('TOPLEFT', -25, 20)
+        TitleButton:EnableMouse(false)
 
-        MonkeyQuestFrame:HookScript('OnSizeChanged', function(self)
-            bg:SetWidth(self:GetWidth() + 40)
-        end)
+        local TitleText = MonkeyQuestTitleText
+        TitleText:SetFontObject('GameFontNormal')
+        TitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+        TitleText.SetTextHeight = nop
 
-        MonkeyQuestTitleText:SetFontObject('GameFontNormal')
-        MonkeyQuestTitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-        MonkeyQuestTitleText.SetTextHeight = nop
-
-        MonkeyQuestButton1:SetPoint('TOPLEFT', MonkeyQuestTitleButton, 'BOTTOMLEFT', 0, -7)
+        MonkeyQuestButton1:SetPoint('TOPLEFT', Window, 'TOPLEFT', 0, -32)
     end
 
     do -- minimize button
-        MonkeyQuestMinimizeButton:SetPoint(MonkeyQuestCloseButton:GetPoint())
-        MonkeyQuestMinimizeButton:SetSize(16, 16)
-        MonkeyQuestMinimizeButton:SetNormalTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
-        MonkeyQuestMinimizeButton:SetPushedTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
-        MonkeyQuestMinimizeButton:SetHighlightTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Highlight]], 'ADD')
-        MonkeyQuestMinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 1)
-        MonkeyQuestMinimizeButton:GetPushedTexture():SetTexCoord(0.5, 1, 0.5, 1)
-        MonkeyQuestMinimizeButton.SetNormalTexture = nop
-
         local MinimizeLabel = MonkeyQuestMinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
         MinimizeLabel:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT', -5, 0)
         MinimizeLabel:SetText(QUESTS_LABEL)
 
         function MonkeyQuestMinimizeButton:Update()
             if MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized then
-                MonkeyQuestMinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.5)
-                MonkeyQuestMinimizeButton:GetPushedTexture():SetTexCoord(0.5, 1, 0, 0.5)
-                MonkeyQuestTitleButton:Hide()
+                self:Fold()
+                TitleButton:Hide()
                 MinimizeLabel:Show()
             else
-                MonkeyQuestMinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 1)
-                MonkeyQuestMinimizeButton:GetPushedTexture():SetTexCoord(0.5, 1, 0.5, 1)
-                MonkeyQuestTitleButton:Show()
+                self:Unfold()
+                TitleButton:Show()
                 MinimizeLabel:Hide()
             end
         end
@@ -107,9 +92,7 @@ ns.addon('MonkeyQuest', function()
     end
 
     ns.securehook('MonkeyQuest_Resize', function()
-        -- MonkeyQuestFrame:ClearAllPoints()
-        -- MonkeyQuestFrame:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT', 0, 0)
-        ns.WatchManager:UpdateFrames()
+        ns.WatchManager:Refresh()
     end)
 
     ns.securehook('MonkeyQuestInit_LoadConfig', function()
@@ -161,8 +144,6 @@ ns.addon('MonkeyQuest', function()
         for k, v in pairs(CONFIG) do
             db[k] = v
         end
-
-        MonkeyQuestInit_ApplySettings()
     end)
 
     ns.securehook('MonkeyQuestInit_ApplySettings', function()
@@ -172,8 +153,8 @@ ns.addon('MonkeyQuest', function()
     ns.securehook('MonkeyQuest_OnEvent', function(_, event)
         if event == 'QUEST_LOG_UPDATE' then
             local shouldShow = GetNumQuestLogEntries() > 0
-            if shouldShow ~= MonkeyQuestFrame:IsShown() then
-                MonkeyQuestFrame:SetShown(shouldShow)
+            if shouldShow ~= Window:IsShown() then
+                Window:SetShown(shouldShow)
 
                 if shouldShow then
                     MonkeyQuest_Refresh()
@@ -181,4 +162,14 @@ ns.addon('MonkeyQuest', function()
             end
         end
     end)
+
+    local function ApplyOptions()
+        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = C.frame.width
+        MonkeyQuestInit_ApplySettings()
+    end
+
+    ns.config({'Watch', 'frame', 'width'}, ApplyOptions)
+
+    MonkeyQuestInit_LoadConfig()
+    ApplyOptions()
 end)
