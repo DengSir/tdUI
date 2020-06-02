@@ -17,6 +17,7 @@ local DEFAULT_PROFILE = {
             fontSize = 13,
             fontFlag = 'OUTLINE',
             texture = 'BantoBar',
+            inlineHeight = 18,
         },
         Recount = {maxLines = 10},
         ThreatClassic2 = {maxLines = 5},

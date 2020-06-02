@@ -68,6 +68,7 @@ ns.login(function()
                 frame = inline('Frame', {width = range('Width', 100, 500, 1)}),
                 bar = inline('Bar', {
                     height = range('Height', 1, 64, 1),
+                    inlineHeight = range('Inline height', 1, 64, 1),
                     spacing = range('Spacing', 0, 20, 1),
                     font = {
                         order = orderGen(),

@@ -98,6 +98,7 @@ ns.addonlogin('Recount', function()
             local offs = Recount.db.profile.MainWindow.HideTotalBar and 0 or 1
 
             for k, row in pairs(Window.Rows) do
+                row.StatusBar:SetHeight(min(C.bar.inlineHeight, C.bar.height))
                 row:SetHeight(C.bar.height)
                 row:SetPoint('TOPLEFT', Window, 'TOPLEFT', 2, -32 - (C.bar.height + C.bar.spacing) * (k - 1 + offs))
             end
@@ -143,7 +144,7 @@ ns.addonlogin('Recount', function()
             row.StatusBar:ClearAllPoints()
             row.StatusBar:SetPoint('BOTTOMLEFT', row.icon, 'BOTTOMRIGHT')
             row.StatusBar:SetPoint('BOTTOMRIGHT')
-            row.StatusBar:SetHeight(8)
+            row.StatusBar:SetHeight(min(C.bar.inlineHeight, C.bar.height))
 
             row.bg = row.StatusBar:CreateTexture(nil, 'BACKGROUND')
             row.bg:SetAllPoints(row.StatusBar)
@@ -180,7 +181,7 @@ ns.addonlogin('Recount', function()
         local WIDTH, HEIGHT
         local function UpdateWindowSize()
             local offs = Recount.db.profile.MainWindow.HideTotalBar and 0 or 1
-            local lines = min(10, #Window.DispTableSorted + (offs))
+            local lines = min(C.Recount.maxLines, #Window.DispTableSorted + (offs))
 
             local width = C.frame.width - 15
             local height = (C.bar.height + C.bar.spacing) * lines + 33
@@ -242,6 +243,7 @@ ns.addonlogin('Recount', function()
 
         ns.config('Watch.frame.width', UpdateLayout)
         ns.config('Watch.bar.height', UpdateLayout)
+        ns.config('Watch.bar.inlineHeight', UpdateLayout)
         ns.config('Watch.bar.spacing', UpdateLayout)
         ns.config('Watch.bar.font', UpdateBarFont)
         ns.config('Watch.bar.fontSize', UpdateBarFont)

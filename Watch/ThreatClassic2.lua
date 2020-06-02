@@ -146,6 +146,9 @@ ns.addonlogin('ThreatClassic2', function()
             header.text:SetFont(GameFontNormal:GetFont())
             header.text:SetTextColor(1, 0.82, 0)
 
+            header.text:ClearAllPoints()
+            header.text:SetPoint('LEFT', header, 'LEFT')
+
             header.SetStatusBarTexture = nop
             header.text.SetFont = nop
             header.text.SetVertexColor = nop
@@ -194,6 +197,7 @@ ns.addonlogin('ThreatClassic2', function()
                 bar.backdrop:SetPoint('TOP', TC2.bars[i - 1].backdrop, 'BOTTOM', 0, -C.bar.spacing)
             end
 
+            bar:SetHeight(min(C.bar.height, C.bar.inlineHeight))
             bar:SetStatusBarTexture(LSM:Fetch('statusbar', C.bar.texture))
             bar.backdrop:SetSize(C.frame.width + 2 - 21, C.bar.height)
             bar.icon:SetSize(C.bar.height, C.bar.height)
@@ -262,6 +266,7 @@ ns.addonlogin('ThreatClassic2', function()
 
     ns.config('Watch.frame.width', UpdateFrame)
     ns.config('Watch.bar.height', UpdateFrame)
+    ns.config('Watch.bar.inlineHeight', UpdateFrame)
     ns.config('Watch.bar.spacing', UpdateFrame)
     ns.config('Watch.bar.font', UpdateFrame)
     ns.config('Watch.bar.fontSize', UpdateFrame)
