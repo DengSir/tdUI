@@ -13,9 +13,11 @@ local tinsert, tconcat = table.insert, table.concat
 
 local IsAddOnLoaded = IsAddOnLoaded
 local GetAddOnInfo = GetAddOnInfo
+local IsLoggedIn = IsLoggedIn
 local After = C_Timer.After
 
 ---@class ns
+---@field profile Profile
 local ADDON, ns = ...
 
 local events = CreateFrame('Frame')
@@ -94,7 +96,7 @@ function ns.addon(addon, func)
         return
     end
 
-    if IsAddOnLoaded(addon) then
+    if addon ~= ADDON and IsAddOnLoaded(addon) then
         func()
     else
         append(addonCallbacks, addon, func)
@@ -102,9 +104,12 @@ function ns.addon(addon, func)
     end
 end
 
+function ns.load(func)
+    return ns.addon(ADDON, func)
+end
+
 function ns.addonlogin(addon, func)
     return ns.login(function()
-        print(addon)
         return ns.addon(addon, func)
     end)
 end
@@ -159,46 +164,37 @@ end
 
 ns.securehook = hooksecurefunc
 
-do
-    local updaters = {}
+-- do
+--     local updaters = {}
 
-    ns.event('GET_ITEM_INFO_RECEIVED', function(id, ok)
-        if not ok then
-            return
-        end
+--     ns.event('GET_ITEM_INFO_RECEIVED', function(id, ok)
+--         if not ok then
+--             return
+--         end
 
-        local objects = updaters[id]
-        if objects then
-            for obj, func in pairs(objects) do
-                func(obj)
-            end
-            updaters[id] = nil
-        end
-    end)
+--         local objects = updaters[id]
+--         if objects then
+--             for obj, func in pairs(objects) do
+--                 func(obj)
+--             end
+--             updaters[id] = nil
+--         end
+--     end)
 
-    local function parseItem(item)
-        return tonumber(item) or tonumber(item:match('item:(%d+)'))
-    end
+--     local function parseItem(item)
+--         return tonumber(item) or tonumber(item:match('item:(%d+)'))
+--     end
 
-    function ns.waititem(item, obj, func)
-        item = parseItem(item)
-        updaters[item] = updaters[item] or {}
-        updaters[item][obj] = func
-    end
-end
-
-local function setvalue(value, db, ...)
-    local n = select('#', ...)
-    if n == 1 then
-        db[...] = value
-    else
-        return setvalue(value, db[...], select(2, ...))
-    end
-end
+--     function ns.waititem(item, obj, func)
+--         item = parseItem(item)
+--         updaters[item] = updaters[item] or {}
+--         updaters[item][obj] = func
+--     end
+-- end
 
 function ns.config(paths, ...)
     if select('#', ...) == 0 then
-        local value = TDDB_UI
+        local value = ns.profile
         for i, path in ipairs(paths) do
             value = value[path]
             if not value then
@@ -207,16 +203,16 @@ function ns.config(paths, ...)
         end
         return value
     elseif type(...) == 'function' then
-        append(configCallbacks, table.concat(paths, '.'), (...))
+        append(configCallbacks, type(paths) == 'table' and tconcat(paths, '.') or paths, (...))
     else
         local n = #paths
-        local db = TDDB_UI
+        local db = ns.profile
         for i, v in ipairs(paths) do
             if i < n then
                 db = db[v]
             else
                 db[v] = ...
-                call(configCallbacks, table.concat(paths, '.'))
+                call(configCallbacks, tconcat(paths, '.'))
             end
         end
     end

@@ -11,8 +11,6 @@ ns.addonlogin('MonkeyQuest', function()
         return
     end
 
-    local C = TDDB_UI.Watch
-
     --- fix for quest tag
     QUEST_TAG_GROUP = 1
     QUEST_TAG_PVP = 41
@@ -164,7 +162,7 @@ ns.addonlogin('MonkeyQuest', function()
     end)
 
     local function ApplyOptions()
-        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = C.frame.width
+        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = ns.profile.Watch.frame.width
         MonkeyQuestInit_ApplySettings()
     end
 

@@ -13,7 +13,7 @@ WatchManager:SetSize(1, 1)
 WatchManager:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT')
 
 WatchManager.frames = {}
-WatchManager.options = {}
+WatchManager.env = {}
 WatchManager.debug = false
 
 local function UpdateFrames()
@@ -21,67 +21,72 @@ local function UpdateFrames()
 end
 
 function WatchManager:Register(frame, order, options)
-    options = options or {}
+    local env = options or {}
 
     tinsert(self.frames, frame)
-    self.options[frame] = options
-    self.options[frame].order = order
+    self.env[frame] = env
+    self.env[frame].order = order
 
     sort(self.frames, function(a, b)
-        return self.options[a].order < self.options[b].order
+        return self.env[a].order < self.env[b].order
     end)
-
-    frame:HookScript('OnShow', UpdateFrames)
-    frame:HookScript('OnHide', UpdateFrames)
 
     if self.debug then
         local color = #self.frames % 2 == 0 and 1 or 0
         local bg = frame:CreateTexture(nil, 'BACKGROUND', nil, -8)
-        bg:SetPoint('TOPLEFT', -(self.options[frame].marginLeft or 0), self.options[frame].marginTop or 0)
-        bg:SetPoint('BOTTOMRIGHT', self.options[frame].marginRight or 0, -(self.options[frame].marginBottom or 0))
+        bg:SetPoint('TOPLEFT', -(self.env[frame].marginLeft or 0), self.env[frame].marginTop or 0)
+        bg:SetPoint('BOTTOMRIGHT', self.env[frame].marginRight or 0, -(self.env[frame].marginBottom or 0))
         bg:SetColorTexture(color, color, color, 0.3)
     end
 
-    if options.header then
-        self:SetupHeaderFrame(frame, options.header)
+    frame:HookScript('OnShow', UpdateFrames)
+    frame:HookScript('OnHide', UpdateFrames)
+    frame:SetFrameStrata('BACKGROUND')
+
+    env.SetPoint = frame.SetPoint
+    env.ClearAllPoints = frame.ClearAllPoints
+
+    frame.SetPoint = nop
+    frame.ClearAllPoints = nop
+    frame.SetFrameStrata = nop
+
+    if env.header then
+        self:SetupHeaderFrame(frame, env.header)
     end
-    if options.minimizeButton then
-        self:SetupMinimizeButton(frame, options.minimizeButton)
+    if env.minimizeButton then
+        self:SetupMinimizeButton(frame, env.minimizeButton)
     end
 
     self:Refresh()
 end
 
 function WatchManager:Refresh()
-    local prevFrame, prevOptions
+    local prevFrame, prevEnv
     for i, frame in ipairs(self.frames) do
         if frame:IsVisible() then
+            local env = self.env[frame]
 
-            local options = self.options[frame]
+            local x = -(env.marginRight or 0) + (prevEnv and prevEnv.marginRight or 0)
+            local y = -(env.marginTop or 0) - (prevEnv and prevEnv.marginBottom or 0)
 
-            local x = -(options and options.marginRight or 0) + (prevOptions and prevOptions.marginRight or 0)
-            local y = -(options and options.marginTop or 0) - (prevOptions and prevOptions.marginBottom or 0)
-
-            frame:ClearAllPoints()
-
-            local setPoint = frame.origSetPoint or frame.SetPoint
+            env.ClearAllPoints(frame)
             if prevFrame then
-                setPoint(frame, 'TOPRIGHT', prevFrame, 'BOTTOMRIGHT', x, y)
+                env.SetPoint(frame, 'TOPRIGHT', prevFrame, 'BOTTOMRIGHT', x, y)
             else
-                setPoint(frame, 'TOPRIGHT', self, 'TOPRIGHT', x, y)
+                env.SetPoint(frame, 'TOPRIGHT', self, 'TOPRIGHT', x, y)
             end
 
             prevFrame = frame
-            prevOptions = options
+            prevEnv = env
         end
     end
 end
 
 function WatchManager:SetupHeaderFrame(frame, header)
-    local options = self.options[frame]
+    local env = self.env[frame]
 
     header:ClearAllPoints()
-    header:SetPoint('LEFT', frame, 'TOPLEFT', -(options.marginLeft or 0), -16 + (options.marginTop or 0))
+    header:SetPoint('LEFT', frame, 'TOPLEFT', -(env.marginLeft or 0), -16 + (env.marginTop or 0))
 
     header.ClearAllPoints = nop
     header.SetPoint = nop
@@ -89,9 +94,9 @@ function WatchManager:SetupHeaderFrame(frame, header)
     local bg = header:CreateTexture(nil, 'BACKGROUND')
     bg:SetAtlas('Objective-Header', true)
     bg:SetPoint('LEFT', -25, -16)
-    bg:SetWidth(TDDB_UI.Watch.frame.width + 40)
+    bg:SetWidth(ns.profile.Watch.frame.width + 40)
 
-    options.titleBg = bg
+    env.titleBg = bg
 end
 
 local function Fold(button)
@@ -105,7 +110,7 @@ local function Unfold(button)
 end
 
 function WatchManager:SetupMinimizeButton(frame, button)
-    local options = self.options[frame]
+    local options = self.env[frame]
 
     button:ClearAllPoints()
     button:SetPoint('TOPRIGHT', frame, 'TOPRIGHT', -8 + (options.marginRight or 0), -8 + (options.marginTop or 0))
@@ -125,12 +130,12 @@ function WatchManager:SetupMinimizeButton(frame, button)
     button.SetHeight = nop
 end
 
-ns.config({'Watch', 'frame', 'width'}, function()
-    local width = TDDB_UI.Watch.frame.width + 40
+ns.config('Watch.frame.width', function()
+    local width = ns.profile.Watch.frame.width + 40
     for _, frame in ipairs(WatchManager.frames) do
-        local options = WatchManager.options[frame]
-        if options.titleBg then
-            options.titleBg:SetWidth(width)
+        local env = WatchManager.env[frame]
+        if env.titleBg then
+            env.titleBg:SetWidth(width)
         end
     end
 end)

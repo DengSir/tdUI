@@ -3,6 +3,8 @@
     <Include file="Libs\Libs.xml" />
     <Script file="Api.lua" />
     <Script file="Config.lua" />
+    <Script file="Option.lua" />
+
     <Script file="Aura.lua" />
     <Script file="Friends.lua" />
     <Script file="Channel.lua" />

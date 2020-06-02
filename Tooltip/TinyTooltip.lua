@@ -7,7 +7,6 @@ local ns = select(2, ...)
 
 ns.addon('TinyTooltip', function()
     local function register(tooltip)
-        print(tooltip)
         if tooltip then
             tinsert(TinyTooltip.tooltips, tooltip)
         end

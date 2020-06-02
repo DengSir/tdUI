@@ -7,17 +7,21 @@
 local ns = select(2, ...)
 
 ns.addonlogin('Recount', function()
-    local C = TDDB_UI.Watch
-
     local Window = Recount.MainWindow
+    if not Window then
+        return
+    end
+
     ns.WatchManager:Register(Window, 2, { --
         header = Window.TitleClick,
         minimizeButton = Window.CloseButton,
         marginLeft = 5,
         marginRight = 10,
         marginBottom = 5,
-
     })
+
+    local LSM = LibStub('LibSharedMedia-3.0')
+    local C = ns.profile.Watch
 
     local MinimizeFrame = CreateFrame('Frame', nil, UIParent)
     ns.WatchManager:Register(MinimizeFrame, 1)
@@ -67,8 +71,6 @@ ns.addonlogin('Recount', function()
     end
 
     do
-        local LSM = LibStub:GetLibrary('LibSharedMedia-3.0')
-
         local function UpdateFont(fontString)
             fontString:origSetFont(LSM:Fetch('font', C.bar.font), C.bar.fontSize, C.bar.fontFlag)
         end
@@ -233,25 +235,19 @@ ns.addonlogin('Recount', function()
             ns.WatchManager:Update()
         end)
 
-        ns.config({'Watch', 'frame', 'width'}, function()
+        local function UpdateLayout()
             UpdateConfig()
             UpdateBarSize()
             UpdateWindowSize()
-        end)
-        ns.config({'Watch', 'bar', 'height'}, function()
-            UpdateConfig()
-            UpdateBarSize()
-            UpdateWindowSize()
-        end)
-        ns.config({'Watch', 'bar', 'spacing'}, function()
-            UpdateConfig()
-            UpdateBarSize()
-            UpdateWindowSize()
-        end)
-        ns.config({'Watch', 'bar', 'font'}, UpdateBarFont)
-        ns.config({'Watch', 'bar', 'fontSize'}, UpdateBarFont)
-        ns.config({'Watch', 'bar', 'fontFlag'}, UpdateBarFont)
-        ns.config({'Watch', 'bar', 'texture'}, function()
+        end
+
+        ns.config('Watch.frame.width', UpdateLayout)
+        ns.config('Watch.bar.height', UpdateLayout)
+        ns.config('Watch.bar.spacing', UpdateLayout)
+        ns.config('Watch.bar.font', UpdateBarFont)
+        ns.config('Watch.bar.fontSize', UpdateBarFont)
+        ns.config('Watch.bar.fontFlag', UpdateBarFont)
+        ns.config('Watch.bar.texture', function()
             UpdateConfig()
             UpdateBarTexture()
         end)
