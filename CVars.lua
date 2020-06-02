@@ -7,9 +7,10 @@
 local ns = select(2, ...)
 
 ns.login(function()
+    -- @debug@
     ConsoleExec('SET portal TW')
-
     SetCVar('profanityFilter', false)
+    -- @end-debug@
     SetCVar('alwaysCompareItems', false)
     SetCVar('nameplateLargerScale', 1.2)
     SetCVar('nameplateMotionSpeed', 0.025)

@@ -27,6 +27,7 @@
     <Script file="Map\WorldMap.lua" />
     <Script file="Map\Minimap.lua" />
     <Script file="Map\Coords.lua" />
+    <Script file="Map\MBB.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
 

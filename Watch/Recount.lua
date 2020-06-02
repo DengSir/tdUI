@@ -24,19 +24,17 @@ ns.addonlogin('Recount', function()
     local C = ns.profile.Watch
 
     local MinimizeFrame = CreateFrame('Frame', nil, UIParent)
-    ns.WatchManager:Register(MinimizeFrame, 1)
     do
         MinimizeFrame:SetSize(C.frame.width, 30)
         MinimizeFrame:SetPoint('CENTER')
 
         local Button = CreateFrame('Button', nil, MinimizeFrame)
-        Button:SetSize(16, 16)
-        Button:SetPoint('TOPRIGHT', -8, -8)
-        Button:SetNormalTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
-        Button:SetPushedTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
-        Button:SetHighlightTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Highlight]], 'ADD')
-        Button:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.5)
-        Button:GetPushedTexture():SetTexCoord(0.5, 1, 0, 0.5)
+
+        ns.WatchManager:Register(MinimizeFrame, 1, { --
+            minimizeButton = Button,
+        })
+
+        Button:Fold()
 
         local Label = Button:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
         Label:SetPoint('RIGHT', Button, 'LEFT', -5, 0)
@@ -68,6 +66,7 @@ ns.addonlogin('Recount', function()
         Recount_Config_StatusBar_Scrollbar:GetParent():Hide()
         Recount_ConfigWindow_RowHeight_Slider:Hide()
         Recount_ConfigWindow_RowSpacing_Slider:Hide()
+        -- Recount_ConfigWindow.ColorOpt.Rows[1]:Hide()
     end
 
     do
