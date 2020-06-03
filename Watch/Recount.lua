@@ -273,6 +273,12 @@ ns.addonlogin('Recount', function()
         DropMenu.displayMode = 'MENU'
         DropMenu.initialize = EasyMenu_Initialize
 
+        local function OpenMenu(frame, menuList)
+            DropMenu.point = 'TOPRIGHT'
+            DropMenu.relativePoint = 'TOPLEFT'
+            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menuList)
+        end
+
         ns.override(Recount, 'OpenModeDropDown', function(_, frame)
             local menu = {}
             for k, v in pairs(Recount.MainWindowData) do
@@ -285,10 +291,7 @@ ns.addonlogin('Recount', function()
                 })
             end
 
-            DropMenu.point = 'TOPRIGHT'
-            DropMenu.relativePoint = 'TOPLEFT'
-
-            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menu)
+            OpenMenu(frame, menu)
         end)
 
         local function SetFight(set, name)
@@ -304,18 +307,18 @@ ns.addonlogin('Recount', function()
 
         ns.override(Recount, 'OpenFightDropDown', function(_, frame)
             local menu = {}
+            local current = Recount.db.profile.CurDataSet
 
             menu[1] = {
                 text = L['Overall Data'],
-                checked = Recount.db.profile.CurDataSet == 'OverallData',
+                checked = current == 'OverallData',
                 func = function()
                     SetFight('OverallData', 'Overall Data')
                 end,
             }
             menu[2] = {
                 text = L['Current Fight'],
-                checked = Recount.db.profile.CurDataSet == 'CurrentFightData' or Recount.db.profile.CurDataSet ==
-                    'LastFightData',
+                checked = current == 'CurrentFightData' or current == 'LastFightData',
                 func = function()
                     SetFight(Recount.InCombat and 'CurrentFightData' or 'LastFightData', 'Current Fight')
                 end,
@@ -324,17 +327,14 @@ ns.addonlogin('Recount', function()
             for k, v in pairs(Recount.db2.FoughtWho) do
                 tinsert(menu, {
                     text = L['Fight'] .. ' ' .. k .. ' - ' .. v,
-                    checked = Recount.db.profile.CurDataSet == 'Fight' .. k,
+                    checked = current == 'Fight' .. k,
                     func = function()
                         SetFight('Fight' .. k, v)
                     end,
                 })
             end
 
-            DropMenu.point = 'TOPRIGHT'
-            DropMenu.relativePoint = 'TOPLEFT'
-
-            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menu)
+            OpenMenu(frame, menu)
         end)
 
         local function UpdateLayout()
