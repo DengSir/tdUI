@@ -51,15 +51,21 @@ events:SetScript('OnEvent', function(self, event, ...)
             events:UnregisterEvent('ADDON_LOADED')
         end
     else
-        call(onceEventCallbacks, event, ...)
-        onceEventCallbacks[event] = nil
-        call(eventCallbacks, event, ...)
+        ns.fire(event, ...)
+    end
+end)
 
+function ns.fire(event, ...)
+    call(onceEventCallbacks, event, ...)
+    onceEventCallbacks[event] = nil
+    call(eventCallbacks, event, ...)
+
+    if event:sub(1, 1) ~= '!' then
         if not onceEventCallbacks[event] and not eventCallbacks[event] then
             events:UnregisterEvent(event)
         end
     end
-end)
+end
 
 function ns.onceevent(event, func)
     assert(type(func) == 'function')
@@ -80,7 +86,10 @@ function ns.event(event, func)
     assert(type(func) == 'function')
 
     append(eventCallbacks, event, func)
-    events:RegisterEvent(event)
+
+    if event:sub(1, 1) ~= '!' then
+        events:RegisterEvent(event)
+    end
 end
 
 function ns.login(func)
@@ -216,4 +225,16 @@ function ns.config(paths, ...)
             end
         end
     end
+end
+
+function ns.CropClassCoords(classFileName)
+    local coords = CLASS_ICON_TCOORDS[classFileName]
+    if not coords then
+        return
+    end
+
+    local left, right, top, bottom = unpack(coords)
+    local x = (right - left) * 0.06
+    local y = (bottom - top) * 0.06
+    return left + x, right - x, top + y, bottom - y
 end

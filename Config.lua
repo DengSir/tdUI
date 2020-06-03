@@ -13,11 +13,14 @@ local DEFAULT_PROFILE = {
         bar = { --
             height = 18,
             spacing = 2,
-            font = nil,
-            fontSize = 13,
-            fontFlag = 'OUTLINE',
             texture = 'BantoBar',
             inlineHeight = 18,
+        },
+        font = { --
+            name = nil,
+            size = 13,
+            style = 'NONE',
+            color = {r = 1, g = 1, b = 1, a = 0.8},
         },
         Recount = {maxLines = 10},
         ThreatClassic2 = {maxLines = 5},

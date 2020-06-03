@@ -139,3 +139,27 @@ ns.config('Watch.frame.width', function()
         end
     end
 end)
+
+local PLAYER_STATUS
+
+local function SaveStatus(status)
+    if status ~= PLAYER_STATUS then
+        PLAYER_STATUS = status
+        ns.fire('!PLAYER_STATUS_CHANGED', status)
+    end
+end
+
+local function CheckPlayerStatus()
+    if UnitInBattleground('player') then
+        SaveStatus('battleground')
+    elseif IsInRaid(LE_PARTY_CATEGORY_HOME) then
+        SaveStatus('raid')
+    elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+        SaveStatus('party')
+    else
+        SaveStatus('solo')
+    end
+end
+
+ns.event('GROUP_ROSTER_UPDATE', CheckPlayerStatus)
+ns.login(CheckPlayerStatus)

@@ -7,6 +7,12 @@
 local ns = select(2, ...)
 
 ns.addonlogin('ThreatClassic2', function()
+    local ipairs, select = ipairs, select
+    local max, min = math.max, math.min
+    local tremove = table.remove
+
+    local UnitClassBase = UnitClassBase
+
     ---@type Frame
     local Window = ThreatClassic2BarFrame
     if not Window then
@@ -28,10 +34,6 @@ ns.addonlogin('ThreatClassic2', function()
 
     local db = (function()
         local AceDB = LibStub('AceDB-3.0', true)
-        if not AceDB then
-            return
-        end
-
         for db in pairs(AceDB.db_registry) do
             if db.sv == ThreatClassic2DB then
                 return db
@@ -185,9 +187,12 @@ ns.addonlogin('ThreatClassic2', function()
         Window:SetSize(TCC.frame.width + 2, TCC.frame.height)
     end
 
-    local function UpdateBars()
-        local font = LSM:Fetch('font', C.bar.font)
+    local function UpdateFont(fontString)
+        fontString:SetFont(LSM:Fetch('font', C.font.name), C.font.size, C.font.style)
+        fontString:SetTextColor(C.font.color.r, C.font.color.g, C.font.color.b, C.font.color.a)
+    end
 
+    local function UpdateBars()
         for i = 1, 40 do
             local bar = TC2.bars[i]
 
@@ -201,11 +206,12 @@ ns.addonlogin('ThreatClassic2', function()
             bar:SetStatusBarTexture(LSM:Fetch('statusbar', C.bar.texture))
             bar.backdrop:SetSize(C.frame.width + 2 - 21, C.bar.height)
             bar.icon:SetSize(C.bar.height, C.bar.height)
-            bar.name:SetFont(font, C.bar.fontSize, C.bar.fontFlag)
-            bar.perc:SetFont(font, C.bar.fontSize, C.bar.fontFlag)
-            bar.val:SetFont(font, C.bar.fontSize, C.bar.fontFlag)
 
-            bar.val:SetPoint('RIGHT', bar.backdrop, 'RIGHT', -C.bar.fontSize * 3.5, 0)
+            UpdateFont(bar.name)
+            UpdateFont(bar.perc)
+            UpdateFont(bar.val)
+
+            bar.val:SetPoint('RIGHT', bar.backdrop, 'RIGHT', -C.font.size * 3.5, 0)
             bar.name:SetPoint('RIGHT', bar.val, 'LEFT', -10, 0)
         end
 
@@ -226,7 +232,7 @@ ns.addonlogin('ThreatClassic2', function()
 
                 if class then
                     bar.icon:SetTexture([[Interface\Glues\CharacterCreate\ui-charactercreate-classes]])
-                    bar.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+                    bar.icon:SetTexCoord(ns.CropClassCoords(class))
                 else
                     bar.icon:SetTexture([[Interface\Icons\ability_dualwield]])
                     bar.icon:SetTexCoord(0, 1, 0, 1)
@@ -258,7 +264,7 @@ ns.addonlogin('ThreatClassic2', function()
 
     ns.hook(TC2, 'TestMode', function(orig, self, ...)
         local count = TCC.bar.count
-        TCC.bar.count = C.ThreatClassic2.maxLines
+        TCC.bar.count = 40
         orig(self, ...)
         TCC.bar.count = count
         UpdateFrame()
@@ -268,9 +274,10 @@ ns.addonlogin('ThreatClassic2', function()
     ns.config('Watch.bar.height', UpdateFrame)
     ns.config('Watch.bar.inlineHeight', UpdateFrame)
     ns.config('Watch.bar.spacing', UpdateFrame)
-    ns.config('Watch.bar.font', UpdateFrame)
-    ns.config('Watch.bar.fontSize', UpdateFrame)
-    ns.config('Watch.bar.fontFlag', UpdateFrame)
+    ns.config('Watch.font.name', UpdateFrame)
+    ns.config('Watch.font.size', UpdateFrame)
+    ns.config('Watch.font.style', UpdateFrame)
+    ns.config('Watch.font.color', UpdateFrame)
     ns.config('Watch.bar.texture', UpdateFrame)
     ns.config('Watch.ThreatClassic2.maxLines', UpdateFrame)
 

@@ -33,6 +33,30 @@ ns.login(function()
         return {type = 'range', order = orderGen(), name = name, min = min, max = max, step = step}
     end
 
+    local function rgba(name)
+        return {type = 'color', order = orderGen(), name = name, hasAlpha = true}
+    end
+
+    local function font(name)
+        return {
+            type = 'select',
+            order = orderGen(),
+            name = name,
+            dialogControl = 'LSM30_Font',
+            values = LSM:HashTable('font'),
+        }
+    end
+
+    local function statusbar(name)
+        return {
+            type = 'select',
+            order = orderGen(),
+            name = name,
+            dialogControl = 'LSM30_Statusbar',
+            values = LSM:HashTable('statusbar'),
+        }
+    end
+
     local function drop(name, values)
         local opts = { --
             type = 'select',
@@ -58,10 +82,22 @@ ns.login(function()
         type = 'group',
         name = 'tdUI',
         get = function(paths)
-            return ns.config(paths)
+            if paths.type == 'color' then
+                local color = ns.config(paths)
+                return color.r, color.g, color.b, color.a
+            else
+                return ns.config(paths)
+            end
         end,
-        set = function(paths, value)
-            return ns.config(paths, value)
+        set = function(paths, ...)
+            if paths.type == 'color' then
+                local color = {}
+                color.r, color.g, color.b, color.a = ...
+                ns.config(paths, color)
+            else
+                local value = ...
+                return ns.config(paths, value)
+            end
         end,
         args = {
             Watch = treeItem('Watch', {
@@ -70,31 +106,30 @@ ns.login(function()
                     height = range('Height', 1, 64, 1),
                     inlineHeight = range('Inline height', 1, 64, 1),
                     spacing = range('Spacing', 0, 20, 1),
-                    font = {
-                        order = orderGen(),
-                        name = 'Font',
-                        type = 'select',
-                        dialogControl = 'LSM30_Font',
-                        values = LSM:HashTable('font'),
-                    },
-                    fontSize = range('Font size', 6, 32, 0.5),
-                    fontFlag = drop('Font flag', { --
-                        {name = 'NONE', value = 'NONE'}, {name = 'OUTLINE', value = 'OUTLINE'},
-                    }),
-                    texture = {
-                        order = orderGen(),
-                        name = 'Texture',
-                        type = 'select',
-                        dialogControl = 'LSM30_Statusbar',
-                        values = LSM:HashTable('statusbar'),
-                    },
+                    texture = statusbar('Texture'),
                 }),
-                Recount = inline('Recount', {maxLines = range('Max lines', 2, 40, 1)}),
-                ThreatClassic2 = inline('ThreatClassic2', {maxLines = range('Max lines', 2, 40, 1)}),
+                font = inline('Font', {
+                    name = font('Font name'),
+                    size = range('Font size', 6, 32, 0.5),
+                    style = drop('Font flag', { --
+                        {name = 'NONE', value = ''}, --
+                        {name = 'OUTLINE', value = 'OUTLINE'}, --
+                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'},
+                    }),
+                    color = rgba('Font color'),
+                }),
+                Recount = inline('Recount', { --
+                    maxLines = range('Max lines', 2, 40, 1),
+                }),
+                ThreatClassic2 = inline('ThreatClassic2', { --
+                    maxLines = range('Max lines', 2, 40, 1),
+                }),
             }),
         },
     }
 
     AceConfigRegistry:RegisterOptionsTable('tdUI', options)
     AceConfigDialog:AddToBlizOptions('tdUI', 'tdUI')
+
+    local AceGUI = LibStub('AceGUI-3.0')
 end)

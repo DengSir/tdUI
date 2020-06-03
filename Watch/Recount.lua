@@ -7,6 +7,10 @@
 local ns = select(2, ...)
 
 ns.addonlogin('Recount', function()
+    local pairs = pairs
+
+    local Recount = Recount
+
     local Window = Recount.MainWindow
     if not Window then
         return
@@ -21,6 +25,7 @@ ns.addonlogin('Recount', function()
     })
 
     local LSM = LibStub('LibSharedMedia-3.0')
+    local L = LibStub('AceLocale-3.0'):GetLocale('Recount')
     local C = ns.profile.Watch
 
     local MinimizeFrame = CreateFrame('Frame', nil, UIParent)
@@ -29,7 +34,6 @@ ns.addonlogin('Recount', function()
         MinimizeFrame:SetPoint('CENTER')
 
         local Button = CreateFrame('Button', nil, MinimizeFrame)
-
         ns.WatchManager:Register(MinimizeFrame, 1, { --
             minimizeButton = Button,
         })
@@ -66,12 +70,40 @@ ns.addonlogin('Recount', function()
         Recount_Config_StatusBar_Scrollbar:GetParent():Hide()
         Recount_ConfigWindow_RowHeight_Slider:Hide()
         Recount_ConfigWindow_RowSpacing_Slider:Hide()
-        -- Recount_ConfigWindow.ColorOpt.Rows[1]:Hide()
+
+        local function HideColor(frame, branch, name)
+            for _, frame in ipairs{frame:GetChildren()} do
+                if frame.Rows then
+                    for _, row in pairs(frame.Rows) do
+                        if row.Branch == branch and row.Name == name then
+                            row:Hide()
+                            break
+                        end
+                    end
+                end
+            end
+        end
+
+        local function HideLabel(frame, key)
+            for _, frame in ipairs{frame:GetChildren()} do
+                if frame[key] then
+                    frame[key]:Hide()
+                    break
+                end
+            end
+        end
+
+        HideColor(Recount_ConfigWindow.ColorOpt, 'Bar', 'Bar Text')
+        HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Title')
+        HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Background')
+        HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Title Text')
+        HideLabel(Recount_ConfigWindow.ColorOpt, 'MainWindowTitle')
     end
 
     do
         local function UpdateFont(fontString)
-            fontString:origSetFont(LSM:Fetch('font', C.bar.font), C.bar.fontSize, C.bar.fontFlag)
+            fontString:origSetFont(LSM:Fetch('font', C.font.name), C.font.size, C.font.style)
+            fontString:origSetTextColor(C.font.color.r, C.font.color.g, C.font.color.b, C.font.color.a)
         end
 
         local function SetBarTexture(row, texture)
@@ -118,7 +150,7 @@ ns.addonlogin('Recount', function()
                     local class = row.TooltipData and row.TooltipData.enClass
                     if class then
                         row.icon:SetTexture([[Interface\Glues\CharacterCreate\ui-charactercreate-classes]])
-                        row.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+                        row.icon:SetTexCoord(ns.CropClassCoords(class))
                     else
                         row.icon:SetTexture([[Interface\Icons\ability_dualwield]])
                         row.icon:SetTexCoord(0, 1, 0, 1)
@@ -129,7 +161,9 @@ ns.addonlogin('Recount', function()
 
         local function HookFontString(fontString)
             fontString.origSetFont = fontString.SetFont
-            fontString.SetFont = UpdateFont
+            fontString.origSetTextColor = fontString.SetTextColor
+            fontString.SetFont = nop
+            fontString.SetTextColor = nop
             UpdateFont(fontString)
         end
 
@@ -232,7 +266,75 @@ ns.addonlogin('Recount', function()
             end
         end)
         ns.securehook(Recount, 'ResetPositionAllWindows', function()
-            ns.WatchManager:Update()
+            ns.WatchManager:Refresh()
+        end)
+
+        local DropMenu = CreateFrame('Frame', 'tdUIDropMenu', UIParent, 'UIDropDownMenuTemplate')
+        DropMenu.displayMode = 'MENU'
+        DropMenu.initialize = EasyMenu_Initialize
+
+        ns.override(Recount, 'OpenModeDropDown', function(_, frame)
+            local menu = {}
+            for k, v in pairs(Recount.MainWindowData) do
+                tinsert(menu, {
+                    text = v[1],
+                    checked = Recount.db.profile.MainWindowMode == k,
+                    func = function()
+                        Recount:SetMainWindowMode(k)
+                    end,
+                })
+            end
+
+            DropMenu.point = 'TOPRIGHT'
+            DropMenu.relativePoint = 'TOPLEFT'
+
+            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menu)
+        end)
+
+        local function SetFight(set, name)
+            Recount.db.profile.CurDataSet = set
+            Recount.MainWindow.DispTableSorted = {}
+            Recount.MainWindow.DispTableLookup = {}
+            Recount.FightName = name
+            Recount:RefreshMainWindow()
+            if RecountDeathTrack then
+                RecountDeathTrack:SetFight(Recount.db.profile.CurDataSet)
+            end
+        end
+
+        ns.override(Recount, 'OpenFightDropDown', function(_, frame)
+            local menu = {}
+
+            menu[1] = {
+                text = L['Overall Data'],
+                checked = Recount.db.profile.CurDataSet == 'OverallData',
+                func = function()
+                    SetFight('OverallData', 'Overall Data')
+                end,
+            }
+            menu[2] = {
+                text = L['Current Fight'],
+                checked = Recount.db.profile.CurDataSet == 'CurrentFightData' or Recount.db.profile.CurDataSet ==
+                    'LastFightData',
+                func = function()
+                    SetFight(Recount.InCombat and 'CurrentFightData' or 'LastFightData', 'Current Fight')
+                end,
+            }
+
+            for k, v in pairs(Recount.db2.FoughtWho) do
+                tinsert(menu, {
+                    text = L['Fight'] .. ' ' .. k .. ' - ' .. v,
+                    checked = Recount.db.profile.CurDataSet == 'Fight' .. k,
+                    func = function()
+                        SetFight('Fight' .. k, v)
+                    end,
+                })
+            end
+
+            DropMenu.point = 'TOPRIGHT'
+            DropMenu.relativePoint = 'TOPLEFT'
+
+            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menu)
         end)
 
         local function UpdateLayout()
@@ -245,12 +347,23 @@ ns.addonlogin('Recount', function()
         ns.config('Watch.bar.height', UpdateLayout)
         ns.config('Watch.bar.inlineHeight', UpdateLayout)
         ns.config('Watch.bar.spacing', UpdateLayout)
-        ns.config('Watch.bar.font', UpdateBarFont)
-        ns.config('Watch.bar.fontSize', UpdateBarFont)
-        ns.config('Watch.bar.fontFlag', UpdateBarFont)
+        ns.config('Watch.font.name', UpdateBarFont)
+        ns.config('Watch.font.size', UpdateBarFont)
+        ns.config('Watch.font.style', UpdateBarFont)
+        ns.config('Watch.font.color', UpdateBarFont)
+        ns.config('Watch.Recount.maxLines', UpdateLayout)
         ns.config('Watch.bar.texture', function()
             UpdateConfig()
             UpdateBarTexture()
         end)
+
+        ns.event('!PLAYER_STATUS_CHANGED', function(status)
+            if status == 'battleground' then
+                Window:Hide()
+            else
+            end
+        end)
+
+        UpdateLayout()
     end
 end)
