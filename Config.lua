@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 ---@class Profile
 local DEFAULT_PROFILE = {
-    Watch = { --
+    watch = { --
         frame = {width = 255},
         bar = { --
             height = 18,
@@ -19,7 +19,7 @@ local DEFAULT_PROFILE = {
         font = { --
             name = nil,
             size = 13,
-            style = 'NONE',
+            style = '',
             color = {r = 1, g = 1, b = 1, a = 0.8},
         },
         Recount = {maxLines = 10},

@@ -35,4 +35,6 @@
     <Script file="Watch\Recount.lua" />
     <Script file="Watch\ThreatClassic2.lua" />
     <Script file="Watch\MonkeyQuest.lua" />
+
+    <Script file="Bug\ItemRack.lua" />
 </Ui>

@@ -19,6 +19,8 @@ MinimapBorder:SetPoint('CENTER', Minimap, 'CENTER', 0, 14)
 MinimapBorder:SetTexture([[Interface\AddOns\tdUI\Media\minimap.tga]])
 MinimapBorder:SetTexCoord(0, 1, 0, 1)
 
+MinimapCompassTexture:SetScale(0.7)
+
 MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 
 MinimapZoneTextButton:SetWidth(155)

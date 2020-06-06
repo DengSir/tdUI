@@ -26,7 +26,7 @@ ns.addonlogin('Recount', function()
 
     local LSM = LibStub('LibSharedMedia-3.0')
     local L = LibStub('AceLocale-3.0'):GetLocale('Recount')
-    local C = ns.profile.Watch
+    local C = ns.profile.watch
 
     local MinimizeFrame = CreateFrame('Frame', nil, UIParent)
     do
@@ -343,27 +343,31 @@ ns.addonlogin('Recount', function()
             UpdateWindowSize()
         end
 
-        ns.config('Watch.frame.width', UpdateLayout)
-        ns.config('Watch.bar.height', UpdateLayout)
-        ns.config('Watch.bar.inlineHeight', UpdateLayout)
-        ns.config('Watch.bar.spacing', UpdateLayout)
-        ns.config('Watch.font.name', UpdateBarFont)
-        ns.config('Watch.font.size', UpdateBarFont)
-        ns.config('Watch.font.style', UpdateBarFont)
-        ns.config('Watch.font.color', UpdateBarFont)
-        ns.config('Watch.Recount.maxLines', UpdateLayout)
-        ns.config('Watch.bar.texture', function()
+        local function CheckStatus(status)
+            if status == 'battleground' then
+                Window:Hide()
+            elseif status == 'solo' then
+                Window:Hide()
+            end
+        end
+
+        ns.config('watch.frame.width', UpdateLayout)
+        ns.config('watch.bar.height', UpdateLayout)
+        ns.config('watch.bar.inlineHeight', UpdateLayout)
+        ns.config('watch.bar.spacing', UpdateLayout)
+        ns.config('watch.font.name', UpdateBarFont)
+        ns.config('watch.font.size', UpdateBarFont)
+        ns.config('watch.font.style', UpdateBarFont)
+        ns.config('watch.font.color', UpdateBarFont)
+        ns.config('watch.Recount.maxLines', UpdateLayout)
+        ns.config('watch.bar.texture', function()
             UpdateConfig()
             UpdateBarTexture()
         end)
 
-        ns.event('!PLAYER_STATUS_CHANGED', function(status)
-            if status == 'battleground' then
-                Window:Hide()
-            else
-            end
-        end)
+        ns.event('!PLAYER_STATUS_CHANGED', CheckStatus)
 
-        UpdateLayout()
+        -- CheckStatus(ns.GetPlayerStatus())
+        -- UpdateLayout()
     end
 end)

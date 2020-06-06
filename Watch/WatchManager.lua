@@ -94,7 +94,7 @@ function WatchManager:SetupHeaderFrame(frame, header)
     local bg = header:CreateTexture(nil, 'BACKGROUND')
     bg:SetAtlas('Objective-Header', true)
     bg:SetPoint('LEFT', -25, -16)
-    bg:SetWidth(ns.profile.Watch.frame.width + 40)
+    bg:SetWidth(ns.profile.watch.frame.width + 40)
 
     env.titleBg = bg
 end
@@ -130,8 +130,8 @@ function WatchManager:SetupMinimizeButton(frame, button)
     button.SetHeight = nop
 end
 
-ns.config('Watch.frame.width', function()
-    local width = ns.profile.Watch.frame.width + 40
+ns.config('watch.frame.width', function()
+    local width = ns.profile.watch.frame.width + 40
     for _, frame in ipairs(WatchManager.frames) do
         local env = WatchManager.env[frame]
         if env.titleBg then
@@ -141,6 +141,10 @@ ns.config('Watch.frame.width', function()
 end)
 
 local PLAYER_STATUS
+
+function ns.GetPlayerStatus()
+    return PLAYER_STATUS
+end
 
 local function SaveStatus(status)
     if status ~= PLAYER_STATUS then

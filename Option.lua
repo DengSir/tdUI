@@ -100,7 +100,7 @@ ns.login(function()
             end
         end,
         args = {
-            Watch = treeItem('Watch', {
+            watch = treeItem('watch', {
                 frame = inline('Frame', {width = range('Width', 100, 500, 1)}),
                 bar = inline('Bar', {
                     height = range('Height', 1, 64, 1),

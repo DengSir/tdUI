@@ -46,7 +46,7 @@ ns.addonlogin('ThreatClassic2', function()
 
     local LSM = LibStub('LibSharedMedia-3.0')
     local TCC = db.profile
-    local C = ns.profile.Watch
+    local C = ns.profile.watch
 
     ns.WatchManager:Register(Window, 3, { --
         header = Window.header,
@@ -270,16 +270,16 @@ ns.addonlogin('ThreatClassic2', function()
         UpdateFrame()
     end)
 
-    ns.config('Watch.frame.width', UpdateFrame)
-    ns.config('Watch.bar.height', UpdateFrame)
-    ns.config('Watch.bar.inlineHeight', UpdateFrame)
-    ns.config('Watch.bar.spacing', UpdateFrame)
-    ns.config('Watch.font.name', UpdateFrame)
-    ns.config('Watch.font.size', UpdateFrame)
-    ns.config('Watch.font.style', UpdateFrame)
-    ns.config('Watch.font.color', UpdateFrame)
-    ns.config('Watch.bar.texture', UpdateFrame)
-    ns.config('Watch.ThreatClassic2.maxLines', UpdateFrame)
+    ns.config('watch.frame.width', UpdateFrame)
+    ns.config('watch.bar.height', UpdateFrame)
+    ns.config('watch.bar.inlineHeight', UpdateFrame)
+    ns.config('watch.bar.spacing', UpdateFrame)
+    ns.config('watch.font.name', UpdateFrame)
+    ns.config('watch.font.size', UpdateFrame)
+    ns.config('watch.font.style', UpdateFrame)
+    ns.config('watch.font.color', UpdateFrame)
+    ns.config('watch.bar.texture', UpdateFrame)
+    ns.config('watch.ThreatClassic2.maxLines', UpdateFrame)
 
     UpdateFrame()
 end)

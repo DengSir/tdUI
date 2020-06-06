@@ -25,21 +25,15 @@ ns.addonlogin('MonkeyQuest', function()
 
     -- MONKEYQUEST_TITLE = QUESTS_LABEL
 
-    MonkeyQuestOptions = nop
-
     ---- local
     local nop = nop
 
     local Window = MonkeyQuestFrame
     local TitleButton = MonkeyQuestTitleButton
-    local MonkeyQuestCloseButton = MonkeyQuestCloseButton
-    local MonkeyQuestMinimizeButton = MonkeyQuestMinimizeButton
-    local MonkeyQuestShowHiddenCheckButton = MonkeyQuestShowHiddenCheckButton
-
-    local MonkeyQuestButton1 = MonkeyQuestButton1
+    local MinimizeButton = MonkeyQuestMinimizeButton
 
     ns.WatchManager:Register(MonkeyQuestFrame, 4, { --
-        minimizeButton = MonkeyQuestMinimizeButton,
+        minimizeButton = MinimizeButton,
         header = TitleButton,
     })
 
@@ -70,11 +64,11 @@ ns.addonlogin('MonkeyQuest', function()
     end
 
     do -- minimize button
-        local MinimizeLabel = MonkeyQuestMinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-        MinimizeLabel:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT', -5, 0)
+        local MinimizeLabel = MinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+        MinimizeLabel:SetPoint('RIGHT', MinimizeButton, 'LEFT', -5, 0)
         MinimizeLabel:SetText(QUESTS_LABEL)
 
-        function MonkeyQuestMinimizeButton:Update()
+        function MinimizeButton:Update()
             if MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized then
                 self:Fold()
                 TitleButton:Hide()
@@ -86,22 +80,23 @@ ns.addonlogin('MonkeyQuest', function()
             end
         end
 
-        MonkeyQuestMinimizeButton:HookScript('OnClick', MonkeyQuestMinimizeButton.Update)
+        MinimizeButton:HookScript('OnClick', MinimizeButton.Update)
     end
 
-    ns.securehook('MonkeyQuest_Resize', function()
-        ns.WatchManager:Refresh()
-    end)
+    local function Hide()
+        MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized = true
+        MinimizeButton:Update()
+        MonkeyQuest_Refresh()
+    end
 
-    ns.securehook('MonkeyQuestInit_LoadConfig', function()
+    local function Apply()
+        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = ns.profile.watch.frame.width
+        MonkeyQuestInit_ApplySettings()
+    end
+
+    local function Reset()
         local db = MonkeyQuestConfig[MonkeyQuest.m_global]
-        if db.__tdloaded then
-            return
-        end
-
-        db.__tdloaded = true
-
-        local CONFIG = {
+        local defaults = {
             m_bAllowRightClick = false,
             m_bAlwaysHeaders = true,
             m_bColourDoneOrFailed = false,
@@ -139,13 +134,37 @@ ns.addonlogin('MonkeyQuest', function()
             m_iQuestPadding = 0,
         }
 
-        for k, v in pairs(CONFIG) do
+        for k, v in pairs(defaults) do
             db[k] = v
+        end
+    end
+
+    local function CheckStatus(status)
+        print(status)
+        if status == 'raid' then
+            Hide()
+        end
+    end
+
+    ns.securehook('MonkeyQuest_Resize', function()
+        ns.WatchManager:Refresh()
+    end)
+
+    ns.override('MonkeyQuestInit_ResetConfig', function()
+        Reset()
+        Apply()
+    end)
+
+    ns.securehook('MonkeyQuestInit_LoadConfig', function()
+        local db = MonkeyQuestConfig[MonkeyQuest.m_global]
+        if not db._tdui then
+            db._tdui = true
+            Reset()
         end
     end)
 
     ns.securehook('MonkeyQuestInit_ApplySettings', function()
-        MonkeyQuestMinimizeButton:Update()
+        MinimizeButton:Update()
     end)
 
     ns.securehook('MonkeyQuest_OnEvent', function(_, event)
@@ -161,13 +180,11 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end)
 
-    local function ApplyOptions()
-        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = ns.profile.Watch.frame.width
-        MonkeyQuestInit_ApplySettings()
-    end
+    ns.config('watch.frame.width', Apply)
 
-    ns.config({'Watch', 'frame', 'width'}, ApplyOptions)
+    -- ns.event('!PLAYER_STATUS_CHANGED', CheckStatus)
+    -- CheckStatus(ns.GetPlayerStatus())
 
     MonkeyQuestInit_LoadConfig()
-    ApplyOptions()
+    Apply()
 end)
