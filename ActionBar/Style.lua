@@ -41,4 +41,4 @@ end
 ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
 ns.event('ACTIONBAR_HIDEGRID', HideGrid)
 ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
-ns.login(HideGrid)
+ns.load(HideGrid)

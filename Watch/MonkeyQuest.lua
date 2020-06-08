@@ -139,13 +139,6 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end
 
-    local function CheckStatus(status)
-        print(status)
-        if status == 'raid' then
-            Hide()
-        end
-    end
-
     ns.securehook('MonkeyQuest_Resize', function()
         ns.WatchManager:Refresh()
     end)
@@ -182,9 +175,8 @@ ns.addonlogin('MonkeyQuest', function()
 
     ns.config('watch.frame.width', Apply)
 
-    -- ns.event('!PLAYER_STATUS_CHANGED', CheckStatus)
-    -- CheckStatus(ns.GetPlayerStatus())
-
-    MonkeyQuestInit_LoadConfig()
-    Apply()
+    ns.load(function()
+        MonkeyQuestInit_LoadConfig()
+        Apply()
+    end)
 end)

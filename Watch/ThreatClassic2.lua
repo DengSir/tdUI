@@ -281,5 +281,5 @@ ns.addonlogin('ThreatClassic2', function()
     ns.config('watch.bar.texture', UpdateFrame)
     ns.config('watch.ThreatClassic2.maxLines', UpdateFrame)
 
-    UpdateFrame()
+    ns.load(UpdateFrame)
 end)

@@ -9,7 +9,6 @@
     <Script file="Option.lua" />
 
     <Script file="Aura.lua" />
-    <Script file="Friends.lua" />
     <Script file="Channel.lua" />
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
@@ -34,6 +33,10 @@
     <Script file="Map\MBB.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
+
+    <Script file="Friend\Friends.lua" />
+    <Script file="Friend\Who.lua" />
+    <Script file="Friend\Guild.lua" />
 
     <Script file="Watch\WatchManager.lua" />
     <Script file="Watch\Recount.lua" />
