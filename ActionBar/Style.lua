@@ -7,14 +7,6 @@
 local ns = select(2, ...)
 
 local ipairs, pairs = ipairs, pairs
-local hooksecurefunc = hooksecurefunc
-
-local GetActionCount = GetActionCount
-local IsConsumableAction = IsConsumableAction
-local IsItemAction = IsItemAction
-local IsStackableAction = IsStackableAction
-
-local LibClassicSpellActionCount = LibStub('LibClassicSpellActionCount-1.0')
 
 local buttons = ActionBarButtonEventsFrame.frames
 
@@ -46,19 +38,7 @@ local function HideGrid()
     end
 end
 
-HideGrid()
-
 ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
 ns.event('ACTIONBAR_HIDEGRID', HideGrid)
 ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
-ns.securehook('ActionButton_UpdateCount', function(button)
-    local action = button.action
-    if not IsItemAction(action) and (IsConsumableAction(action) or IsStackableAction(action)) then
-        local count = LibClassicSpellActionCount:GetActionCount(action)
-        if count > (button.maxDisplayCount or 9999) then
-            button.Count:SetText('*')
-        else
-            button.Count:SetText(count)
-        end
-    end
-end)
+ns.login(HideGrid)

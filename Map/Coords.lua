@@ -50,4 +50,4 @@ end
 ns.event('ZONE_CHANGED', UpdateCoords)
 ns.event('ZONE_CHANGED_INDOORS', UpdateCoords)
 ns.event('ZONE_CHANGED_NEW_AREA', UpdateCoords)
-ns.repeater(0.2, UpdateCoords)
+ns.timer(0.2, UpdateCoords)

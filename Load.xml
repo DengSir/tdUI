@@ -1,7 +1,10 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Include file="Libs\Libs.xml" />
+
+    <Script file="Lib.lua" />
     <Script file="Api.lua" />
+
     <Script file="Config.lua" />
     <Script file="Option.lua" />
 
@@ -13,7 +16,8 @@
     <Script file="CVars.lua" />
     <Script file="Emu.lua" />
 
-    <Script file="ActionBar\ActionBar.lua" />
+    <Script file="ActionBar\Style.lua" />
+    <Script file="ActionBar\Count.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />

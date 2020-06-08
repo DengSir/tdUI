@@ -273,26 +273,36 @@ ns.addonlogin('Recount', function()
         DropMenu.displayMode = 'MENU'
         DropMenu.initialize = EasyMenu_Initialize
 
-        local function OpenMenu(frame, menuList)
-            DropMenu.point = 'TOPRIGHT'
-            DropMenu.relativePoint = 'TOPLEFT'
-            ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menuList)
+        local function OpenMenu(frame, menuList, point, relativePoint)
+            local isOpened = DropDownList1:IsShown() and DropMenu.relativeTo == frame
+            CloseDropDownMenus()
+
+            if not isOpened then
+                DropMenu.point = point or 'TOPRIGHT'
+                DropMenu.relativePoint = relativePoint or 'TOPLEFT'
+                DropMenu.relativeTo = frame
+
+                if type(menuList) == 'function' then
+                    DropMenu.initialize = menuList
+                    ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0)
+                else
+                    DropMenu.initialize = EasyMenu_Initialize
+                    ToggleDropDownMenu(1, nil, DropMenu, frame, 0, 0, menuList)
+                end
+            end
         end
 
-        ns.override(Recount, 'OpenModeDropDown', function(_, frame)
-            local menu = {}
+        local function CreateModeDropDown()
             for k, v in pairs(Recount.MainWindowData) do
-                tinsert(menu, {
+                UIDropDownMenu_AddButton{
                     text = v[1],
                     checked = Recount.db.profile.MainWindowMode == k,
                     func = function()
                         Recount:SetMainWindowMode(k)
                     end,
-                })
+                }
             end
-
-            OpenMenu(frame, menu)
-        end)
+        end
 
         local function SetFight(set, name)
             Recount.db.profile.CurDataSet = set
@@ -305,18 +315,18 @@ ns.addonlogin('Recount', function()
             end
         end
 
-        ns.override(Recount, 'OpenFightDropDown', function(_, frame)
-            local menu = {}
+        local function CreateFightDropDown()
             local current = Recount.db.profile.CurDataSet
 
-            menu[1] = {
+            UIDropDownMenu_AddButton{
                 text = L['Overall Data'],
                 checked = current == 'OverallData',
                 func = function()
                     SetFight('OverallData', 'Overall Data')
                 end,
             }
-            menu[2] = {
+
+            UIDropDownMenu_AddButton{
                 text = L['Current Fight'],
                 checked = current == 'CurrentFightData' or current == 'LastFightData',
                 func = function()
@@ -325,16 +335,26 @@ ns.addonlogin('Recount', function()
             }
 
             for k, v in pairs(Recount.db2.FoughtWho) do
-                tinsert(menu, {
+                UIDropDownMenu_AddButton{
                     text = L['Fight'] .. ' ' .. k .. ' - ' .. v,
                     checked = current == 'Fight' .. k,
                     func = function()
                         SetFight('Fight' .. k, v)
                     end,
-                })
+                }
             end
+        end
 
-            OpenMenu(frame, menu)
+        ns.override(Recount, 'OpenBarDropDown', function(_, frame)
+            return OpenMenu(frame, Recount.CreateBarDropdown)
+        end)
+
+        ns.override(Recount, 'OpenModeDropDown', function(_, frame)
+            return OpenMenu(frame, CreateModeDropDown)
+        end)
+
+        ns.override(Recount, 'OpenFightDropDown', function(_, frame)
+            return OpenMenu(frame, CreateFightDropDown)
         end)
 
         local function UpdateLayout()
