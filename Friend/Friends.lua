@@ -71,8 +71,10 @@ local function GetBNFriendInfo(id)
     end
 
     local classFileName = CLASS_FILENAMES[class]
+    local isSameRealm = realmId and realmId == GetRealmID()
+    local isSameFaction = faction == UnitFactionGroup('player')
 
-    return accountName, characterName, class, classFileName, level, race
+    return accountName, characterName, class, classFileName, level, race, isSameRealm, isSameFaction
 end
 
 ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
@@ -87,8 +89,9 @@ ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
                                   ColorStr(info.className, r, g, b))
         end
     elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
-        local accountName, characterName, class, classFileName, level, race = GetBNFriendInfo(button.id)
-        if accountName then
+        local accountName, characterName, class, classFileName, level, race, isSameRealm, isSameFaction =
+            GetBNFriendInfo(button.id)
+        if accountName and isSameRealm and isSameFaction then
             nameText = format('%s %s', accountName, ColorStr('(' .. characterName .. ')', GetClassColor(classFileName)))
         end
     end

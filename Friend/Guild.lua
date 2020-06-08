@@ -19,6 +19,18 @@ local FriendsFrame = FriendsFrame
 local Members = ns.GetButtons('GuildFrameButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Class', 'Level', 'Zone')
 local Status = ns.GetButtons('GuildFrameGuildStatusButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Rank')
 
+do
+    local WIDTH = 8
+
+    for _, button in ipairs(Members) do
+        button.Name:SetWidth(button.Name:GetWidth() + WIDTH)
+        button.Class:SetWidth(button.Class:GetWidth() - WIDTH)
+    end
+
+    WhoFrameColumn_SetWidth(GuildFrameColumnHeader1, GuildFrameColumnHeader1:GetWidth() + WIDTH)
+    WhoFrameColumn_SetWidth(GuildFrameColumnHeader4, GuildFrameColumnHeader4:GetWidth() - WIDTH)
+end
+
 local function GetRankColor(rank)
     local max = GuildControlGetNumRanks()
     local value = rank / max
@@ -47,7 +59,6 @@ ns.securehook('GuildStatus_Update', function()
                 ns.SetTextColor(button.Name, r, g, b)
                 ns.SetTextColor(button.Class, r, g, b)
                 ns.SetTextColor(button.Level, GetQuestDifficultyColor(level))
-                button.Class:SetText('法师法师')
 
                 if zone == myZone then
                     ns.SetTextColor(button.Zone, 0, 1, 0)

@@ -13,7 +13,7 @@ end
 
 local function JoinChannel(name)
     local timer
-    timer = C_Timer.NewTicker(1, function()
+    timer = ns.timer(1, function()
         local id = GetChannelId(name)
         if not id then
             JoinChannelByName(name)
