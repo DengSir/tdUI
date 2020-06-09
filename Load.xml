@@ -4,6 +4,7 @@
 
     <Script file="Lib.lua" />
     <Script file="Api.lua" />
+    <Script file="DropDown.lua" />
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />

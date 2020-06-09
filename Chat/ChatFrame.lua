@@ -63,11 +63,20 @@ local function OnHyperlinkLeave(self)
     GameTooltip:Hide()
 end
 
+local function OnDropDown(dropdown, level)
+    if level == 1 then
+        local chatFrame = FCF_GetCurrentChatFrame(dropdown)
+        ns.InsertDropdownAfter(1, BACKGROUND, CLEAR_ALL, chatFrame.Clear, chatFrame)
+    end
+end
+
 local function InitChatFrame(self)
     self:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
     self:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
     self.UpdateTooltip = UpdateTooltip
     self.editBox:SetAltArrowKeyMode(false)
+
+    ns.securehook(_G[self:GetName() .. 'TabDropDown'], 'initialize', OnDropDown)
 end
 
 for _, name in ipairs(CHAT_FRAMES) do
@@ -76,13 +85,24 @@ end
 
 ns.securehook('FloatingChatFrame_OnLoad', InitChatFrame)
 
----- tabs size
-ns.securehook('FCFDock_UpdateTabs', function(dock)
-    for index, chatFrame in ipairs(dock.DOCKED_CHAT_FRAMES) do
-        if not chatFrame.isStaticDocked then
-            local chatTab = _G[chatFrame:GetName() .. 'Tab']
-            PanelTemplates_TabResize(chatTab, chatTab.sizePadding or 0)
+---- chat tab size
+ns.securehook('FCFDock_UpdateTabs', function(dock, force)
+    local dynTabSize, hasOverflow = FCFDock_CalculateTabSize(dock, dock.scrollFrame.numDynFrames)
+    if not hasOverflow then
+        for index, chatFrame in ipairs(dock.DOCKED_CHAT_FRAMES) do
+            if not chatFrame.isStaticDocked then
+                local chatTab = _G[chatFrame:GetName() .. 'Tab']
+                local padding = chatTab.sizePadding or 0
+                PanelTemplates_TabResize(chatTab, padding, nil, nil, dynTabSize - 28)
+            end
         end
+    end
+end)
+
+---- fix call in every flash
+ns.securehook('FCFDock_OnUpdate', function(dock)
+    if not dock.isDirty then
+        dock:SetScript('OnUpdate', nil)
     end
 end)
 
