@@ -363,14 +363,6 @@ ns.addonlogin('Recount', function()
             UpdateWindowSize()
         end
 
-        local function CheckStatus(status)
-            if status == 'battleground' then
-                Window:Hide()
-            elseif status == 'solo' then
-                Window:Hide()
-            end
-        end
-
         ns.config('watch.frame.width', UpdateLayout)
         ns.config('watch.bar.height', UpdateLayout)
         ns.config('watch.bar.inlineHeight', UpdateLayout)
@@ -384,10 +376,5 @@ ns.addonlogin('Recount', function()
             UpdateConfig()
             UpdateBarTexture()
         end)
-
-        ns.event('!PLAYER_STATUS_CHANGED', CheckStatus)
-
-        -- CheckStatus(ns.GetPlayerStatus())
-        -- UpdateLayout()
     end
 end)
