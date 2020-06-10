@@ -13,13 +13,13 @@ local DEFAULT_PROFILE = {
         bar = { --
             height = 18,
             spacing = 2,
-            texture = 'BantoBar',
-            inlineHeight = 18,
+            texture = 'Blizzard',
+            inlineHeight = 8,
         },
         font = { --
             name = nil,
             size = 13,
-            style = '',
+            style = 'OUTLINE',
             color = {r = 1, g = 1, b = 1, a = 0.8},
         },
         Recount = {maxLines = 10},

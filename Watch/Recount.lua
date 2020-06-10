@@ -63,6 +63,8 @@ ns.addonlogin('Recount', function()
 
     do -- options
         Recount.db.profile.Font = nil
+        Recount.db.profile.MainWindow.ShowScrollbar = false
+        Recount:HideScrollbarElements('Recount_MainWindow_ScrollBar')
     end
 
     do -- remove options
@@ -84,7 +86,7 @@ ns.addonlogin('Recount', function()
             end
         end
 
-        local function HideLabel(frame, key)
+        local function HideChild(frame, key)
             for _, frame in ipairs{frame:GetChildren()} do
                 if frame[key] then
                     frame[key]:Hide()
@@ -97,7 +99,9 @@ ns.addonlogin('Recount', function()
         HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Title')
         HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Background')
         HideColor(Recount_ConfigWindow.ColorOpt, 'Window', 'Title Text')
-        HideLabel(Recount_ConfigWindow.ColorOpt, 'MainWindowTitle')
+
+        HideChild(Recount_ConfigWindow.ColorOpt, 'MainWindowTitle')
+        HideChild(Recount_ConfigWindow.Appearance, 'BarTextColorSwap')
     end
 
     do
@@ -376,5 +380,7 @@ ns.addonlogin('Recount', function()
             UpdateConfig()
             UpdateBarTexture()
         end)
+
+        UpdateLayout()
     end
 end)

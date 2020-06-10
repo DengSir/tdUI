@@ -175,7 +175,7 @@ ns.addonlogin('MonkeyQuest', function()
 
     ns.config('watch.frame.width', Apply)
 
-    ns.load(function()
+    ns.login(function()
         MonkeyQuestInit_LoadConfig()
         Apply()
     end)

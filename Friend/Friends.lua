@@ -37,6 +37,7 @@ local RED_FONT_COLOR = RED_FONT_COLOR
 local WOW = FRIENDS_BUTTON_TYPE_WOW
 local BNET = FRIENDS_BUTTON_TYPE_BNET
 local BNET_CLIENT_WOW = BNET_CLIENT_WOW
+local WOW_PROJECT_ID = WOW_PROJECT_ID
 
 local TOOLTIP_MAX_WIDTH = FRIENDS_TOOLTIP_MAX_WIDTH
 local TOOLTIP_MARGIN_WIDTH = FRIENDS_TOOLTIP_MARGIN_WIDTH
@@ -69,11 +70,12 @@ end
 
 local function GetFriendInfo(type, index)
     ---@type tdUIFriendInfo
-    local info, _
+    local info
     if type == WOW then
         info = GetFriendInfoByIndex(index)
         info.isSameFaction = true
         info.isSameRealm = true
+        info.isSameProject = true
 
         if info.connected then
             info.class = info.className
@@ -87,7 +89,8 @@ local function GetFriendInfo(type, index)
 
         local _, accountName, _, _, _, bnetIdGameAccount, client, connected = BNGetFriendInfo(index)
         if connected and accountName and client == BNET_CLIENT_WOW then
-            local _, name, _, _, realmId, faction, race, class, _, _, level = BNGetGameAccountInfo(bnetIdGameAccount)
+            local _, name, _, _, realmId, faction, race, class, _, _, level, _, _, _, _, _, _, _, _, _, wowProjectId =
+                BNGetGameAccountInfo(bnetIdGameAccount)
 
             if class then
                 info.isBNet = true
@@ -99,6 +102,7 @@ local function GetFriendInfo(type, index)
                 info.level = level
                 info.classFileName = CLASS_FILENAMES[class]
 
+                info.isSameProject = wowProjectId == WOW_PROJECT_ID
                 info.isSameRealm = realmId and realmId == GetRealmID()
                 info.isSameFaction = faction == UnitFactionGroup('player')
             end
@@ -111,6 +115,9 @@ local function SetCharacterLine(text, ...)
     if select('#', ...) > 0 then
         text = format(text, ...)
     end
+
+    FriendsTooltip.height = FriendsTooltip.height - FriendsTooltipGameAccount1Name:GetHeight()
+
     return FriendsFrameTooltip_SetLine(FriendsTooltipGameAccount1Name, nil, text)
 end
 
@@ -125,10 +132,14 @@ ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
         local level = ColorStr(info.level, GetQuestDifficultyColor(info.level))
 
         if info.isBNet then
-            button.name:SetFormattedText(BNET_NAME_TEMPLATE, info.accountName, name, level)
+            if info.isSameProject then
+                button.name:SetFormattedText(BNET_NAME_TEMPLATE, info.accountName, name, level)
+                button.name:SetTextColor(FRIENDS_GRAY_COLOR:GetRGB())
+            end
         else
             local class = ColorStr(info.class, r, g, b)
             button.name:SetFormattedText(WOW_NAME_TEMPLATE, name, level, class)
+            button.name:SetTextColor(FRIENDS_GRAY_COLOR:GetRGB())
 
             button.classIcon:SetTexCoord(ns.CropClassCoords(info.classFileName))
             button.classIcon:Show()
@@ -137,7 +148,6 @@ ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
             button.inviteButton.target = info.name
             button.inviteButton:Show()
         end
-        button.name:SetTextColor(FRIENDS_GRAY_COLOR:GetRGB())
     else
         if info.class then
             button.info:SetText(info.class)
@@ -145,8 +155,9 @@ ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
     end
 end)
 
-local function UpdateTooltipWidth()
-    return FriendsTooltip:SetWidth(min(TOOLTIP_MAX_WIDTH, FriendsTooltip.maxWidth + TOOLTIP_MARGIN_WIDTH))
+local function UpdateTooltipSize()
+    FriendsTooltip:SetWidth(min(TOOLTIP_MAX_WIDTH, FriendsTooltip.maxWidth + TOOLTIP_MARGIN_WIDTH))
+    FriendsTooltip:SetHeight(FriendsTooltip.height + TOOLTIP_MARGIN_WIDTH)
 end
 
 local function FriendsFrameTooltip_Show(button)
@@ -162,7 +173,7 @@ local function FriendsFrameTooltip_Show(button)
         else
             SetCharacterLine(TOOLTIP_WOW_CHARACTER_TEMPLATE, level, race, class)
         end
-        UpdateTooltipWidth()
+        UpdateTooltipSize()
     end
 end
 
