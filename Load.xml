@@ -19,12 +19,15 @@
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
+    <Script file="ActionBar\TradeSkill.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
+    <Script file="PaperDoll\Inspect.lua" />
 
     <Script file="Chat\ChatFrame.lua" />
     <Script file="Chat\Link.lua" />
     <Script file="Chat\Tab.lua" />
+    <Script file="Chat\ShortChannel.lua" />
 
     <Script file="Quest\Vendo.lua" />
 

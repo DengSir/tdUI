@@ -42,6 +42,15 @@ local function call(t, k, ...)
     end
 end
 
+local function pack(...)
+    local args = {...}
+    local argCount = select('#', ...)
+
+    return function()
+        return unpack(args, 1, argCount)
+    end
+end
+
 local function register(event)
     if event:sub(1, 1) ~= '!' then
         events:RegisterEvent(event)
@@ -70,6 +79,7 @@ events:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
+ns.pack = pack
 ns.after = After
 ns.timer = NewTicker
 
@@ -113,7 +123,7 @@ function ns.login(func)
     return ns.onceeventspawn('PLAYER_LOGIN', func)
 end
 
-function ns.addon(addon, func)
+local function addon(addon, func)
     assert(type(func) == 'function')
     if select(5, GetAddOnInfo(addon)) == 'MISSING' then
         return
@@ -127,23 +137,54 @@ function ns.addon(addon, func)
     end
 end
 
-function ns.load(func)
-    return ns.addon(ADDON, func)
+local function multiaddon(...)
+    local n = select('#', ...)
+    assert(type(select(n, ...)) == 'function')
+
+    local func = select(n, ...)
+    local addons = {...}
+    addons[n] = nil
+
+    local function wait()
+        local one = tremove(addons)
+        if one then
+            addon(one, wait)
+        else
+            func()
+        end
+    end
+    wait()
 end
 
-function ns.addonlogin(addon, func)
+function ns.addon(...)
+    local n = select('#', ...)
+    if n == 2 then
+        return addon(...)
+    elseif n > 2 then
+        return multiaddon(...)
+    else
+        assert(false)
+    end
+end
+
+function ns.load(func)
+    return addon(ADDON, func)
+end
+
+function ns.addonlogin(...)
+    local p = pack(...)
+
     return ns.login(function()
-        return ns.addon(addon, func)
+        return ns.addon(p())
     end)
 end
 
 function ns.delayed(n, func)
     return function(...)
-        local args = {...}
-        local argCount = select('#', ...)
+        local p = pack(...)
 
         return After(n, function()
-            return func(unpack(args, 1, argCount))
+            return func(p())
         end)
     end
 end

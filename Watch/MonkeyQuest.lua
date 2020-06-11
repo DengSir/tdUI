@@ -139,6 +139,17 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end
 
+    local function Update()
+        local shouldShow = GetNumQuestLogEntries() > 0
+        if shouldShow ~= Window:IsShown() then
+            Window:SetShown(shouldShow)
+
+            if shouldShow then
+                MonkeyQuest_Refresh()
+            end
+        end
+    end
+
     ns.securehook('MonkeyQuest_Resize', function()
         ns.WatchManager:Refresh()
     end)
@@ -160,23 +171,12 @@ ns.addonlogin('MonkeyQuest', function()
         MinimizeButton:Update()
     end)
 
-    ns.securehook('MonkeyQuest_OnEvent', function(_, event)
-        if event == 'QUEST_LOG_UPDATE' then
-            local shouldShow = GetNumQuestLogEntries() > 0
-            if shouldShow ~= Window:IsShown() then
-                Window:SetShown(shouldShow)
-
-                if shouldShow then
-                    MonkeyQuest_Refresh()
-                end
-            end
-        end
-    end)
-
+    ns.event('QUEST_LOG_UPDATE', Update)
     ns.config('watch.frame.width', Apply)
 
     ns.login(function()
         MonkeyQuestInit_LoadConfig()
         Apply()
+        Update()
     end)
 end)
