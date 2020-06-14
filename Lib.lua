@@ -268,3 +268,11 @@ function ns.config(paths, ...)
         end
     end
 end
+
+local Runner = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
+Runner:SetAttribute('_onattributechanged', [[if name == 'run' then self:GetFrameRef('handle'):RunAttribute(value) end]])
+
+function ns.runattribute(handle, attr)
+    Runner:SetFrameRef('handle', handle)
+    Runner:SetAttribute('run', attr)
+end

@@ -20,6 +20,7 @@
     <Script file="ActionBar\Count.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
     <Script file="ActionBar\TradeSkill.lua" />
+    <Script file="ActionBar\Retail.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
