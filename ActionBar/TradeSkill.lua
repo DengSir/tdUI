@@ -11,12 +11,20 @@ local LibRecipes = LibStub('LibRecipes-1.0')
 local GetActionInfo = GetActionInfo
 local GetItemIcon = GetItemIcon
 
-ns.securehook('ActionButton_Update', function(button)
+local function UpdateActionIcon(button)
     local type, id = GetActionInfo(button.action)
     if type == 'spell' then
         local _, itemId = LibRecipes:GetSpellInfo(id)
         if itemId then
             button.icon:SetTexture(GetItemIcon(itemId))
         end
+    end
+end
+
+ns.securehook('ActionButton_Update', UpdateActionIcon)
+
+ns.securehook('ActionButton_OnEvent', function(button, event, ...)
+    if event == 'UPDATE_SHAPESHIFT_FORM' or event == 'UPDATE_SUMMONPETS_ACTION' then
+        UpdateActionIcon(button)
     end
 end)

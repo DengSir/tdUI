@@ -337,17 +337,19 @@ KeyRingButton:SetSize(14, 30)
 
 MainMenuBarPerformanceBar:ClearAllPoints()
 MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
-MainMenuBarPerformanceBar:SetSize((20 - 11) * 29 / 32, (41 - 37) * 58 / 64)
+MainMenuBarPerformanceBar:SetSize((21 - 11) * 29 / 32, (42 - 37) * 58 / 64)
 MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
-MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\White8x8]])
-
+MainMenuBarPerformanceBar:SetTexture([[Interface\BUTTONS\white8x8]])
+MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
         MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 10 * 29 / 32, -39 * 58 / 64)
+        MainMenuBarPerformanceBar:SetAlpha(0.4)
     else
         MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 11 * 29 / 32, -37 * 58 / 64)
+        MainMenuBarPerformanceBar:SetAlpha(0.6)
     end
 end
 
@@ -445,7 +447,9 @@ function ns.CreateMicroButton(after, text, keybinding, frame)
     end
 
     button:SetPoint('BOTTOMLEFT', anchorTo, 'BOTTOMRIGHT', -3, 0)
-    buttons[index + 1]:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT', -3, 0)
+    if buttons[index + 1] then
+        buttons[index + 1]:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT', -3, 0)
+    end
 
     if frame then
         frame:HookScript('OnShow', function()

@@ -27,16 +27,6 @@ ns.addon('MBB', function()
         tip:SetPoint(getAnchors(owner))
     end
 
-    local function OnEnter(button, ...)
-        ns.hook(GameTooltip, 'SetOwner', SetOwner)
-        button.oenter(button, ...)
-        GameTooltip.SetOwner = nil
-
-        if (not MBB_IsInArray(MBB_Exclude, name)) then
-            MBB_ShowTimeout = -1
-        end
-    end
-
     ns.hook('MBB_PrepareButton', function(orig, name)
         local button = _G[name]
 
@@ -44,8 +34,11 @@ ns.addon('MBB', function()
         orig(name)
         button.RegisterForClicks = nil
 
-        if button.oenter then
-            button:SetScript('OnEnter', OnEnter)
-        end
+        local onenter = button:GetScript('OnEnter')
+        button:SetScript('OnEnter', function(button, ...)
+            ns.hook(GameTooltip, 'SetOwner', SetOwner)
+            onenter(button)
+            GameTooltip.SetOwner = nil
+        end)
     end)
 end)
