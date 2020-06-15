@@ -3,18 +3,31 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/14/2020, 1:18:17 PM
 
+local select = select
+
 ---@type ns
 local ns = select(2, ...)
 
 local LARGE_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-large'))
 local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
 
----@type Frame
-local MainMenuBar, MainMenuExpBar, ReputationWatchBar, MainMenuBarArtFrame, MultiBarBottomRight = MainMenuBar,
-                                                                                                  MainMenuExpBar,
-                                                                                                  ReputationWatchBar,
-                                                                                                  MainMenuBarArtFrame,
-                                                                                                  MultiBarBottomRight
+local GetAtlasInfo = GetAtlasInfo
+local GetCVarBool = GetCVarBool
+local GetNetStats = GetNetStats
+
+local GameTooltip = GameTooltip
+local MainMenuBarPerformanceBar = MainMenuBarPerformanceBar
+local MainMenuBarVehicleLeaveButton = MainMenuBarVehicleLeaveButton
+local MainMenuExpBar = MainMenuExpBar
+local MainMenuMicroButton = MainMenuMicroButton
+local MultiBarBottomRight = MultiBarBottomRight
+local ReputationWatchBar = ReputationWatchBar
+local StanceBarFrame = StanceBarFrame
+local StanceButton1 = StanceButton1
+
+local MAINMENUBAR_LATENCY_LABEL = MAINMENUBAR_LATENCY_LABEL
+local MILLISECONDS_ABBR = MILLISECONDS_ABBR
+local NEWBIE_TOOLTIP_LATENCY = NEWBIE_TOOLTIP_LATENCY
 
 local Hider = CreateFrame('Frame')
 Hider:Hide()
@@ -40,7 +53,7 @@ hide(MainMenuXPBarTexture2)
 hide(MainMenuXPBarTexture3)
 
 hide(MainMenuBarMaxLevelBar)
-hide(MainMenuBarPerformanceBarFrame)
+hide(MainMenuBarPerformanceBarFrameButton)
 
 hide(ReputationWatchBar.StatusBar.WatchBarTexture0)
 hide(ReputationWatchBar.StatusBar.WatchBarTexture1)
@@ -167,15 +180,15 @@ end)
 local Ref = CreateFrame('Frame', nil, UIParent, 'SecureHandlerBaseTemplate')
 do
     local Frames = {
-        PetActionButton1,
-        StanceButton1,
         ActionButton1,
+        MainMenuBar,
+        MainMenuBarArtFrame,
+        MainMenuExpBar,
         MultiBarBottomLeft,
         MultiBarBottomRight,
-        MainMenuBar,
-        MainMenuExpBar,
+        PetActionButton1,
         ReputationWatchBar,
-        MainMenuBarArtFrame,
+        StanceButton1,
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
     }
 
@@ -197,9 +210,7 @@ local function SetupShowHide(frame, onShowHide)
     handle:SetAttribute('_onshow', onShowHide)
     handle:SetAttribute('_onhide', onShowHide)
     handle:SetFrameRef('ref', Ref)
-
     ns.runattribute(handle, '_onshow')
-
     return handle
 end
 
@@ -262,103 +273,132 @@ PetActionButton1:ClearAllPoints()
 PetActionButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 68, MultiBarBottomLeft:IsShown() and 54 or 11)
 ]]
 
-SetupShowHide(MultiBarBottomLeft, LayoutStanceBar .. LayoutPetActionBar)
 SetupShowHide(MultiBarBottomRight, LayoutMainMenuBar)
 SetupShowHide(MainMenuExpBar, LayoutWatchBars)
 SetupShowHide(ReputationWatchBar, LayoutWatchBars)
+SetupShowHide(MultiBarBottomLeft, LayoutStanceBar .. LayoutPetActionBar)
 SetupShowHide(PetActionBarFrame, LayoutPetActionBar)
 
-do -- bags and micro buttons
-    local count = 8
+local MicroButtonAndBagsBar = CreateFrame('Frame', nil, MainMenuBar)
+MicroButtonAndBagsBar:SetSize(26 * 8 + 12, 87)
+MicroButtonAndBagsBar:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
 
-    local MicroButtonAndBagsBar = CreateFrame('Frame', nil, MainMenuBar)
-    MicroButtonAndBagsBar:SetSize(26 * count + 12, 87)
-    MicroButtonAndBagsBar:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
+local MicroLeft = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
+MicroLeft:SetPoint('BOTTOMLEFT')
+MicroLeft:SetTexture(1721259)
+MicroLeft:SetSize(30, 43)
+MicroLeft:SetTexCoord(309 / 1024, 339 / 1024, 212 / 256, 255 / 256)
 
-    local MicroLeft = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-    MicroLeft:SetPoint('BOTTOMLEFT')
-    MicroLeft:SetTexture(1721259)
-    MicroLeft:SetSize(30, 43)
-    MicroLeft:SetTexCoord(309 / 1024, 339 / 1024, 212 / 256, 255 / 256)
+local MicroMiddle = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
+MicroMiddle:SetPoint('LEFT', MicroLeft, 'RIGHT')
+MicroMiddle:SetTexture(1721259)
+MicroMiddle:SetSize(26 * 8 - 48, 43)
+MicroMiddle:SetTexCoord(339 / 1024, 577 / 1024, 212 / 256, 255 / 256)
 
-    local MicroMiddle = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-    MicroMiddle:SetPoint('LEFT', MicroLeft, 'RIGHT')
-    MicroMiddle:SetTexture(1721259)
-    MicroMiddle:SetSize(26 * count - 48, 43)
-    MicroMiddle:SetTexCoord(339 / 1024, 577 / 1024, 212 / 256, 255 / 256)
+local MicroRight = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
+MicroRight:SetPoint('LEFT', MicroMiddle, 'RIGHT')
+MicroRight:SetTexture(1721259)
+MicroRight:SetSize(30, 43)
+MicroRight:SetTexCoord(577 / 1024, 607 / 1024, 212 / 256, 255 / 256)
 
-    local MicroRight = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-    MicroRight:SetPoint('LEFT', MicroMiddle, 'RIGHT')
-    MicroRight:SetTexture(1721259)
-    MicroRight:SetSize(30, 43)
-    MicroRight:SetTexCoord(577 / 1024, 607 / 1024, 212 / 256, 255 / 256)
+local BagBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
+BagBg:SetTexture(1721259)
+BagBg:SetTexCoord(423 / 1024, 607 / 1024, 167 / 256, 212 / 256)
+BagBg:SetSize(607 - 423, 212 - 167)
+BagBg:SetPoint('TOPRIGHT')
 
-    local BagBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-    BagBg:SetTexture(1721259)
-    BagBg:SetTexCoord(423 / 1024, 607 / 1024, 167 / 256, 212 / 256)
-    BagBg:SetSize(607 - 423, 212 - 167)
-    BagBg:SetPoint('TOPRIGHT')
+local KeyringBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND', nil, -1)
+KeyringBg:SetTexture(1721259)
+KeyringBg:SetTexCoord(423 / 1024, (423 + 24) / 1024, 167 / 256, 212 / 256)
+KeyringBg:SetSize(24, 212 - 167)
+KeyringBg:SetPoint('BOTTOMRIGHT', BagBg, 'BOTTOMLEFT', 24 - 16, 0)
 
-    local KeyringBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND', nil, -1)
-    KeyringBg:SetTexture(1721259)
-    KeyringBg:SetTexCoord(423 / 1024, (423 + 24) / 1024, 167 / 256, 212 / 256)
-    KeyringBg:SetSize(24, 212 - 167)
-    KeyringBg:SetPoint('BOTTOMRIGHT', BagBg, 'BOTTOMLEFT', 24 - 16, 0)
+MainMenuBarBackpackButton:ClearAllPoints()
+MainMenuBarBackpackButton:SetPoint('TOPRIGHT', MicroButtonAndBagsBar, 'TOPRIGHT', -6, -4)
 
-    MainMenuBarBackpackButton:ClearAllPoints()
-    MainMenuBarBackpackButton:SetPoint('TOPRIGHT', MicroButtonAndBagsBar, 'TOPRIGHT', -6, -4)
+for i = 0, 3 do
+    local frame = _G['CharacterBag' .. i .. 'Slot']
+    frame:SetSize(30, 30)
+    frame.IconBorder:SetSize(30, 30)
+    frame:GetNormalTexture():SetSize(50, 50)
+    frame:ClearAllPoints()
+    if i == 0 then
+        frame:SetPoint('RIGHT', MainMenuBarBackpackButton, 'LEFT', -4, -5)
+    else
+        frame:SetPoint('RIGHT', _G['CharacterBag' .. (i - 1) .. 'Slot'], 'LEFT', -2.5, 0)
+    end
+end
 
-    for i = 0, 3 do
-        local name = 'CharacterBag' .. i .. 'Slot'
-        local frame = _G['CharacterBag' .. i .. 'Slot']
+KeyRingButton:SetSize(14, 30)
+KeyRingButton:ClearAllPoints()
+KeyRingButton:SetPoint('RIGHT', CharacterBag3Slot, 'LEFT', -2.5, 0)
 
-        frame:SetSize(30, 30)
-        frame.IconBorder:SetSize(30, 30)
-        frame:GetNormalTexture():SetSize(50, 50)
-        frame:ClearAllPoints()
-        if i == 0 then
-            frame:SetPoint('RIGHT', MainMenuBarBackpackButton, 'LEFT', -4, -5)
-        else
-            frame:SetPoint('RIGHT', _G['CharacterBag' .. (i - 1) .. 'Slot'], 'LEFT', -2.5, 0)
+CharacterMicroButton:ClearAllPoints()
+CharacterMicroButton:SetPoint('BOTTOMLEFT', MicroButtonAndBagsBar, 'BOTTOMLEFT', 6, 3)
+
+MainMenuBarPerformanceBar:ClearAllPoints()
+MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
+MainMenuBarPerformanceBar:SetSize((20 - 11) * 29 / 32, (41 - 37) * 58 / 64)
+MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
+MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\White8x8]])
+
+MainMenuBarPerformanceBarFrame:EnableMouse(false)
+
+local function Update(self)
+    if self:GetButtonState() == 'PUSHED' then
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 10 * 29 / 32, -39 * 58 / 64)
+    else
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 11 * 29 / 32, -37 * 58 / 64)
+    end
+end
+
+MainMenuMicroButton:HookScript('OnMouseDown', Update)
+MainMenuMicroButton:HookScript('OnMouseUp', Update)
+ns.securehook(MainMenuMicroButton, 'SetButtonState', Update)
+ns.securehook('MicroButton_OnEnter', function(self)
+    if self == MainMenuMicroButton then
+        local newbie = GetCVarBool('showNewbieTips')
+        local bandwidthIn, bandwidthOut, latency = GetNetStats()
+
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(MAINMENUBAR_LATENCY_LABEL .. ' ' .. latency .. MILLISECONDS_ABBR, 1, 1, 1)
+        if newbie then
+            GameTooltip:AddLine(NEWBIE_TOOLTIP_LATENCY, 1, 0.82, 0, true)
         end
     end
+end)
 
-    KeyRingButton:SetSize(14, 30)
-    KeyRingButton:ClearAllPoints()
-    KeyRingButton:SetPoint('RIGHT', CharacterBag3Slot, 'LEFT', -2.5, 0)
+local buttons = {
+    CharacterMicroButton, SpellbookMicroButton, TalentMicroButton, QuestLogMicroButton, SocialsMicroButton,
+    WorldMapMicroButton, MainMenuMicroButton, HelpMicroButton,
+}
 
-    CharacterMicroButton:ClearAllPoints()
-    CharacterMicroButton:SetPoint('BOTTOMLEFT', MicroButtonAndBagsBar, 'BOTTOMLEFT', 6, 3)
+local function Update()
+    local count = #buttons
+    MicroButtonAndBagsBar:SetWidth(26 * count + 12)
+    MicroMiddle:SetWidth(26 * count - 48)
+end
 
-    -- MainMenuBarPerformanceBarFrame:ClearAllPoints()
-    -- MainMenuBarPerformanceBarFrame:SetPoint('TOP', UIParent, 'BOTTOM', 0, -20)
+function ns.CreateMicroButton(after, text, keybinding, frame)
+    local button = CreateFrame('Button', nil, MainMenuBar, 'MainMenuBarMicroButton')
 
-    -- MainMenuBarPerformanceBar:ClearAllPoints()
-    -- MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
-    -- MainMenuBarPerformanceBar:SetSize(28, 8)
-    -- MainMenuBarPerformanceBar:SetPoint('CENTER', 0, -5)
-    -- MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
+    local index = tIndexOf(buttons, after)
+    local anchorTo = buttons[index]
 
-    -- print(MainMenuBarPerformanceBar)
+    button.tooltipText = keybinding and MicroButtonTooltipText(text, keybinding) or text
+    button:SetPoint('BOTTOMLEFT', anchorTo, 'BOTTOMRIGHT', -3, 0)
+    buttons[index + 1]:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT', -3, 0)
 
-    -- local MicroButtons = {}
+    if frame then
+        frame:HookScript('OnShow', function()
+            button:SetButtonState('PUSHED', true)
+        end)
+        frame:HookScript('OnHide', function()
+            button:SetButtonState('NORMAL')
+        end)
+    end
 
-    -- local function UpdateMicroFrame()
-    --     local count = 0
-    --     for i, v in ipairs(MicroButtons) do
-    --         if v:IsShown() then
-    --             count = count + 1
-    --         end
-    --     end
-
-    --     MicroButtonAndBagsBar:SetSize(26 * count + 12, 87)
-    --     MicroMiddle:SetSize(26 * count - 48, 43)
-    -- end
-
-    -- for i, v in ipairs(MICRO_BUTTONS) do
-    --     local button = _G[v]
-    --     button:HookScript('OnShow', UpdateMicroFrame)
-    --     button:HookScript('OnHide', UpdateMicroFrame)
-    --     tinsert(MicroButtons, button)
-    -- end
+    tinsert(buttons, index + 1, button)
+    Update()
+    return button
 end
