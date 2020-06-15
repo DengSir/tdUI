@@ -25,6 +25,7 @@ local DEFAULT_PROFILE = {
         Recount = {maxLines = 10},
         ThreatClassic2 = {maxLines = 5},
     },
+    actionbar = {micro = {position = 'RIGHT'}},
 }
 
 ns.load(function()

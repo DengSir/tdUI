@@ -12,9 +12,6 @@ ns.addon('MBB', function()
 
     local nop = nop
 
-    local origSetOwner = GameTooltip.SetOwner
-    local origMBB_PrepareButton = MBB_PrepareButton
-
     local function getAnchors(frame)
         local x, y = frame:GetCenter()
         if not x or not y then
@@ -25,13 +22,13 @@ ns.addon('MBB', function()
         return vhalf .. hhalf, frame, (vhalf == 'TOP' and 'BOTTOM' or 'TOP') .. hhalf
     end
 
-    local function SetOwner(tip, owner)
-        origSetOwner(tip, owner, 'ANCHOR_NONE')
+    local function SetOwner(orig, tip, owner)
+        orig(tip, owner, 'ANCHOR_NONE')
         tip:SetPoint(getAnchors(owner))
     end
 
     local function OnEnter(button, ...)
-        GameTooltip.SetOwner = SetOwner
+        ns.hook(GameTooltip, 'SetOwner', SetOwner)
         button.oenter(button, ...)
         GameTooltip.SetOwner = nil
 
@@ -40,14 +37,15 @@ ns.addon('MBB', function()
         end
     end
 
-    function MBB_PrepareButton(name)
+    ns.hook('MBB_PrepareButton', function(orig, name)
         local button = _G[name]
+
         button.RegisterForClicks = nop
-        origMBB_PrepareButton(name)
+        orig(name)
         button.RegisterForClicks = nil
 
         if button.oenter then
             button:SetScript('OnEnter', OnEnter)
         end
-    end
+    end)
 end)

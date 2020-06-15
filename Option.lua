@@ -125,6 +125,13 @@ ns.login(function()
                     maxLines = range('Max lines', 2, 40, 1),
                 }),
             }),
+            actionbar = treeItem('Action bar', {
+                micro = inline('Micro bar', {
+                    position = drop('Position', { --
+                        {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
+                    }),
+                }),
+            }),
         },
     }
 
