@@ -78,6 +78,10 @@ ns.login(function()
         return opts
     end
 
+    local function toggle(name)
+        return {type = 'toggle', name = name, order = orderGen()}
+    end
+
     local options = {
         type = 'group',
         name = 'tdUI',
@@ -100,7 +104,7 @@ ns.login(function()
             end
         end,
         args = {
-            watch = treeItem('watch', {
+            watch = treeItem('Trackers', {
                 frame = inline('Frame', {width = range('Width', 100, 500, 1)}),
                 bar = inline('Bar', {
                     height = range('Height', 1, 64, 1),
@@ -114,7 +118,7 @@ ns.login(function()
                     style = drop('Font flag', { --
                         {name = 'NONE', value = ''}, --
                         {name = 'OUTLINE', value = 'OUTLINE'}, --
-                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'},
+                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'},--
                     }),
                     color = rgba('Font color'),
                 }),
@@ -132,6 +136,7 @@ ns.login(function()
                     }),
                 }),
             }),
+            tooltip = treeItem('Tooltip', {itemIcon = toggle('Item icon'), itemLevelOnlyEquip = toggle('Show item level on equipment only')}),
         },
     }
 

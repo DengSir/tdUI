@@ -39,6 +39,7 @@
     <Script file="Map\MBB.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
+    <Script file="Tooltip\ItemLevel.lua" />
 
     <Script file="Friend\Friends.lua" />
     <Script file="Friend\Who.lua" />

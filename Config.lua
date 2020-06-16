@@ -26,6 +26,7 @@ local DEFAULT_PROFILE = {
         ThreatClassic2 = {maxLines = 5},
     },
     actionbar = {micro = {position = 'RIGHT'}},
+    tooltip = {itemLevel = true, itemIcon = true, itemLevelOnlyEquip = false},
 }
 
 ns.load(function()
