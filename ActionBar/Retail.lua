@@ -68,6 +68,7 @@ hide(ReputationWatchBar.StatusBar.XPBarTexture3)
 point(MultiBarBottomLeftButton1, 'BOTTOMLEFT', ActionButton1, 'TOPLEFT', 0, 13)
 point(MultiBarBottomRightButton1, 'BOTTOMLEFT', ActionButton12, 'BOTTOMRIGHT', 45, 0)
 point(MultiBarBottomRightButton7, 'BOTTOMLEFT', MultiBarBottomRightButton1, 'TOPLEFT', 0, 13)
+point(PetActionButton1, 'BOTTOMLEFT', PetActionBarFrame, 'BOTTOMLEFT', 36, 12)
 
 point(ActionBarUpButton, 'CENTER', MainMenuBarArtFrame, 'BOTTOMLEFT', 522, 31)
 point(ActionBarDownButton, 'CENTER', MainMenuBarArtFrame, 'BOTTOMLEFT', 522, 11)
@@ -187,6 +188,7 @@ do
         MultiBarBottomLeft,
         MultiBarBottomRight,
         PetActionButton1,
+        PetActionBarFrame,
         ReputationWatchBar,
         StanceButton1,
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
@@ -232,6 +234,7 @@ local MainMenuExpBar = ref:GetFrameRef('MainMenuExpBar')
 local ReputationWatchBar = ref:GetFrameRef('ReputationWatchBar')
 local MainMenuBarArtFrame = ref:GetFrameRef('MainMenuBarArtFrame')
 local MultiBarBottomLeft = ref:GetFrameRef('MultiBarBottomLeft')
+local PetActionButton1 = ref:GetFrameRef('PetActionButton1')
 local ReputationWatchBarDelegate = ref:GetFrameRef('ReputationWatchBarDelegate')
 
 local y = 0
@@ -266,16 +269,28 @@ StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, MultiBarBotto
 local LayoutPetActionBar = [[
 local ref = self:GetFrameRef('ref')
 local PetActionButton1 = ref:GetFrameRef('PetActionButton1')
-local ActionButton1 = ref:GetFrameRef('ActionButton1')
-local MultiBarBottomLeft = ref:GetFrameRef('MultiBarBottomLeft')
+local ReputationWatchBar = ref:GetFrameRef('ReputationWatchBar')
+local MainMenuExpBar = ref:GetFrameRef('MainMenuExpBar')
+
+local repShown = ReputationWatchBar:IsShown()
+local expShown = MainMenuExpBar:IsShown()
+
+local y = 9
+if repShown and expShown then
+    y = y + 2
+elseif repShown or expShown then
+    y = y + 4
+else
+    y = y - 4
+end
 
 PetActionButton1:ClearAllPoints()
-PetActionButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 68, MultiBarBottomLeft:IsShown() and 54 or 11)
+PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
 ]]
 
 SetupShowHide(MultiBarBottomRight, LayoutMainMenuBar)
-SetupShowHide(MainMenuExpBar, LayoutWatchBars)
-SetupShowHide(ReputationWatchBar, LayoutWatchBars)
+SetupShowHide(MainMenuExpBar, LayoutWatchBars .. LayoutPetActionBar)
+SetupShowHide(ReputationWatchBar, LayoutWatchBars .. LayoutPetActionBar)
 SetupShowHide(MultiBarBottomLeft, LayoutStanceBar .. LayoutPetActionBar)
 SetupShowHide(PetActionBarFrame, LayoutPetActionBar)
 
