@@ -11,6 +11,8 @@ ns.login(function()
     local AceConfigDialog = LibStub('AceConfigDialog-3.0')
     local LSM = LibStub('LibSharedMedia-3.0')
 
+    local SHORT_CHANNELS = {}
+
     local order = 0
     local function orderGen()
         order = order + 1
@@ -21,12 +23,16 @@ ns.login(function()
         return {type = 'group', name = '|cffffd100' .. name .. '|r', order = orderGen(), args = {}, disabled = true}
     end
 
-    local function treeItem(name, args)
-        return {type = 'group', name = '  |cffffffff' .. name .. '|r', order = orderGen(), args = args}
+    local function treeItem(name)
+        return function(args)
+            return {type = 'group', name = '  |cffffffff' .. name .. '|r', order = orderGen(), args = args}
+        end
     end
 
-    local function inline(name, args)
-        return {type = 'group', name = name, inline = true, order = orderGen(), args = args}
+    local function inline(name)
+        return function(args)
+            return {type = 'group', name = name, inline = true, order = orderGen(), args = args}
+        end
     end
 
     local function range(name, min, max, step)
@@ -58,24 +64,26 @@ ns.login(function()
     end
 
     local function drop(name, values)
-        local opts = { --
-            type = 'select',
-            name = name,
-            order = orderGen(),
-        }
+        return function(values)
+            local opts = { --
+                type = 'select',
+                name = name,
+                order = orderGen(),
+            }
 
-        if type(values) == 'function' then
-            opts.values = values
-        else
-            opts.values = {}
-            opts.sorting = {}
+            if type(values) == 'function' then
+                opts.values = values
+            else
+                opts.values = {}
+                opts.sorting = {}
 
-            for i, v in ipairs(values) do
-                opts.values[v.value] = v.name
-                opts.sorting[i] = v.value
+                for i, v in ipairs(values) do
+                    opts.values[v.value] = v.name
+                    opts.sorting[i] = v.value
+                end
             end
+            return opts
         end
-        return opts
     end
 
     local function toggle(name)
@@ -104,44 +112,52 @@ ns.login(function()
             end
         end,
         args = {
-            watch = treeItem('Trackers', {
-                frame = inline('Frame', {width = range('Width', 100, 500, 1)}),
-                bar = inline('Bar', {
+            watch = treeItem 'Trackers'{
+                frame = inline 'Frame'{width = range('Width', 100, 500, 1)},
+                bar = inline 'Bar'{
                     height = range('Height', 1, 64, 1),
                     inlineHeight = range('Inline height', 1, 64, 1),
                     spacing = range('Spacing', 0, 20, 1),
                     texture = statusbar('Texture'),
-                }),
-                font = inline('Font', {
+                },
+                font = inline 'Font'{
                     name = font('Font name'),
                     size = range('Font size', 6, 32, 0.5),
-                    style = drop('Font flag', { --
+                    style = drop 'Font flag'{ --
                         {name = 'NONE', value = ''}, --
                         {name = 'OUTLINE', value = 'OUTLINE'}, --
-                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'},--
-                    }),
+                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'}, --
+                    },
                     color = rgba('Font color'),
-                }),
-                Recount = inline('Recount', { --
+                },
+                Recount = inline 'Recount'{ --
                     maxLines = range('Max lines', 2, 40, 1),
-                }),
-                ThreatClassic2 = inline('ThreatClassic2', { --
+                },
+                ThreatClassic2 = inline 'ThreatClassic2'{ --
                     maxLines = range('Max lines', 2, 40, 1),
-                }),
-            }),
-            actionbar = treeItem('Action bar', {
-                micro = inline('Micro bar', {
-                    position = drop('Position', { --
+                },
+            },
+            actionbar = treeItem 'Action bar'{
+                micro = inline 'Micro bar'{
+                    position = drop 'Position'{ --
                         {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
-                    }),
-                }),
-            }),
-            tooltip = treeItem('Tooltip', {itemIcon = toggle('Item icon'), itemLevelOnlyEquip = toggle('Show item level on equipment only')}),
+                    },
+                },
+                -- actionbar = inline 'Action bar'{ --
+                --     macroName = toggle('Macro name'),
+                --     cropIcon = toggle('Crop icons')
+                -- },
+            },
+            tooltip = treeItem 'Tooltip'{ --
+                itemIcon = toggle('Item icon'),
+                itemLevelOnlyEquip = toggle('Show item level on equipment only'),
+            },
+            chat = treeItem 'Chat'{ --
+                shortChannels = inline 'Short channel'(SHORT_CHANNELS),
+            },
         },
     }
 
     AceConfigRegistry:RegisterOptionsTable('tdUI', options)
     AceConfigDialog:AddToBlizOptions('tdUI', 'tdUI')
-
-    local AceGUI = LibStub('AceGUI-3.0')
 end)

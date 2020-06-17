@@ -161,6 +161,33 @@ ns.securehook('MultiActionBar_Update', function()
     end
 end)
 
+local NO_GRID_BUTTONS = {
+    MultiBarBottomRightButton1, MultiBarBottomRightButton2, MultiBarBottomRightButton3, MultiBarBottomRightButton4,
+    MultiBarBottomRightButton5, MultiBarBottomRightButton6,
+}
+
+for _, button in ipairs(NO_GRID_BUTTONS) do
+    _G[button:GetName() .. 'FloatingBG']:Hide()
+end
+
+local function HideGrid()
+    for _, button in ipairs(NO_GRID_BUTTONS) do
+        if not HasAction(button.action) then
+            button:SetAlpha(0)
+        else
+            button:SetAlpha(1)
+        end
+    end
+end
+
+ns.event('ACTIONBAR_SHOWGRID', function()
+    for _, button in ipairs(NO_GRID_BUTTONS) do
+        button:SetAlpha(1)
+    end
+end)
+ns.event('ACTIONBAR_HIDEGRID', ns.spawned(HideGrid))
+HideGrid()
+
 ns.securehook('MainMenuTrackingBar_Configure', function(ReputationWatchBar)
     ReputationWatchBar.OverlayFrame.Text:SetPoint('CENTER')
     ReputationWatchBarDelegate:SetPoint('BOTTOM', MainMenuExpBar, 'BOTTOM', 0, MainMenuExpBar:IsShown() and 10 or 0)

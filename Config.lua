@@ -25,8 +25,22 @@ local DEFAULT_PROFILE = {
         Recount = {maxLines = 10},
         ThreatClassic2 = {maxLines = 5},
     },
-    actionbar = {micro = {position = 'RIGHT'}},
-    tooltip = {item = {icon = true, rarityBorder = true, itemLevel = true, itemLevelOnlyEquip = false}},
+    actionbar = { --
+        micro = { --
+            position = 'RIGHT',
+        },
+    },
+    tooltip = { --
+        item = { --
+            icon = true,
+            rarityBorder = true,
+            itemLevel = true,
+            itemLevelOnlyEquip = false,
+        },
+    },
+    chat = { --
+        shortChannels = {},
+    },
 }
 
 ns.load(function()
