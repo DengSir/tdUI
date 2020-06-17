@@ -186,7 +186,6 @@ ns.event('ACTIONBAR_SHOWGRID', function()
     end
 end)
 ns.event('ACTIONBAR_HIDEGRID', ns.spawned(HideGrid))
-HideGrid()
 
 ns.securehook('MainMenuTrackingBar_Configure', function(ReputationWatchBar)
     ReputationWatchBar.OverlayFrame.Text:SetPoint('CENTER')
@@ -470,7 +469,10 @@ local function OnEvent(self, event)
 end
 
 ns.config('actionbar.micro.position', UpdateMicroBar)
-ns.login(UpdateMicroBar)
+ns.login(function()
+    HideGrid()
+    UpdateMicroBar()
+end)
 
 function ns.CreateMicroButton(after, text, keybinding, frame)
     local button = CreateFrame('Button', nil, MainMenuBar, 'MainMenuBarMicroButton')
