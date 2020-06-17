@@ -9,23 +9,22 @@ local ns = select(2, ...)
 local _G = _G
 local BUTTON_HEIGHT = UIDROPDOWNMENU_BUTTON_HEIGHT
 
-local dropdownButtons = {}
+local buttonPool = {}
 
 local function OnHide(self)
     self.func = nil
-    self.args = nil
-    self.argCount = nil
+    self.p = nil
     self:Hide()
-    dropdownButtons[self] = true
+    buttonPool[self] = true
 end
 
 local function OnClick(self)
-    self.func(unpack(self.args, 1, self.argCount))
+    self.func(self.p())
     CloseDropDownMenus()
 end
 
 local function Alloc()
-    local button = next(dropdownButtons)
+    local button = next(buttonPool)
     if not button then
         button = CreateFrame('Button', nil, UIParent)
 
@@ -70,8 +69,7 @@ function ns.InsertDropdownAfter(level, target, text, func, ...)
         button:Show()
         button:SetText(text)
         button.func = func
-        button.args = {...}
-        button.argCount = select('#', ...)
+        button.p = ns.pack(...)
 
         for i = index + 1, UIDROPDOWNMENU_MAXBUTTONS do
             local dropdownItem = _G[dropdownName .. 'Button' .. i]

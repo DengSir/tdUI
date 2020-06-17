@@ -43,11 +43,31 @@ local function call(t, k, ...)
 end
 
 local function pack(...)
-    local args = {...}
-    local argCount = select('#', ...)
+    local n = select('#', ...)
+    if n == 0 then
+        return nop
+    elseif n == 1 then
+        local arg1 = ...
+        return function()
+            return arg1
+        end
+    elseif n == 2 then
+        local arg1, arg2 = ...
+        return function()
+            return arg1, arg2
+        end
+    elseif n == 3 then
+        local arg1, arg2, arg3 = ...
+        return function()
+            return arg1, arg2, arg3
+        end
+    else
+        local args = {...}
+        local argCount = select('#', ...)
 
-    return function()
-        return unpack(args, 1, argCount)
+        return function()
+            return unpack(args, 1, argCount)
+        end
     end
 end
 
@@ -269,10 +289,13 @@ function ns.config(paths, ...)
     end
 end
 
-local Runner = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
-Runner:SetAttribute('_onattributechanged', [[if name == 'run' then self:GetFrameRef('handle'):RunAttribute(value) end]])
-
+local Runner
 function ns.runattribute(handle, attr)
+    if not Runner then
+        Runner = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
+        Runner:SetAttribute('_onattributechanged',
+                            [[if name == 'run' then self:GetFrameRef('handle'):RunAttribute(value) end]])
+    end
     Runner:SetFrameRef('handle', handle)
     Runner:SetAttribute('run', attr)
 end
