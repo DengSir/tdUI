@@ -278,7 +278,8 @@ ns.addonlogin('Recount', function()
         DropMenu.initialize = EasyMenu_Initialize
 
         local function OpenMenu(frame, menuList, point, relativePoint)
-            local isOpened = DropDownList1:IsShown() and DropMenu.relativeTo == frame
+            local isOpened = DropDownList1:IsShown() and UIDROPDOWNMENU_OPEN_MENU == DropMenu and DropMenu.relativeTo ==
+                                 frame
             CloseDropDownMenus()
 
             if not isOpened then

@@ -6,25 +6,42 @@
 ---@type ns
 local ns = select(2, ...)
 
+local type, pairs = type, pairs
+local tinsert = table.insert
+
 ns.addon('TinyTooltip', function()
-    local function register(tooltip)
-        if tooltip then
-            tinsert(TinyTooltip.tooltips, tooltip)
+    local LibEvent = LibStub:GetLibrary('LibEvent.7000')
+    local TinyTooltip = TinyTooltip
+
+    local tooltips = { --
+        LibDBIconTooltip, --
+        AceGUITooltip, --
+        AceConfigDialogTooltip, --
+        function()
+            local tdDropMenu = LibStub('tdGUI-1.0.Class.DropMenu', true)
+            return tdDropMenu and tdDropMenu.Public
+        end,
+    }
+
+    for _, tip in pairs(tooltips) do
+        if type(tip) == 'function' then
+            tip = tip()
         end
+        tinsert(TinyTooltip.tooltips, tip)
     end
 
-    register(LibDBIconTooltip)
-    register(AceGUITooltip)
-    register(AceConfigDialogTooltip)
-
-    local tdDropMenu = LibStub('tdGUI-1.0.Class.DropMenu', true)
-    if tdDropMenu then
-        register(tdDropMenu.Public)
+    local function UpdateStatusBarPosition()
+        local g = TinyTooltip.db.general
+        LibEvent:trigger('tooltip.statusbar.position', g.statusbarPosition, g.statusbarOffsetX, g.statusbarOffsetY)
     end
+
+    GameTooltipStatusBar:HookScript('OnShow', function(bar)
+        bar:GetScript('OnValueChanged')(bar, bar:GetValue())
+        UpdateStatusBarPosition()
+    end)
+    GameTooltipStatusBar:HookScript('OnHide', UpdateStatusBarPosition)
 
     pcall(function()
-        local LibEvent = LibStub:GetLibrary('LibEvent.7000')
-
         local emptyObject = setmetatable({}, {
             __index = function()
                 return nop

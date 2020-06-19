@@ -24,6 +24,32 @@ function ns.rgb(r, g, b)
     end
 end
 
+local Reg = LibStub('AceConfigRegistry-3.0')
+local R = setmetatable({}, {
+    __index = function(t, k)
+        local options = LibStub('AceConfigRegistry-3.0'):GetOptionsTable(k, 'dialog', 'Inject-1.0')
+        -- t[k] = options
+        return options
+    end,
+})
+
+function ns.RemoveAceConfig(registry, ...)
+    local options = type(registry) == 'table' and registry or R[registry]
+    local n = select('#', ...)
+    for i = 1, n do
+        local key = select(i, ...)
+
+        if not options.args then
+            break
+        end
+        if i < n then
+            options = options.args[key]
+        else
+            options.args[key] = nil
+        end
+    end
+end
+
 function ns.GetButtons(nameTemplate, count, ...)
     local buttons = {}
     local keys = {...}
