@@ -25,6 +25,8 @@
     <Script file="ActionBar\Micro.lua" />
     <Script file="ActionBar\AddonMicro.lua" />
 
+    <Script file="Beauty\AtlasLoot.lua" />
+
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
 

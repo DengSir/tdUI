@@ -123,20 +123,3 @@ hook('PaperDollItemSlotButton_OnEvent', function(self, event)
 end)
 
 InitButtons('Character%sSlot', 'player')
-
-SetUIPanelAttribute(CharacterFrame, 'pushable', 1)
-SetUIPanelAttribute(FriendsFrame, 'pushable', 1)
-SetUIPanelAttribute(SpellBookFrame, 'pushable', 6)
--- SetUIPanelAttribute(WorldMapFrame, 'area', 'center')
-
--- ns.login(ns.delayed(2, function()
-
---     WorldMapFrame:SetAttribute('UIPanelLayout-area', 'center')
---     WorldMapFrame:SetAttribute('UIPanelLayout-pushable', 0)
---     WorldMapFrame:SetAttribute('UIPanelLayout-whileDead', true)
---     WorldMapFrame:SetAttribute('UIPanelLayout-defined', true)
---     WorldMapFrame:SetAttribute('UIPanelLayout-enabled', true)
---     WorldMapFrame:SetAttribute('UIPanelLayout-allowOtherPanels', false)
-
---     print(1)
--- end))
