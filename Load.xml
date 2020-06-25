@@ -23,8 +23,9 @@
     <Script file="ActionBar\TradeSkill.lua" />
     <Script file="ActionBar\Retail.lua" />
     <Script file="ActionBar\Micro.lua" />
-    <Script file="ActionBar\AddonMicro.lua" />
+    <!-- <Script file="ActionBar\AddonMicro.lua" /> -->
 
+    <Script file="Beauty\Blizzard.lua" />
     <Script file="Beauty\AtlasLoot.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
@@ -56,6 +57,7 @@
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <Script file="UnitFrame\Range.lua" />
+    <Script file="UnitFrame\Visible.lua" />
 
     <Script file="Bug\ItemRack.lua" />
 </Ui>

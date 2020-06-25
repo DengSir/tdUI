@@ -176,3 +176,5 @@ end)
 ns.securehook('TargetFrame_UpdateLevelTextAnchor', function(self)
     self.levelText:SetPoint('CENTER', 63, -16)
 end)
+
+TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)

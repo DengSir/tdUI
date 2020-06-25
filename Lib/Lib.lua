@@ -213,6 +213,14 @@ function ns.spawned(func)
     return ns.delayed(0, func)
 end
 
+function ns.nocombat(func)
+    if not InCombatLockdown() then
+        func()
+    else
+        ns.onceevent('PLAYER_REGEN_ENABLED', func)
+    end
+end
+
 function ns.hook(t, k, v)
     if type(t) ~= 'table' then
         t, k, v = _G, t, k

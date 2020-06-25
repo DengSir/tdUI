@@ -315,3 +315,51 @@ SetupShowHide(MultiBarBottomLeft, LayoutStanceBar .. LayoutPetActionBar)
 SetupShowHide(PetActionBarFrame, LayoutPetActionBar)
 
 ns.login(HideGrid)
+
+local function UpdateScale()
+    local screenWidth = UIParent:GetWidth()
+    local barScale = 1
+    local barWidth = MainMenuBar:GetWidth()
+    local barMargin = MAIN_MENU_BAR_MARGIN or 75
+    local bagsWidth = MicroButtonAndBagsBar:GetWidth()
+    local contentsWidth = barWidth + bagsWidth
+    if contentsWidth > screenWidth then
+        barScale = screenWidth / contentsWidth
+        barWidth = barWidth * barScale
+        bagsWidth = bagsWidth * barScale
+        barMargin = barMargin * barScale
+
+        print(barScale)
+    end
+    MainMenuBar:SetScale(barScale)
+    MainMenuBar:ClearAllPoints()
+    -- if there's no overlap with between action bar and bag bar while it's in the center, use center anchor
+    local roomLeft = screenWidth - barWidth - barMargin * 2
+    if roomLeft >= bagsWidth * 2 then
+        MainMenuBar:SetPoint('BOTTOM', UIParent, 0, 0)
+    else
+        local xOffset = 0
+        -- if both bars can fit without overlap, move the action bar to the left
+        -- otherwise sacrifice the art for more room
+        if roomLeft >= bagsWidth then
+            xOffset = roomLeft - bagsWidth + barMargin
+        else
+            xOffset = math.max((roomLeft - bagsWidth) / 2 + barMargin, 0)
+        end
+
+        if ns.profile.actionbar.micro.position == 'LEFT' then
+            MainMenuBar:SetPoint('BOTTOMRIGHT', UIParent, -xOffset / barScale, 0)
+        else
+            MainMenuBar:SetPoint('BOTTOMLEFT', UIParent, xOffset / barScale, 0)
+        end
+    end
+end
+
+local function Scale()
+    return ns.nocombat(UpdateScale)
+end
+
+ns.event('DISPLAY_SIZE_CHANGED', Scale)
+ns.event('UI_SCALE_CHANGED', Scale)
+ns.config('actionbar.micro.position', Scale)
+ns.login(Scale)

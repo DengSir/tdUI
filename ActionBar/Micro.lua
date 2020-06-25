@@ -22,7 +22,7 @@ local MAINMENUBAR_LATENCY_LABEL = MAINMENUBAR_LATENCY_LABEL
 local MILLISECONDS_ABBR = MILLISECONDS_ABBR
 local NEWBIE_TOOLTIP_LATENCY = NEWBIE_TOOLTIP_LATENCY
 
-local MicroButtonAndBagsBar = CreateFrame('Frame', nil, MainMenuBar)
+local MicroButtonAndBagsBar = CreateFrame('Frame', 'MicroButtonAndBagsBar', MainMenuBar)
 MicroButtonAndBagsBar:SetSize(26 * 8 + 12, 87)
 
 local MICRO_LEFT_COORDS = {309 / 1024, 339 / 1024, 212 / 256, 255 / 256}
