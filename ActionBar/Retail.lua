@@ -317,6 +317,7 @@ SetupShowHide(PetActionBarFrame, LayoutPetActionBar)
 ns.login(HideGrid)
 
 local function UpdateScale()
+    print('UpdateScale')
     local screenWidth = UIParent:GetWidth()
     local barScale = 1
     local barWidth = MainMenuBar:GetWidth()

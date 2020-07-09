@@ -80,6 +80,8 @@ function WatchManager:Refresh()
             prevEnv = env
         end
     end
+
+    ns.fire('!WATCH_LAYOUT')
 end
 
 function WatchManager:SetupHeaderFrame(frame, header)

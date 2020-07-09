@@ -1,4 +1,4 @@
--- Micro.lua
+-- MicroBar.lua
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/18/2020, 9:46:28 AM
@@ -49,15 +49,15 @@ MicroLeft:SetPoint('BOTTOMLEFT')
 MicroLeft:SetTexture(1721259)
 MicroLeft:SetSize(30, 43)
 
-local MicroMiddle = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-MicroMiddle:SetPoint('LEFT', MicroLeft, 'RIGHT')
-MicroMiddle:SetTexture(1721259)
-MicroMiddle:SetSize(26 * 8 - 48, 43)
-
 local MicroRight = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-MicroRight:SetPoint('LEFT', MicroMiddle, 'RIGHT')
+MicroRight:SetPoint('BOTTOMRIGHT')
 MicroRight:SetTexture(1721259)
 MicroRight:SetSize(30, 43)
+
+local MicroMiddle = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
+MicroMiddle:SetPoint('TOPLEFT', MicroLeft, 'TOPRIGHT')
+MicroMiddle:SetPoint('BOTTOMRIGHT', MicroRight, 'BOTTOMLEFT')
+MicroMiddle:SetTexture(1721259)
 
 local BagBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
 BagBg:SetTexture(1721259)
@@ -85,7 +85,7 @@ KeyRingButton:SetSize(14, 30)
 
 MainMenuBarPerformanceBar:ClearAllPoints()
 MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
-MainMenuBarPerformanceBar:SetSize((21 - 11) * 29 / 32, (42 - 37) * 58 / 64)
+MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
 MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
 MainMenuBarPerformanceBar:SetTexture([[Interface\BUTTONS\white8x8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
@@ -93,10 +93,10 @@ MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
-        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 10 * 29 / 32, -39 * 58 / 64)
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.0625, -35.34375 + 18)
         MainMenuBarPerformanceBar:SetAlpha(0.4)
     else
-        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 11 * 29 / 32, -37 * 58 / 64)
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.96875, -33.53125 + 18)
         MainMenuBarPerformanceBar:SetAlpha(0.6)
     end
 end
@@ -117,10 +117,12 @@ ns.securehook('MicroButton_OnEnter', function(self)
     end
 end)
 
-local buttons = {
-    CharacterMicroButton, SpellbookMicroButton, TalentMicroButton, QuestLogMicroButton, SocialsMicroButton,
-    WorldMapMicroButton, MainMenuMicroButton, HelpMicroButton,
-}
+ns.securehook(MainMenuBarDownload, 'Show', function()
+    MainMenuBarPerformanceBar:Hide()
+end)
+ns.securehook(MainMenuBarDownload, 'Hide', function()
+    MainMenuBarPerformanceBar:Show()
+end)
 
 local function UpdateMicroBar(style)
     style = style or ns.profile.actionbar.micro.position
@@ -163,52 +165,5 @@ local function UpdateMicroBar(style)
     end
 end
 
-local function UpdateMicroWidth()
-    local count = #buttons
-    MicroButtonAndBagsBar:SetWidth(26 * count + 12)
-    MicroMiddle:SetWidth(26 * count - 48)
-end
-
-local function OnEvent(self, event)
-    if event == 'UPDATE_BINDINGS' then
-        self.tooltipText = MicroButtonTooltipText(self.text, self.keybinding)
-    end
-end
-
 ns.config('actionbar.micro.position', UpdateMicroBar)
 ns.login(UpdateMicroBar)
-
-function ns.CreateMicroButton(after, text, keybinding, frame)
-    local button = CreateFrame('Button', nil, MainMenuBar, 'MainMenuBarMicroButton')
-
-    local index = tIndexOf(buttons, after)
-    local anchorTo = buttons[index]
-
-    if keybinding then
-        button.text = text
-        button.keybinding = keybinding
-        button.tooltipText = MicroButtonTooltipText(text, keybinding)
-        button:RegisterEvent('UPDATE_BINDINGS')
-        button:SetScript('OnEvent', OnEvent)
-    else
-        button.tooltipText = text
-    end
-
-    button:SetPoint('BOTTOMLEFT', anchorTo, 'BOTTOMRIGHT', -3, 0)
-    if buttons[index + 1] then
-        buttons[index + 1]:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT', -3, 0)
-    end
-
-    if frame then
-        frame:HookScript('OnShow', function()
-            button:SetButtonState('PUSHED', true)
-        end)
-        frame:HookScript('OnHide', function()
-            button:SetButtonState('NORMAL')
-        end)
-    end
-
-    tinsert(buttons, index + 1, button)
-    UpdateMicroWidth()
-    return button
-end

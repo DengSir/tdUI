@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/6/2019, 2:33:25 AM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -10,6 +9,8 @@ ns.addonlogin('MonkeyQuest', function()
     if not MonkeyQuestFrame then
         return
     end
+
+    -- MonkeyQuestFrame:SetClipsChildren(true)
 
     --- fix for quest tag
     QUEST_TAG_GROUP = 1
@@ -83,6 +84,34 @@ ns.addonlogin('MonkeyQuest', function()
         MinimizeButton:HookScript('OnClick', MinimizeButton.Update)
     end
 
+    local ScrollFrame = CreateFrame('ScrollFrame', nil, MonkeyQuestFrame)
+    local ScrollChild = CreateFrame('Frame', nil, ScrollFrame)
+
+    ScrollChild:SetPoint('TOPLEFT')
+    ScrollChild:SetSize(1, 1)
+
+    ScrollFrame:SetScrollChild(ScrollChild)
+    ScrollFrame:SetScript('OnMouseWheel', function(self, delta)
+        local scroll = self:GetVerticalScroll() - delta * 100
+        local maxScroll = self:GetVerticalScrollRange()
+        if scroll < 0 then
+            scroll = 0
+        elseif scroll > maxScroll then
+            scroll = maxScroll
+        end
+        self:SetVerticalScroll(scroll)
+    end)
+
+    for i = 1, MonkeyQuestButton1:GetNumPoints() do
+        ScrollFrame:SetPoint(MonkeyQuestButton1:GetPoint(i))
+    end
+
+    MonkeyQuestButton1:ClearAllPoints()
+    MonkeyQuestButton1:SetPoint('TOPLEFT', ScrollChild, 'TOPLEFT')
+    MonkeyQuestButton1:SetPoint('TOPRIGHT', ScrollChild, 'TOPRIGHT')
+    MonkeyQuestButton1.ClearAllPoints = nop
+    MonkeyQuestButton1.SetPoint = nop
+
     local function Hide()
         MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized = true
         MinimizeButton:Update()
@@ -92,6 +121,9 @@ ns.addonlogin('MonkeyQuest', function()
     local function Apply()
         MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = ns.profile.watch.frame.width
         MonkeyQuestInit_ApplySettings()
+
+        ScrollFrame:SetWidth(ns.profile.watch.frame.width)
+        ScrollChild:SetWidth(ns.profile.watch.frame.width)
     end
 
     local function Reset()
@@ -150,6 +182,37 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end
 
+    for i = 1, MonkeyQuest.m_iNumQuestButtons do
+        local button = _G['MonkeyQuestButton' .. i]
+        local text = _G['MonkeyQuestButton' .. i .. 'Text']
+
+        text:ClearAllPoints()
+        text:SetPoint('BOTTOMLEFT')
+
+        button:SetParent(ScrollChild)
+    end
+
+    local function UpdateHeight()
+        local visibleHeight = MonkeyQuestFrame:GetTop() - 32 -
+                                  (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
+        local totalHeight = 0
+
+        for i = 1, MonkeyQuest.m_iNumQuestButtons do
+            local button = _G['MonkeyQuestButton' .. i]
+            if button:IsShown() then
+                local text = _G['MonkeyQuestButton' .. i .. 'Text']
+                local height = text:GetHeight() + 2
+
+                button:SetHeight(height)
+                totalHeight = totalHeight + height
+            end
+        end
+
+        ScrollChild:SetHeight(totalHeight)
+        ScrollFrame:SetHeight(min(visibleHeight, totalHeight))
+        MonkeyQuestFrame:SetHeight(min(visibleHeight, totalHeight) + 32)
+    end
+
     ns.securehook('MonkeyQuest_Resize', function()
         ns.WatchManager:Refresh()
     end)
@@ -173,6 +236,25 @@ ns.addonlogin('MonkeyQuest', function()
 
     ns.event('QUEST_LOG_UPDATE', Update)
     ns.config('watch.frame.width', Apply)
+    ns.config('actionbar.micro.position', UpdateHeight)
+
+    ns.event('!WATCH_LAYOUT', function()
+        print('layout')
+        ns.pending(MonkeyQuestFrame, UpdateHeight)
+    end)
+
+    ns.hook('MonkeyQuestButton_OnClick', function(orig, self, button, down)
+        if IsShiftKeyDown() and button == 'LeftButton' then
+            local title, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex);
+            if not isHeader then
+                local activeWindow = ChatEdit_GetActiveWindow()
+                if activeWindow and activeWindow:HasFocus() then
+                    return activeWindow:Insert(format('[%s (%d)]', title, questId))
+                end
+            end
+        end
+        return orig(self, button, down)
+    end)
 
     ns.login(function()
         MonkeyQuestInit_LoadConfig()

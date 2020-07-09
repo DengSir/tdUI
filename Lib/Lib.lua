@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/9/2020, 1:02:09 PM
-
 local next = next
 local type = type
 local assert = assert
@@ -27,6 +26,7 @@ local addonCallbacks = {}
 local eventCallbacks = {}
 local onceEventCallbacks = {}
 local configCallbacks = {}
+local pendings = {}
 
 local function append(t, k, v)
     t[k] = t[k] or {}
@@ -251,6 +251,27 @@ function ns.hookscript(obj, script, func)
 end
 
 ns.securehook = hooksecurefunc
+
+local function pendingOnUpdate(self)
+    self:SetScript('OnUpdate', nil)
+
+    for _, v in pairs(pendings) do
+        v()
+    end
+    wipe(pendings)
+end
+
+function ns.pending(obj, func)
+    if type(func) == 'string' then
+        local method = obj[func]
+        func = function()
+            return method(obj)
+        end
+    end
+
+    pendings[obj] = func
+    events:SetScript('OnUpdate', pendingOnUpdate)
+end
 
 -- do
 --     local updaters = {}
