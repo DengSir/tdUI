@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/8/2020, 2:09:59 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -24,17 +23,12 @@ function ns.rgb(r, g, b)
     end
 end
 
-local Reg = LibStub('AceConfigRegistry-3.0')
-local R = setmetatable({}, {
-    __index = function(t, k)
-        local options = LibStub('AceConfigRegistry-3.0'):GetOptionsTable(k, 'dialog', 'Inject-1.0')
-        -- t[k] = options
-        return options
-    end,
-})
+function ns.GetAceConfig(k)
+    return LibStub('AceConfigRegistry-3.0'):GetOptionsTable(k, 'dialog', 'Inject-1.0')
+end
 
 function ns.RemoveAceConfig(registry, ...)
-    local options = type(registry) == 'table' and registry or R[registry]
+    local options = type(registry) == 'table' and registry or ns.GetAceConfig(registry)
     local n = select('#', ...)
     for i = 1, n do
         local key = select(i, ...)

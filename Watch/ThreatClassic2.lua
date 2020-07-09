@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/1/2020, 1:03:21 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -21,10 +20,18 @@ ns.addonlogin('ThreatClassic2', function()
 
     local TC2 = (function()
         local ThreatLib = LibStub('LibThreatClassic2', true)
+        if ThreatLib then
+            for obj in pairs(ThreatLib.callbacks.events.ThreatUpdated) do
+                if obj.frame == Window then
+                    return obj
+                end
+            end
+        end
 
-        for obj in pairs(ThreatLib.callbacks.events.ThreatUpdated) do
-            if obj.frame == Window then
-                return obj
+        local AceComm = LibStub('AceComm-3.0', true)
+        for v in pairs(AceComm.embeds) do
+            if v.commPrefix == 'TC2' then
+                return v
             end
         end
     end)()
@@ -70,37 +77,21 @@ ns.addonlogin('ThreatClassic2', function()
     end
 
     do -- remove options
-        local options = LibStub('AceConfigRegistry-3.0'):GetOptionsTable('ThreatClassic2', 'dialog', 'Inject-1.0')
-        local function remove(...)
-            local options = options
-            local n = select('#', ...)
-            for i = 1, n do
-                local key = select(i, ...)
-
-                if not options.args then
-                    break
-                end
-                if i < n then
-                    options = options.args[key]
-                else
-                    options.args[key] = nil
-                end
-            end
-        end
-
         if TC2.menuTable then
             tremove(TC2.menuTable, 1)
         end
 
-        remove('appearance', 'frame', 'locked')
-        remove('appearance', 'frame', 'strata')
-        remove('appearance', 'frame', 'headerShow')
-        remove('appearance', 'frame', 'framePosition')
-        remove('appearance', 'frame', 'scale')
-        remove('appearance', 'frame', 'frameColors')
-        remove('appearance', 'bar')
-        remove('appearance', 'font')
-        remove('appearance', 'reset')
+        local options = ns.GetAceConfig('ThreatClassic2')
+
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'locked')
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'strata')
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'headerShow')
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'framePosition')
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'scale')
+        ns.RemoveAceConfig(options, 'appearance', 'frame', 'frameColors')
+        ns.RemoveAceConfig(options, 'appearance', 'bar')
+        ns.RemoveAceConfig(options, 'appearance', 'font')
+        ns.RemoveAceConfig(options, 'appearance', 'reset')
     end
 
     do

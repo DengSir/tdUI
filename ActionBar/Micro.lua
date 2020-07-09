@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/18/2020, 9:46:28 AM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -101,11 +101,11 @@ local function UpdatePerformanceBarPushed(self)
     end
 end
 
-MainMenuMicroButton:HookScript('OnMouseDown', UpdatePerformanceBarPushed)
-MainMenuMicroButton:HookScript('OnMouseUp', UpdatePerformanceBarPushed)
 ns.securehook(MainMenuMicroButton, 'SetButtonState', UpdatePerformanceBarPushed)
+ns.hookscript(MainMenuMicroButton, 'OnMouseDown', UpdatePerformanceBarPushed)
+ns.hookscript(MainMenuMicroButton, 'OnMouseUp', UpdatePerformanceBarPushed)
 ns.securehook('MicroButton_OnEnter', function(self)
-    if self == MainMenuMicroButton then
+    if self == MainMenuMicroButton and GameTooltip:IsOwned(self) then
         local newbie = GetCVarBool('showNewbieTips')
         local bandwidthIn, bandwidthOut, latency = GetNetStats()
 

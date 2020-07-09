@@ -241,6 +241,15 @@ function ns.override(t, k, v)
     t[k] = v
 end
 
+---hookscript
+---@generic T
+---@param obj T
+---@param script string
+---@param func fun(self: T)
+function ns.hookscript(obj, script, func)
+    return obj:HookScript(script, func)
+end
+
 ns.securehook = hooksecurefunc
 
 -- do
