@@ -213,6 +213,12 @@ function ns.spawned(func)
     return ns.delayed(0, func)
 end
 
+function ns.nocombated(func)
+    return function()
+        return ns.nocombat(func)
+    end
+end
+
 function ns.nocombat(func)
     if not InCombatLockdown() then
         func()

@@ -21,10 +21,12 @@
     <Script file="ActionBar\Count.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
     <Script file="ActionBar\TradeSkill.lua" />
-    <Script file="ActionBar\Retail.lua" />
-    <Script file="ActionBar\Micro.lua" />
-    <Script file="ActionBar\MicroButton.lua" />
-    <Script file="ActionBar\AddonMicro.lua" />
+
+    <Script file="ActionBar\Retail\ActionBar.lua" />
+    <Script file="ActionBar\Retail\MicroButton.lua" />
+    <Script file="ActionBar\Retail\MicroBar.lua" />
+    <Script file="ActionBar\Retail\AddonMicro.lua" />
+    <Script file="ActionBar\Retail\Scale.lua" />
 
     <Script file="Beauty\Blizzard.lua" />
     <Script file="Beauty\AtlasLoot.lua" />

@@ -80,7 +80,7 @@ function ns.CreateMicroButton(opts)
     assert(opts.icon or opts.template)
     assert(not (opts.icon and opts.template))
 
-    local button = CreateFrame('Button', nil, MainMenuBar, 'MainMenuBarMicroButton')
+    local button = CreateFrame('Button', nil, MainMenuBarArtFrame, 'MainMenuBarMicroButton')
 
     if opts.template then
         LoadMicroButtonTextures(button, opts.template)
