@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/14/2020, 1:18:17 PM
-
 local select = select
 local ipairs = ipairs
 
@@ -25,6 +24,10 @@ local StanceButton1 = StanceButton1
 
 local LARGE_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-large'))
 local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
+
+local NO_GRID_BUTTONS = ns.GetButtons('MultiBarBottomRightButton%d', 6)
+
+local Controller = CreateFrame('Frame', nil, nil, 'SecureHandlerAttributeTemplate')
 
 local Hider = CreateFrame('Frame')
 Hider:Hide()
@@ -132,8 +135,13 @@ ReputationWatchBarDelegate:SetScript('OnLeave', function()
     return OnLeave(ReputationWatchBar)
 end)
 
+for _, button in ipairs(NO_GRID_BUTTONS) do
+    local FloatingBG = _G[button:GetName() .. 'FloatingBG']
+    FloatingBG:Hide()
+end
+
 ns.securehook('MultiActionBar_Update', function()
-    if MultiBarBottomRight:IsShown() then
+    if Controller:GetAttribute('hasBottomRight') then
         ReputationWatchBarDelegate:SetWidth(LARGE_WIDTH)
 
         MainMenuBarArtLarge:Show()
@@ -157,12 +165,6 @@ ns.securehook('MultiActionBar_Update', function()
         ReputationBarArtSmall:Show()
     end
 end)
-
-local NO_GRID_BUTTONS = ns.GetButtons('MultiBarBottomRightButton%d', 6)
-
-for _, button in ipairs(NO_GRID_BUTTONS) do
-    _G[button:GetName() .. 'FloatingBG']:Hide()
-end
 
 local function HideGrid()
     for _, button in ipairs(NO_GRID_BUTTONS) do
@@ -198,18 +200,13 @@ ns.securehook('MainMenuBarVehicleLeaveButton_Update', function()
     end
 end)
 
-local Ref = CreateFrame('Frame', nil, UIParent, 'SecureHandlerBaseTemplate')
 do
     local Frames = {
         ActionButton1,
         MainMenuBar,
         MainMenuBarArtFrame,
         MainMenuExpBar,
-        MultiBarBottomLeft,
-        MultiBarBottomRight,
         PetActionButton1,
-        PetActionBarFrame,
-        ReputationWatchBar,
         StanceButton1,
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
     }
@@ -223,95 +220,91 @@ do
         end
 
         assert(name)
-        Ref:SetFrameRef(name, v)
+        Controller:SetFrameRef(name, v)
     end
 end
 
-local function SetupShowHide(frame, onShowHide)
-    local handle = CreateFrame('Frame', nil, frame, 'SecureHandlerShowHideTemplate')
-    handle:SetAttribute('_onshow', onShowHide)
-    handle:SetAttribute('_onhide', onShowHide)
-    handle:SetFrameRef('ref', Ref)
-    ns.runattribute(handle, '_onshow')
-    return handle
-end
+Controller:SetAttribute('_layoutMainMenuBar', [[
+local width = self:GetAttribute('hasBottomRight')
+                and ]] .. LARGE_WIDTH .. [[
+                or ]] .. SMALL_WIDTH .. [[
 
-local LayoutMainMenuBar = format([[
-local ref = self:GetFrameRef('ref')
-local MultiBarBottomRight = ref:GetFrameRef('MultiBarBottomRight')
-local MainMenuExpBar = ref:GetFrameRef('MainMenuExpBar')
-local MainMenuBar = ref:GetFrameRef('MainMenuBar')
+self:GetFrameRef('MainMenuBar'):SetWidth(width)
+self:GetFrameRef('MainMenuExpBar'):SetWidth(width)
+]])
 
-local width = MultiBarBottomRight:IsShown() and %d or %d
-
-MainMenuBar:SetWidth(width)
-MainMenuExpBar:SetWidth(width)
-]], LARGE_WIDTH, SMALL_WIDTH)
-
-local LayoutWatchBars = [[
-local ref = self:GetFrameRef('ref')
-local MainMenuExpBar = ref:GetFrameRef('MainMenuExpBar')
-local ReputationWatchBar = ref:GetFrameRef('ReputationWatchBar')
-local MainMenuBarArtFrame = ref:GetFrameRef('MainMenuBarArtFrame')
-local MultiBarBottomLeft = ref:GetFrameRef('MultiBarBottomLeft')
-local PetActionButton1 = ref:GetFrameRef('PetActionButton1')
-local ReputationWatchBarDelegate = ref:GetFrameRef('ReputationWatchBarDelegate')
-
+Controller:SetAttribute('_layoutWatchBars', [[
 local y = 0
+local hasExp = self:GetAttribute('hasExp')
+local hasRep = self:GetAttribute('hasRep')
 
-local expBarShown = MainMenuExpBar:IsShown()
-local repBarShown = ReputationWatchBar:IsShown()
-
-MainMenuExpBar:SetHeight(repBarShown and 10 or 13)
-ReputationWatchBarDelegate:SetHeight(expBarShown and 10 or 13)
-
-if expBarShown then
-    y = y + MainMenuExpBar:GetHeight()
+if hasExp then
+    local height = hasRep and 10 or 13
+    y = y + height
+    self:GetFrameRef('MainMenuExpBar'):SetHeight(height)
 end
 
-if repBarShown then
-    y = y + ReputationWatchBarDelegate:GetHeight()
+if hasRep then
+    local height = hasExp and 10 or 13
+    y = y + height
+    self:GetFrameRef('ReputationWatchBarDelegate'):SetHeight(height)
 end
 
-MainMenuBarArtFrame:SetPoint('BOTTOM', '$parent', 'BOTTOM', 0, y)
-]]
+self:GetFrameRef('MainMenuBarArtFrame'):SetPoint('BOTTOM', '$parent', 'BOTTOM', 0, y)
+]])
 
-local LayoutStanceBar = [[
-local ref = self:GetFrameRef('ref')
-local StanceButton1 = ref:GetFrameRef('StanceButton1')
-local ActionButton1 = ref:GetFrameRef('ActionButton1')
-local MultiBarBottomLeft = ref:GetFrameRef('MultiBarBottomLeft')
-
-StanceButton1:ClearAllPoints()
-StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, MultiBarBottomLeft:IsShown() and 54 or 11)
-]]
-
-local LayoutPetActionBar = [[
-local ref = self:GetFrameRef('ref')
-local PetActionButton1 = ref:GetFrameRef('PetActionButton1')
-local ReputationWatchBar = ref:GetFrameRef('ReputationWatchBar')
-local MainMenuExpBar = ref:GetFrameRef('MainMenuExpBar')
-
-local repShown = ReputationWatchBar:IsShown()
-local expShown = MainMenuExpBar:IsShown()
+Controller:SetAttribute('_layoutPetBar', [[
+local hasExp = self:GetAttribute('hasExp')
+local hasRep = self:GetAttribute('hasRep')
 
 local y = 9
-if repShown and expShown then
+if hasRep and hasExp then
     y = y + 2
-elseif repShown or expShown then
+elseif hasRep or hasExp then
     y = y + 4
 else
     y = y - 4
 end
 
+local PetActionButton1 = self:GetFrameRef('PetActionButton1')
 PetActionButton1:ClearAllPoints()
 PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
-]]
+]])
 
-SetupShowHide(MultiBarBottomRight, LayoutMainMenuBar)
-SetupShowHide(MainMenuExpBar, LayoutWatchBars .. LayoutPetActionBar)
-SetupShowHide(ReputationWatchBar, LayoutWatchBars .. LayoutPetActionBar)
-SetupShowHide(MultiBarBottomLeft, LayoutStanceBar .. LayoutPetActionBar)
-SetupShowHide(PetActionBarFrame, LayoutPetActionBar)
+Controller:SetAttribute('_layoutStanceBar', [[
+local StanceButton1 = self:GetFrameRef('StanceButton1')
+StanceButton1:ClearAllPoints()
+StanceButton1:SetPoint('BOTTOMLEFT', self:GetFrameRef('ActionButton1'), 'TOPLEFT',
+    33, self:GetAttribute('hasBottomLeft') and 54 or 11)
+]])
+
+Controller:SetAttribute('_onattributechanged', [[
+    if name == 'hasbottomright' then
+        self:RunAttribute('_layoutMainMenuBar')
+    elseif name == 'hasexp' or name == 'hasrep' then
+        self:RunAttribute('_layoutWatchBars')
+        self:RunAttribute('_layoutPetBar')
+    elseif name == 'hasbottomleft' then
+        self:RunAttribute('_layoutStanceBar')
+        self:RunAttribute('_layoutPetBar')
+    elseif name == 'haspetbar' then
+        self:RunAttribute('_layoutPetBar')
+    end
+]])
+
+local function SetupShowHide(frame, key)
+    local handle = CreateFrame('Frame', nil, frame, 'SecureHandlerShowHideTemplate')
+    handle:SetAttribute('_onshow', format([[self:GetFrameRef('controller'):SetAttribute('%s', true)]], key))
+    handle:SetAttribute('_onhide', format([[self:GetFrameRef('controller'):SetAttribute('%s', false)]], key))
+    handle:SetFrameRef('controller', Controller)
+    ns.runattribute(handle, handle:IsVisible() and '_onshow' or '_onhide')
+    return handle
+end
+
+SetupShowHide(MultiBarBottomRight, 'hasBottomRight')
+SetupShowHide(MainMenuExpBar, 'hasExp')
+SetupShowHide(ReputationWatchBar, 'hasRep')
+SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
+SetupShowHide(PetActionBarFrame, 'hasPetBar')
 
 ns.login(HideGrid)

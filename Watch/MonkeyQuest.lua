@@ -239,7 +239,6 @@ ns.addonlogin('MonkeyQuest', function()
     ns.config('actionbar.micro.position', UpdateHeight)
 
     ns.event('!WATCH_LAYOUT', function()
-        print('layout')
         ns.pending(MonkeyQuestFrame, UpdateHeight)
     end)
 
