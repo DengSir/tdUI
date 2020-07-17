@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/1/2020, 1:49:54 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -41,6 +40,7 @@ local DEFAULT_PROFILE = {
     chat = { --
         shortChannels = {},
     },
+    minimap = {bag = {ignores = {['ItemRackMinimapFrame'] = true}}},
 }
 
 ns.load(function()
