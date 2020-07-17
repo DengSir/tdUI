@@ -18,16 +18,6 @@ local CURRENTLY_EQUIPPED = CURRENTLY_EQUIPPED
 
 local INVALID_EQUIP_LOC = {[''] = true, ['INVTYPE_BAG'] = true, ['INVTYPE_AMMO'] = true}
 
-local BACKDROP = {
-    bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
-    edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
-    -- tile = false,
-    tileEdge = true,
-    -- tileSize = 0,
-    edgeSize = 14,
-    insets = {left = 3, right = 3, top = 3, bottom = 3},
-}
-
 ---@param tip GameTooltip
 local function OnTooltipItem(tip, item)
     if not item then
@@ -54,10 +44,6 @@ local function OnTooltipItem(tip, item)
         end
     end
 
-    -- if ns.profile.tooltip.item.rarityBorder then
-    --     tip:SetBackdropBorderColor(ns.rgb(GetItemQualityColor(rarity)))
-    -- end
-
     tip:Show()
 end
 
@@ -81,14 +67,7 @@ local function HookTip(tip)
     tip:HookScript('OnTooltipSetItem', OnTooltipSetItem)
     tip:HookScript('OnTooltipCleared', OnTooltipCleared)
     tip:HookScript('OnHide', OnTooltipCleared)
-
-    -- tip:SetBackdrop(BACKDROP)
 end
-
--- ns.securehook('GameTooltip_SetBackdropStyle', function(self)
---     self:SetBackdrop(BACKDROP)
---     self:SetBackdropColor(0, 0, 0, 0.8)
--- end)
 
 HookTip(GameTooltip)
 HookTip(ItemRefTooltip)

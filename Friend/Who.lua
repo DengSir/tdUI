@@ -18,7 +18,7 @@ local UIDropDownMenu_GetSelectedID = UIDropDownMenu_GetSelectedID
 
 local WhoFrameDropDown = WhoFrameDropDown
 
-local WhoButons = ns.GetButtons('WhoFrameButton%d', WHOS_TO_DISPLAY, 'Name', 'Level', 'Variable')
+local WhoButons = ns.GetFrames('WhoFrameButton%d', WHOS_TO_DISPLAY, 'Name', 'Level', 'Variable')
 
 local whoStatus, whoVariable
 

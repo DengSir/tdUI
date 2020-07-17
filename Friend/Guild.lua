@@ -16,8 +16,8 @@ local GuildControlGetNumRanks = GuildControlGetNumRanks
 
 local FriendsFrame = FriendsFrame
 
-local Members = ns.GetButtons('GuildFrameButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Class', 'Level', 'Zone')
-local Status = ns.GetButtons('GuildFrameGuildStatusButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Rank')
+local Members = ns.GetFrames('GuildFrameButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Class', 'Level', 'Zone')
+local Status = ns.GetFrames('GuildFrameGuildStatusButton%d', GUILDMEMBERS_TO_DISPLAY, 'Name', 'Rank')
 
 do
     local WIDTH = 8

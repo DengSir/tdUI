@@ -83,6 +83,21 @@ end
 
 KeyRingButton:SetSize(14, 30)
 
+CharacterMicroButton:SetParent(MicroButtonAndBagsBar)
+SpellbookMicroButton:SetParent(MicroButtonAndBagsBar)
+TalentMicroButton:SetParent(MicroButtonAndBagsBar)
+QuestLogMicroButton:SetParent(MicroButtonAndBagsBar)
+SocialsMicroButton:SetParent(MicroButtonAndBagsBar)
+WorldMapMicroButton:SetParent(MicroButtonAndBagsBar)
+MainMenuMicroButton:SetParent(MicroButtonAndBagsBar)
+HelpMicroButton:SetParent(MicroButtonAndBagsBar)
+MainMenuBarBackpackButton:SetParent(MicroButtonAndBagsBar)
+CharacterBag0Slot:SetParent(MicroButtonAndBagsBar)
+CharacterBag1Slot:SetParent(MicroButtonAndBagsBar)
+CharacterBag2Slot:SetParent(MicroButtonAndBagsBar)
+CharacterBag3Slot:SetParent(MicroButtonAndBagsBar)
+KeyRingButton:SetParent(MicroButtonAndBagsBar)
+
 MainMenuBarPerformanceBar:ClearAllPoints()
 MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
 MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
@@ -144,7 +159,8 @@ local function UpdateMicroBar(style)
         point(KeyRingButton, 'LEFT', CharacterBag3Slot, 'RIGHT', 2.5, 0)
 
         point(MicroButtonAndBagsBar, 'BOTTOMLEFT', UIParent, 'BOTTOMLEFT')
-    else
+        MicroButtonAndBagsBar:Show()
+    elseif style == 'RIGHT' then
         MicroLeft:SetTexCoord(GetCoords(MICRO_LEFT_COORDS, style))
         MicroMiddle:SetTexCoord(GetCoords(MICRO_MIDDLE_COORDS, style))
         MicroRight:SetTexCoord(GetCoords(MICRO_RIGHT_COORDS, style))
@@ -162,6 +178,9 @@ local function UpdateMicroBar(style)
         point(KeyRingButton, 'RIGHT', CharacterBag3Slot, 'LEFT', -2.5, 0)
 
         point(MicroButtonAndBagsBar, 'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
+        MicroButtonAndBagsBar:Show()
+    elseif style == 'HIDE' then
+        MicroButtonAndBagsBar:Hide()
     end
 end
 

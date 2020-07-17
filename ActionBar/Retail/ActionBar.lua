@@ -25,7 +25,7 @@ local StanceButton1 = StanceButton1
 local LARGE_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-large'))
 local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
 
-local NO_GRID_BUTTONS = ns.GetButtons('MultiBarBottomRightButton%d', 6)
+local NO_GRID_BUTTONS = ns.GetFrames('MultiBarBottomRightButton%d', 6)
 
 local Controller = CreateFrame('Frame', nil, nil, 'SecureHandlerAttributeTemplate')
 

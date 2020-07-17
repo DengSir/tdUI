@@ -10,8 +10,6 @@ ns.addonlogin('MonkeyQuest', function()
         return
     end
 
-    -- MonkeyQuestFrame:SetClipsChildren(true)
-
     --- fix for quest tag
     QUEST_TAG_GROUP = 1
     QUEST_TAG_PVP = 41
@@ -29,20 +27,24 @@ ns.addonlogin('MonkeyQuest', function()
     ---- local
     local nop = nop
 
-    local Window = MonkeyQuestFrame
-    local TitleButton = MonkeyQuestTitleButton
-    local MinimizeButton = MonkeyQuestMinimizeButton
+    local MonkeyQuestFrame = MonkeyQuestFrame
+    local MonkeyQuestTitleButton = MonkeyQuestTitleButton
+    local MonkeyQuestMinimizeButton = MonkeyQuestMinimizeButton
+
+    local QuestButtons = ns.GetFrames('MonkeyQuestButton%d', MonkeyQuest.m_iNumQuestButtons, 'Text')
+
+    local LSM = LibStub('LibSharedMedia-3.0')
 
     ns.WatchManager:Register(MonkeyQuestFrame, 4, { --
-        minimizeButton = MinimizeButton,
-        header = TitleButton,
+        minimizeButton = MonkeyQuestMinimizeButton,
+        header = MonkeyQuestTitleButton,
     })
 
     do -- frame
-        Window:SetFrameStrata('BACKGROUND')
-        Window:EnableMouse(false)
-        Window:SetMouseMotionEnabled(true)
-        Window:SetMouseClickEnabled(false)
+        MonkeyQuestFrame:SetFrameStrata('BACKGROUND')
+        MonkeyQuestFrame:EnableMouse(false)
+        MonkeyQuestFrame:SetMouseMotionEnabled(true)
+        MonkeyQuestFrame:SetMouseClickEnabled(false)
     end
 
     do -- header buttons
@@ -54,34 +56,33 @@ ns.addonlogin('MonkeyQuest', function()
     end
 
     do -- title
-        TitleButton:EnableMouse(false)
+        MonkeyQuestTitleButton:EnableMouse(false)
 
         local TitleText = MonkeyQuestTitleText
         TitleText:SetFontObject('GameFontNormal')
         TitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
         TitleText.SetTextHeight = nop
 
-        MonkeyQuestButton1:SetPoint('TOPLEFT', Window, 'TOPLEFT', 0, -32)
     end
 
     do -- minimize button
-        local MinimizeLabel = MinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-        MinimizeLabel:SetPoint('RIGHT', MinimizeButton, 'LEFT', -5, 0)
+        local MinimizeLabel = MonkeyQuestMinimizeButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+        MinimizeLabel:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT', -5, 0)
         MinimizeLabel:SetText(QUESTS_LABEL)
 
-        function MinimizeButton:Update()
+        function MonkeyQuestMinimizeButton:Update()
             if MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized then
                 self:Fold()
-                TitleButton:Hide()
+                MonkeyQuestTitleButton:Hide()
                 MinimizeLabel:Show()
             else
                 self:Unfold()
-                TitleButton:Show()
+                MonkeyQuestTitleButton:Show()
                 MinimizeLabel:Hide()
             end
         end
 
-        MinimizeButton:HookScript('OnClick', MinimizeButton.Update)
+        MonkeyQuestMinimizeButton:HookScript('OnClick', MonkeyQuestMinimizeButton.Update)
     end
 
     local ScrollFrame = CreateFrame('ScrollFrame', nil, MonkeyQuestFrame)
@@ -90,7 +91,25 @@ ns.addonlogin('MonkeyQuest', function()
     ScrollChild:SetPoint('TOPLEFT')
     ScrollChild:SetSize(1, 1)
 
+    ScrollFrame:SetPoint('TOPLEFT', MonkeyQuestFrame, 'TOPLEFT', 0, -32)
     ScrollFrame:SetScrollChild(ScrollChild)
+
+    -- local ScrollBar = CreateFrame('Slider', nil, ScrollFrame)
+    -- ScrollBar:SetPoint('TOPRIGHT', -5, 0)
+    -- ScrollBar:SetPoint('BOTTOMRIGHT', -5, 0)
+    -- ScrollBar:SetWidth(10)
+    -- ScrollBar:SetThumbTexture([[Interface\BUTTONS\WHITE8X8]])
+    -- ScrollBar:SetValue(0)
+    -- ScrollBar:SetScript('OnEnter', function(self)
+    --     self:SetAlpha(1)
+    -- end)
+    -- ScrollBar:SetScript('OnLeave', function(self)
+    --     self:SetAlpha(0)
+    -- end)
+
+    -- ScrollFrame:SetScript('OnScrollRangeChanged', function(self, xrange, yrange)
+    --     ScrollBar:SetMinMaxValues(0, yrange)
+    -- end)
     ScrollFrame:SetScript('OnMouseWheel', function(self, delta)
         local scroll = self:GetVerticalScroll() - delta * 100
         local maxScroll = self:GetVerticalScrollRange()
@@ -101,10 +120,9 @@ ns.addonlogin('MonkeyQuest', function()
         end
         self:SetVerticalScroll(scroll)
     end)
-
-    for i = 1, MonkeyQuestButton1:GetNumPoints() do
-        ScrollFrame:SetPoint(MonkeyQuestButton1:GetPoint(i))
-    end
+    -- ScrollBar:SetScript('OnValueChanged', function(self, value)
+    --     ScrollFrame:SetVerticalScroll(value)
+    -- end)
 
     MonkeyQuestButton1:ClearAllPoints()
     MonkeyQuestButton1:SetPoint('TOPLEFT', ScrollChild, 'TOPLEFT')
@@ -112,16 +130,13 @@ ns.addonlogin('MonkeyQuest', function()
     MonkeyQuestButton1.ClearAllPoints = nop
     MonkeyQuestButton1.SetPoint = nop
 
-    local function Hide()
-        MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized = true
-        MinimizeButton:Update()
-        MonkeyQuest_Refresh()
+    for _, button in ipairs(QuestButtons) do
+        button:SetParent(ScrollChild)
     end
 
     local function Apply()
-        MonkeyQuestConfig[MonkeyQuest.m_global].m_iFrameWidth = ns.profile.watch.frame.width
         MonkeyQuestInit_ApplySettings()
-
+        MonkeyQuestFrame:SetWidth(ns.profile.watch.frame.width)
         ScrollFrame:SetWidth(ns.profile.watch.frame.width)
         ScrollChild:SetWidth(ns.profile.watch.frame.width)
     end
@@ -163,7 +178,7 @@ ns.addonlogin('MonkeyQuest', function()
             m_iFontHeight = 15,
             m_iFrameAlpha = 1,
             m_iHighlightAlpha = 1,
-            m_iQuestPadding = 0,
+            m_iQuestPadding = 2,
         }
 
         for k, v in pairs(defaults) do
@@ -171,10 +186,10 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end
 
-    local function Update()
+    local function UpdateShown()
         local shouldShow = GetNumQuestLogEntries() > 0
-        if shouldShow ~= Window:IsShown() then
-            Window:SetShown(shouldShow)
+        if shouldShow ~= MonkeyQuestFrame:IsShown() then
+            MonkeyQuestFrame:SetShown(shouldShow)
 
             if shouldShow then
                 MonkeyQuest_Refresh()
@@ -182,29 +197,14 @@ ns.addonlogin('MonkeyQuest', function()
         end
     end
 
-    for i = 1, MonkeyQuest.m_iNumQuestButtons do
-        local button = _G['MonkeyQuestButton' .. i]
-        local text = _G['MonkeyQuestButton' .. i .. 'Text']
-
-        text:ClearAllPoints()
-        text:SetPoint('BOTTOMLEFT')
-
-        button:SetParent(ScrollChild)
-    end
-
     local function UpdateHeight()
         local visibleHeight = MonkeyQuestFrame:GetTop() - 32 -
                                   (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
         local totalHeight = 0
 
-        for i = 1, MonkeyQuest.m_iNumQuestButtons do
-            local button = _G['MonkeyQuestButton' .. i]
+        for _, button in ipairs(QuestButtons) do
             if button:IsShown() then
-                local text = _G['MonkeyQuestButton' .. i .. 'Text']
-                local height = text:GetHeight() + 2
-
-                button:SetHeight(height)
-                totalHeight = totalHeight + height
+                totalHeight = totalHeight + button.Text:GetHeight()
             end
         end
 
@@ -213,28 +213,31 @@ ns.addonlogin('MonkeyQuest', function()
         MonkeyQuestFrame:SetHeight(min(visibleHeight, totalHeight) + 32)
     end
 
-    ns.securehook('MonkeyQuest_Resize', function()
-        ns.WatchManager:Refresh()
-    end)
-
-    ns.override('MonkeyQuestInit_ResetConfig', function()
+    local function ResetAndApply()
         Reset()
         Apply()
-    end)
+    end
 
-    ns.securehook('MonkeyQuestInit_LoadConfig', function()
+    local function Init()
         local db = MonkeyQuestConfig[MonkeyQuest.m_global]
         if not db._tdui then
             db._tdui = true
             Reset()
         end
+    end
+
+    ns.securehook('MonkeyQuest_Resize', function()
+        ns.WatchManager:Refresh()
     end)
 
+    ns.override('MonkeyQuestInit_ResetConfig', ResetAndApply)
+    ns.override('MonkeyQuestInit_ResetConfigToBlizzardStyle', ResetAndApply)
+    ns.securehook('MonkeyQuestInit_LoadConfig', Init)
     ns.securehook('MonkeyQuestInit_ApplySettings', function()
-        MinimizeButton:Update()
+        MonkeyQuestMinimizeButton:Update()
     end)
 
-    ns.event('QUEST_LOG_UPDATE', Update)
+    ns.event('QUEST_LOG_UPDATE', UpdateShown)
     ns.config('watch.frame.width', Apply)
     ns.config('actionbar.micro.position', UpdateHeight)
 
@@ -256,8 +259,8 @@ ns.addonlogin('MonkeyQuest', function()
     end)
 
     ns.login(function()
-        MonkeyQuestInit_LoadConfig()
+        Init()
         Apply()
-        Update()
+        UpdateShown()
     end)
 end)

@@ -7,10 +7,10 @@
 local ns = select(2, ...)
 
 ---@type Button[]
-local buttons = {
-    CharacterMicroButton, SpellbookMicroButton, TalentMicroButton, QuestLogMicroButton, SocialsMicroButton,
-    WorldMapMicroButton, MainMenuMicroButton, HelpMicroButton,
-}
+local buttons = {}
+for i, v in ipairs(MICRO_BUTTONS) do
+    tinsert(buttons, _G[v])
+end
 
 local function UpdateMicroWidth()
     return MicroButtonAndBagsBar:SetWidth(26 * #buttons + 12)
@@ -80,7 +80,7 @@ function ns.CreateMicroButton(opts)
     assert(opts.icon or opts.template)
     assert(not (opts.icon and opts.template))
 
-    local button = CreateFrame('Button', nil, MainMenuBarArtFrame, 'MainMenuBarMicroButton')
+    local button = CreateFrame('Button', nil, MicroButtonAndBagsBar, 'MainMenuBarMicroButton')
 
     if opts.template then
         LoadMicroButtonTextures(button, opts.template)
@@ -128,7 +128,16 @@ function ns.CreateMicroButton(opts)
         button:SetScript('OnClick', opts.onClick)
     end
 
-    local index = tIndexOf(buttons, opts.after)
+    local after = opts.after
+    if type(after) == 'string' then
+        after = _G[after]
+    end
+
+    if not after then
+        after = buttons[#buttons]
+    end
+
+    local index = tIndexOf(buttons, after)
     local anchorTo = buttons[index]
 
     button:SetPoint('BOTTOMLEFT', anchorTo, 'BOTTOMRIGHT', -3, 0)

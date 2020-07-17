@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/2/2020, 12:57:20 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -112,35 +111,36 @@ ns.login(function()
             end
         end,
         args = {
-            watch = treeItem 'Trackers'{
-                frame = inline 'Frame'{width = range('Width', 100, 500, 1)},
-                bar = inline 'Bar'{
+            watch = treeItem 'Trackers' {
+                frame = inline 'Frame' {width = range('Width', 100, 500, 1)},
+                bar = inline 'Bar' {
                     height = range('Height', 1, 64, 1),
                     inlineHeight = range('Inline height', 1, 64, 1),
                     spacing = range('Spacing', 0, 20, 1),
                     texture = statusbar('Texture'),
                 },
-                font = inline 'Font'{
+                font = inline 'Font' {
                     name = font('Font name'),
                     size = range('Font size', 6, 32, 0.5),
-                    style = drop 'Font flag'{ --
+                    style = drop 'Font flag' { --
                         {name = 'NONE', value = ''}, --
                         {name = 'OUTLINE', value = 'OUTLINE'}, --
                         {name = 'THICKOUTLINE', value = 'THICKOUTLINE'}, --
                     },
                     color = rgba('Font color'),
                 },
-                Recount = inline 'Recount'{ --
+                Recount = inline 'Recount' { --
                     maxLines = range('Max lines', 2, 40, 1),
                 },
-                ThreatClassic2 = inline 'ThreatClassic2'{ --
+                ThreatClassic2 = inline 'ThreatClassic2' { --
                     maxLines = range('Max lines', 2, 40, 1),
                 },
             },
-            actionbar = treeItem 'Action bar'{
-                micro = inline 'Micro bar'{
-                    position = drop 'Position'{ --
+            actionbar = treeItem 'Action bar' {
+                micro = inline 'Micro bar' {
+                    position = drop 'Position' { --
                         {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
+                        {name = 'Hide', value = 'HIDE'},
                     },
                 },
                 -- actionbar = inline 'Action bar'{ --
@@ -148,13 +148,13 @@ ns.login(function()
                 --     cropIcon = toggle('Crop icons')
                 -- },
             },
-            tooltip = treeItem 'Tooltip'{
-                item = inline 'Item'{
+            tooltip = treeItem 'Tooltip' {
+                item = inline 'Item' {
                     icon = toggle('Item icon'),
                     itemLevelOnlyEquip = toggle('Show item level on equipment only'),
                 },
             },
-            chat = treeItem 'Chat'{ --
+            chat = treeItem 'Chat' { --
                 shortChannels = inline 'Short channel'(SHORT_CHANNELS),
             },
         },

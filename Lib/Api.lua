@@ -44,7 +44,7 @@ function ns.RemoveAceConfig(registry, ...)
     end
 end
 
-function ns.GetButtons(nameTemplate, count, ...)
+function ns.GetFrames(nameTemplate, count, ...)
     local buttons = {}
     local keys = {...}
 
