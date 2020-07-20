@@ -1,0 +1,119 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Frame name="tdUICollectFrameTemplate" virtual="true">
+        <Backdrop bgFile="Interface\BUTTONS\WHITE8x8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize val="16"/>
+            <TileSize val="16"/>
+            <BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+        </Backdrop>
+        <Layers>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <FontString parentKey="Title" inherits="GameFontNormalOutline">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="15" y="-6" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture file="Interface/Scenarios/ScenarioParts">
+                    <Size x="34" y="34" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="1" y="-1" />
+                    </Anchors>
+                    <TexCoords left="0.48046875" right="0.546875" top="0.345703125" bottom="0.412109375" />
+                </Texture>
+                <Texture file="Interface/Scenarios/ScenarioParts">
+                    <Size x="34" y="34" />
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="-1" y="-1" />
+                    </Anchors>
+                    <TexCoords left="0.546875" right="0.48046875" top="0.345703125" bottom="0.412109375" />
+                </Texture>
+                <Texture file="Interface/Scenarios/ScenarioParts">
+                    <Size x="34" y="34" />
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" x="1" y="1" />
+                    </Anchors>
+                    <TexCoords left="0.48046875" right="0.546875" top="0.412109375" bottom="0.345703125" />
+                </Texture>
+                <Texture file="Interface/Scenarios/ScenarioParts">
+                    <Size x="34" y="34" />
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" x="-1" y="1" />
+                    </Anchors>
+                    <TexCoords left="0.546875" right="0.48046875" top="0.412109375" bottom="0.345703125" />
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="Edit" hidden="true">
+                <Size x="16" y="16" />
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Title" relativePoint="RIGHT" x="5" y="-3" />
+                </Anchors>
+                <NormalTexture file="Interface\Buttons\CancelButton-Up">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="CENTER" />
+                    </Anchors>
+                </NormalTexture>
+                <PushedTexture file="Interface\Buttons\CancelButton-Down">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="CENTER" />
+                    </Anchors>
+                </PushedTexture>
+                <HighlightTexture file="Interface\Buttons\CancelButton-Highlight" alphaMode="ADD">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="CENTER" />
+                    </Anchors>
+                </HighlightTexture>
+                <Scripts>
+                    <OnClick>
+                        self:Hide()
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+                        GameTooltip:SetText(self.tooltip)
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide" />
+                </Scripts>
+            </Button>
+            <Button parentKey="Option">
+                <Size x="16" y="16" />
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-25" y="8" />
+                </Anchors>
+                <NormalTexture file="Interface\Scenarios\ScenarioIcon-Interact" />
+                <HighlightTexture file="Interface\Scenarios\ScenarioIcon-Interact" alphaMode="ADD" />
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                self:SetBackdropBorderColor(1, 0.82, 0)
+                self:SetBackdropColor(0.1, 0.082, 0, 0.8)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Button name="tdUICollectEditButtonTemplate" virtual="true">
+        <NormalTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+            <Size x="20" y="20" />
+            <Anchors>
+                <Anchor point="CENTER" x="-8" y="-8" />
+            </Anchors>
+        </NormalTexture>
+        <PushedTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+            <Size x="20" y="20" />
+            <Anchors>
+                <Anchor point="CENTER" x="-8" y="-8" />
+            </Anchors>
+        </PushedTexture>
+        <HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD">
+            <Size x="20" y="20" />
+            <Anchors>
+                <Anchor point="CENTER" x="-8" y="-8" />
+            </Anchors>
+        </HighlightTexture>
+    </Button>
+</Ui>

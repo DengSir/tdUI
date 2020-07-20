@@ -1,6 +1,7 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Include file="Libs\Libs.xml" />
+    <Include file="Template.xml" />
 
     <Script file="Lib\Lib.lua" />
     <Script file="Lib\Api.lua" />
@@ -44,7 +45,8 @@
     <Script file="Map\WorldMap.lua" />
     <Script file="Map\Minimap.lua" />
     <Script file="Map\Coords.lua" />
-    <Script file="Map\MBB.lua" />
+    <Script file="Map\MinimapButtons.lua" />
+    <Script file="Map\NovaWorldBuffs.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
     <Script file="Tooltip\Item.lua" />

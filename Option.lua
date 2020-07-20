@@ -5,6 +5,8 @@
 ---@type ns
 local ns = select(2, ...)
 
+local optionFrame
+
 ns.login(function()
     local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
     local AceConfigDialog = LibStub('AceConfigDialog-3.0')
@@ -157,9 +159,24 @@ ns.login(function()
             chat = treeItem 'Chat' { --
                 shortChannels = inline 'Short channel'(SHORT_CHANNELS),
             },
+            minimap = treeItem 'Minimap' {
+                buttons = inline 'Buttons' {
+                    column = range('Buttons column count', 1, 128, 1)
+                }
+            }
         },
     }
 
     AceConfigRegistry:RegisterOptionsTable('tdUI', options)
-    AceConfigDialog:AddToBlizOptions('tdUI', 'tdUI')
+    optionFrame = AceConfigDialog:AddToBlizOptions('tdUI', 'tdUI')
 end)
+
+local function OpenToCategory(options)
+    InterfaceOptionsFrame_OpenToCategory(options)
+    InterfaceOptionsFrame_OpenToCategory(options)
+    OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+end
+
+function ns.OpenOption()
+    OpenToCategory(optionFrame)
+end

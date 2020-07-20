@@ -40,7 +40,10 @@ local DEFAULT_PROFILE = {
     chat = { --
         shortChannels = {},
     },
-    minimap = {bag = {ignores = {['ItemRackMinimapFrame'] = true}}},
+    minimap = { --
+        buttons = {column = 4, ignores = {}},
+    },
+    window = {minimap = {minimapPos = 215.34}},
 }
 
 ns.load(function()
