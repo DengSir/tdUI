@@ -159,11 +159,6 @@ ns.login(function()
             chat = treeItem 'Chat' { --
                 shortChannels = inline 'Short channel'(SHORT_CHANNELS),
             },
-            minimap = treeItem 'Minimap' {
-                buttons = inline 'Buttons' {
-                    column = range('Buttons column count', 1, 128, 1)
-                }
-            }
         },
     }
 

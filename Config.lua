@@ -41,7 +41,9 @@ local DEFAULT_PROFILE = {
         shortChannels = {},
     },
     minimap = { --
-        buttons = {column = 4, ignores = {}},
+        buttons = { --
+            ignores = {},
+        },
     },
     window = {minimap = {minimapPos = 215.34}},
 }

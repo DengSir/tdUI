@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/20/2020, 1:07:36 AM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -23,7 +22,7 @@ end)
 ns.addon('AtlasLootClassic', function()
     local Window = _G['AtlasLoot_GUI-Frame']
     Window:SetBackdrop(nil)
-    Window:SetWidth(Window:GetWidth() - 110)
+    Window:SetWidth(Window:GetWidth() - 160)
     Window:SetHeight(Window:GetHeight() - 10)
     Window.CloseButton:Hide()
 
@@ -50,7 +49,9 @@ ns.addon('AtlasLootClassic', function()
 
     Window.moduleSelect:SetParPoint('TOPLEFT', Window, 'TOPLEFT', 64, -40)
     Window.moduleSelect:SetWidth(245)
+    Window.moduleSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
     Window.subCatSelect:SetWidth(245)
+    Window.subCatSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
 
     local function setupInset(frame, left, right, top, bottom)
         local inset = CreateFrame('Frame', nil, Window, 'InsetFrameTemplate')
@@ -72,9 +73,9 @@ ns.addon('AtlasLootClassic', function()
     Window.contentFrame.downBG:Hide()
     Window.contentFrame.downBG:SetPoint('TOPLEFT', Window.contentFrame, 'TOPLEFT', 0, -485)
 
-    Window.boss:SetWidth(220)
-    Window.extra:SetWidth(220)
-    Window.difficulty:SetWidth(220)
+    Window.boss:SetWidth(170)
+    Window.extra:SetWidth(170)
+    Window.difficulty:SetWidth(170)
 
     Window.boss.frame:SetBackdrop(nil)
     Window.extra.frame:SetBackdrop(nil)

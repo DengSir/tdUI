@@ -65,12 +65,12 @@ ns.load(function()
             sort(buttonList, CompareButton)
         end
 
-        local SIZE = 36
-        local HALF_SIZE = 36 / 2
+        local SIZE = 33
+        local HALF_SIZE = SIZE / 2
         local MARGIN_TOP = 15
         local MARGIN_LEFT = 15
 
-        local column = ns.profile.minimap.buttons.column
+        local column = 6
         local x, y = 0, 0
 
         for _, button in ipairs(buttonList) do
@@ -269,23 +269,6 @@ ns.load(function()
             edit:SetScript('OnClick', OnClick)
             edit:SetScript('OnShow', OnShow)
 
-            -- local nt = edit:CreateTexture(nil, 'OVERLAY')
-            -- nt:SetSize(20, 20)
-            -- nt:SetPoint('CENTER', -8, -8)
-
-            -- local pt = edit:CreateTexture(nil, 'OVERLAY')
-            -- pt:SetSize(20, 20)
-            -- pt:SetPoint('CENTER', -8, -8)
-
-            -- local ht = edit:CreateTexture(nil, 'OVERLAY')
-            -- ht:SetSize(20, 20)
-            -- ht:SetPoint('CENTER', -8, -8)
-            -- ht:SetTexture([[Interface\Minimap\UI-Minimap-ZoomButton-Highlight]])
-
-            -- edit:SetNormalTexture(nt)
-            -- edit:SetPushedTexture(pt)
-            -- edit:SetHighlightTexture(ht)
-
             buttonEdit[button] = edit
             return edit
         end
@@ -387,7 +370,6 @@ ns.load(function()
     end
 
     ns.timer(3, Collect)
-    ns.config('minimap.buttons.column', LayoutButton)
 end)
 
 ns.addon('RecipeRadarClassic', function()
