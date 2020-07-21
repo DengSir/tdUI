@@ -45,7 +45,7 @@
     <Script file="Map\WorldMap.lua" />
     <Script file="Map\Minimap.lua" />
     <Script file="Map\Coords.lua" />
-    <Script file="Map\MinimapButtons.lua" />
+    <Script file="Map\ButtonCollect.lua" />
     <Script file="Map\NovaWorldBuffs.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />

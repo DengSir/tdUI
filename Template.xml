@@ -1,6 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <Frame name="tdUICollectFrameTemplate" virtual="true">
+    <Frame name="tdUICollectFrameTemplate" hidden="true" enableMouse="true" virtual="true">
         <Backdrop bgFile="Interface\BUTTONS\WHITE8x8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
             <EdgeSize val="16"/>
             <TileSize val="16"/>
@@ -88,6 +88,24 @@
                 <NormalTexture file="Interface\Scenarios\ScenarioIcon-Interact" />
                 <HighlightTexture file="Interface\Scenarios\ScenarioIcon-Interact" alphaMode="ADD" />
             </Button>
+            <Frame parentKey="AutoHide">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" />
+                </Anchors>
+                <Scripts>
+                    <OnUpdate>
+                        if self:IsMouseOver() or self:GetParent().Edit:IsShown() then
+                            self.timer = nil
+                        else
+                            self.timer = (self.timer or 2) - elapsed
+                            if self.timer > 0 then
+                            else
+                                self:GetParent():Hide()
+                            end
+                        end
+                    </OnUpdate>
+                </Scripts>
+            </Frame>
         </Frames>
         <Scripts>
             <OnLoad>
@@ -96,7 +114,7 @@
             </OnLoad>
         </Scripts>
     </Frame>
-    <Button name="tdUICollectEditButtonTemplate" virtual="true">
+    <Button name="tdUICollectEditButtonTemplate" hidden="true" setAllPoints="true" virtual="true">
         <NormalTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
             <Size x="20" y="20" />
             <Anchors>
@@ -115,5 +133,10 @@
                 <Anchor point="CENTER" x="-8" y="-8" />
             </Anchors>
         </HighlightTexture>
+        <Scripts>
+            <OnLoad>
+                self:SetFrameLevel(self:GetParent():GetFrameLevel() + 20)
+            </OnLoad>
+        </Scripts>
     </Button>
 </Ui>
