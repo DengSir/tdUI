@@ -2,15 +2,16 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/25/2020, 3:59:38 PM
-
+---@type ns
 local ns = select(2, ...)
 
 local UpdateScale = ns.nocombated(function()
+    local style = ns.profile.actionbar.micro.position
     local screenWidth = UIParent:GetWidth()
     local barScale = 1
     local barWidth = MainMenuBar:GetWidth()
     local barMargin = MAIN_MENU_BAR_MARGIN or 75
-    local bagsWidth = MicroButtonAndBagsBar:GetWidth()
+    local bagsWidth = style ~= 'HIDE' and MicroButtonAndBagsBar:GetWidth() or 0
     local contentsWidth = barWidth + bagsWidth
     if contentsWidth > screenWidth then
         barScale = screenWidth / contentsWidth
@@ -34,7 +35,7 @@ local UpdateScale = ns.nocombated(function()
             xOffset = math.max((roomLeft - bagsWidth) / 2 + barMargin, 0)
         end
 
-        if ns.profile.actionbar.micro.position == 'LEFT' then
+        if style == 'LEFT' then
             MainMenuBar:SetPoint('BOTTOMRIGHT', UIParent, -xOffset / barScale, 0)
         else
             MainMenuBar:SetPoint('BOTTOMLEFT', UIParent, xOffset / barScale, 0)
