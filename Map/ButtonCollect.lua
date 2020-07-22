@@ -30,12 +30,11 @@ local WHITE_LIST = { --
     ['RecipeRadarMinimapButtonFrame'] = true,
 }
 
-local Tip = {}
 local Button = {}
-local EditButton = {}
+local EditButton = ns.class('Button')
 
 local methods = {'SetParent', 'SetPoint', 'ClearAllPoints', 'SetFrameStrata'}
-local scripts = {'OnEnter', 'OnDragStart', 'OnDragStop', 'OnMouseDown', 'OnMouseUp'}
+local scripts = {'OnDragStart', 'OnDragStop', 'OnMouseDown', 'OnMouseUp', 'OnEnter'}
 
 function Collect:OnLoad()
     self.buttonEnv = {}
@@ -61,13 +60,9 @@ function Collect:InitMinimap()
     local obj = LDB:NewDataObject(ADDON, {
         type = 'data source',
         icon = [[Interface\MacroFrame\MacroFrame-Icon]],
-        OnEnter = function(button)
-            GameTooltip:SetOwner(button, 'ANCHOR_NONE')
-            GameTooltip:SetPoint('BOTTOMRIGHT', button, 'TOPLEFT')
-            GameTooltip:SetText('tdUI')
-            GameTooltip:Show()
+        OnTooltipShow = function(tip)
+            tip:SetText('tdUI')
         end,
-        OnLeave = GameTooltip_Hide,
         OnClick = function(_, clicked)
             if clicked == 'LeftButton' then
                 self:SetShown(not self:IsShown())
@@ -92,12 +87,15 @@ function Collect:InitFrame()
         return self:UpdateEdit()
     end
 
+    self.AutoHide:SetPoint('TOPRIGHT', self.ToggleButton, 'TOPRIGHT')
     self.Title:SetText('tdUI')
     self.Edit.tooltip = 'Exit edit'
     self.Edit:SetScript('OnShow', UpdateEdit)
     self.Edit:SetScript('OnHide', UpdateEdit)
 
-    self.AutoHide:SetPoint('TOPRIGHT', self.ToggleButton, 'TOPRIGHT')
+    self.Option:SetScript('OnClick', function()
+        return ns.OpenOption()
+    end)
 
     self:SetScript('OnShow', self.Refresh)
 end
@@ -140,7 +138,6 @@ function Collect:IsCollectable(button)
     if WHITE_LIST[name] then
         return true
     end
-
     return button:GetObjectType() == 'Button' and button:GetNumRegions() >= 3
 end
 
@@ -164,10 +161,13 @@ function Collect:GotButton(button)
 end
 
 ---@param button Button
-function Collect:LostButton(button)
-    self:RestoreButton(button, true)
+function Collect:OnLostButton(button)
+    self:RestoreButton(button)
     self.buttonEnv[button] = nil
-    self:UpdateEdit()
+
+    if self.buttonEdits[button] then
+        self.buttonEdits[button]:Hide()
+    end
 end
 
 ---@param button Button
@@ -179,13 +179,33 @@ function Collect:UpdateButton(button)
     end
 end
 
+function Collect:OnButtonSetParent(button, parent)
+    local env = self.buttonEnv[button]
+    if env then
+        if parent == Minimap or parent == self then
+            env.SetParent(button, self)
+            self:Refresh()
+        else
+            env.parent = parent
+            self:OnLostButton(button)
+        end
+    end
+end
+
+function Collect:OnButtonSetPoint(button, ...)
+    local env = self.buttonEnv[button]
+    if env then
+        env.points = {...}
+    end
+end
+
 ---@param button Button
 function Collect:CollectButton(button, noSetParent)
     local env = self.buttonEnv[button]
     if env and not env.collected then
-        button:SetParent(self)
-
         local scriptWidget = self:FindButton(button) or button
+        local parent = button:GetParent()
+        button:SetParent(self)
 
         for _, method in ipairs(methods) do
             env[method], button[method] = button[method], Button[method]
@@ -203,6 +223,7 @@ function Collect:CollectButton(button, noSetParent)
         end
 
         env.scriptWidget = scriptWidget
+        env.parent = parent
         env.points = {button:GetPoint()}
         env.frameLevelDelta = max(1, button:GetFrameLevel() - MinimapBackdrop:GetFrameLevel())
         env.collected = true
@@ -213,7 +234,7 @@ function Collect:CollectButton(button, noSetParent)
 end
 
 ---@param button Button
-function Collect:RestoreButton(button, noSetParent)
+function Collect:RestoreButton(button)
     local env = self.buttonEnv[button]
     if env and env.collected then
         for _, method in ipairs(methods) do
@@ -230,9 +251,7 @@ function Collect:RestoreButton(button, noSetParent)
             end
         end
 
-        if not noSetParent then
-            button:SetParent(Minimap)
-        end
+        button:SetParent(env.parent)
         button:ClearAllPoints()
         button:SetPoint(unpack(env.points))
         button:SetFrameLevel(MinimapBackdrop:GetFrameLevel() + env.frameLevelDelta)
@@ -249,6 +268,8 @@ end
 
 function Collect:Update()
     if self.isDirty then
+        self.isDirty = nil
+
         wipe(self.buttonList)
 
         for button, env in pairs(self.buttonEnv) do
@@ -305,7 +326,7 @@ function Collect:UpdateEdit()
 
     if self.Edit:IsVisible() then
         for button, env in pairs(self.buttonEnv) do
-            local edit = self.buttonEdits[button] or self:CreateEditButton(button)
+            local edit = self.buttonEdits[button] or self:GetEditButton(button)
             edit:Show()
         end
     else
@@ -326,101 +347,57 @@ function Collect:FindButton(button)
     end
 end
 
-function Collect:CreateEditButton(button)
-    local edit = EditButton:Create(button)
-    self.buttonEdits[button] = edit
+function Collect:GetEditButton(button)
+    local edit = self.buttonEdits[button]
+    if not edit then
+        edit = EditButton:Create(button)
+        self.buttonEdits[button] = edit
+    end
     return edit
 end
 
 ---- Button
 
+Button.ClearAllPoints = nop
+Button.SetFrameStrata = nop
+
 function Button:SetParent(parent)
-    if parent == Minimap or parent == Collect then
-        local env = Collect.buttonEnv[self]
-        if env then
-            env.SetParent(self, Collect)
-            Collect:Refresh()
-        end
-    else
-        Collect:LostButton(self)
-        self:SetParent(parent)
-    end
+    return Collect:OnButtonSetParent(self, parent)
 end
 
 function Button:SetPoint(...)
-    local env = Collect.buttonEnv[self]
-    if env then
-        env.points = {...}
-    end
+    return Collect:OnButtonSetPoint(self, ...)
 end
 
-Button.ClearAllPoints = nop
-Button.SetFrameStrata = nop
+local function AnchorTip(tip, owner)
+    if tip and tip:IsVisible() and tip:IsOwned(owner) then
+        tip:SetAnchorType('ANCHOR_NONE')
+        tip:SetPoint('TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
+    end
+end
 
 function Button:OnEnter()
     local button = self.__tdbutton or self
     local env = Collect.buttonEnv[button]
     if env then
-        Tip:Hook(GameTooltip)
-        Tip:Hook(LibDBIconTooltip)
-        env.OnEnter(button)
-        Tip:Unhook(GameTooltip)
-        Tip:Unhook(LibDBIconTooltip)
+        env.OnEnter(self)
+        AnchorTip(GameTooltip, self)
+        AnchorTip(LibDBIconTooltip, self)
     end
 end
-
----- Tip
-
-Tip.methods = {'SetOwner', 'SetPoint', 'ClearAllPoints'}
-
-function Tip:Hook(tip)
-    if not tip then
-        return
-    end
-
-    tip.__tdorig = tip.__tdorig or {}
-
-    for _, method in ipairs(self.methods) do
-        tip.__tdorig[method] = tip[method]
-        tip[method] = self[method]
-    end
-end
-
-function Tip:Unhook(tip)
-    if not tip or not tip.__tdorig then
-        return
-    end
-
-    for _, method in ipairs(self.methods) do
-        tip[method] = nil
-
-        if tip[method] ~= tip.__tdorig[method] then
-            tip[method] = tip.__tdorig[method]
-        end
-    end
-end
-
-function Tip:SetPoint()
-    self.__tdorig.SetPoint(self, 'TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
-end
-
-function Tip:SetOwner(owner)
-    self.__tdorig.SetOwner(self, owner, 'ANCHOR_NONE')
-    Tip.SetPoint(self)
-end
-
-Tip.ClearAllPoints = nop
 
 ---- EditButton
 
-function EditButton:Create(button)
-    local edit = CreateFrame('Button', nil, button, 'tdUICollectEditButtonTemplate')
-    edit:SetScript('OnShow', self.OnShow)
-    edit:SetScript('OnClick', self.OnClick)
-    return edit
+function EditButton:Constructor(parent)
+    self:SetScript('OnShow', self.Update)
+    self:SetScript('OnClick', self.OnClick)
 end
 
-function EditButton:OnShow()
+function EditButton:Create(parent)
+    return self:Bind(CreateFrame('Button', nil, parent, 'tdUICollectEditButtonTemplate'))
+end
+
+function EditButton:Update()
     local button = self:GetParent()
     local isIgnored = Collect:IsIgnored(button)
 
@@ -436,8 +413,10 @@ function EditButton:OnClick()
     Collect:SetIgnored(button, not Collect:IsIgnored(button))
     Collect:UpdateButton(button)
     Collect:Refresh()
-    EditButton.OnShow(self)
+    self:Update()
 end
+
+---- INIT
 
 ns.load(function()
     Collect:OnLoad()

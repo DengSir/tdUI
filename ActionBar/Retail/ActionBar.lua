@@ -37,10 +37,7 @@ local function hide(frame)
     frame:SetParent(Hider)
 end
 
-local function point(frame, ...)
-    frame:ClearAllPoints()
-    frame:SetPoint(...)
-end
+local point = ns.RePoint
 
 hide(MainMenuBarTexture0)
 hide(MainMenuBarTexture1)
@@ -278,18 +275,31 @@ StanceButton1:SetPoint('BOTTOMLEFT', self:GetFrameRef('ActionButton1'), 'TOPLEFT
     33, self:GetAttribute('hasBottomLeft') and 54 or 11)
 ]])
 
+Controller:SetAttribute('_updateHeight', [[
+local hasExp = self:GetAttribute('hasExp')
+local hasRep = self:GetAttribute('hasRep')
+local height = 47
+if hasExp and hasRep then
+    height = height + 20
+elseif hasExp or hasRep then
+    height = height + 13
+end
+self:GetFrameRef('MainMenuBar'):SetHeight(height)
+]])
+
 Controller:SetAttribute('_onattributechanged', [[
-    if name == 'hasbottomright' then
-        self:RunAttribute('_layoutMainMenuBar')
-    elseif name == 'hasexp' or name == 'hasrep' then
-        self:RunAttribute('_layoutWatchBars')
-        self:RunAttribute('_layoutPetBar')
-    elseif name == 'hasbottomleft' then
-        self:RunAttribute('_layoutStanceBar')
-        self:RunAttribute('_layoutPetBar')
-    elseif name == 'haspetbar' then
-        self:RunAttribute('_layoutPetBar')
-    end
+if name == 'hasbottomright' then
+    self:RunAttribute('_layoutMainMenuBar')
+elseif name == 'hasexp' or name == 'hasrep' then
+    self:RunAttribute('_layoutWatchBars')
+    self:RunAttribute('_layoutPetBar')
+    self:RunAttribute('_updateHeight')
+elseif name == 'hasbottomleft' then
+    self:RunAttribute('_layoutStanceBar')
+    self:RunAttribute('_layoutPetBar')
+elseif name == 'haspetbar' then
+    self:RunAttribute('_layoutPetBar')
+end
 ]])
 
 local function SetupShowHide(frame, key)

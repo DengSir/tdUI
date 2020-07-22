@@ -6,11 +6,11 @@
 local ns = select(2, ...)
 
 local optionFrame
+local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
+local AceConfigDialog = LibStub('AceConfigDialog-3.0')
+local LSM = LibStub('LibSharedMedia-3.0')
 
 ns.login(function()
-    local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
-    local AceConfigDialog = LibStub('AceConfigDialog-3.0')
-    local LSM = LibStub('LibSharedMedia-3.0')
 
     local SHORT_CHANNELS = {}
 
@@ -91,25 +91,29 @@ ns.login(function()
         return {type = 'toggle', name = name, order = orderGen()}
     end
 
+    local function path(paths)
+        return table.concat(paths, '.')
+    end
+
     local options = {
         type = 'group',
         name = 'tdUI',
         get = function(paths)
             if paths.type == 'color' then
-                local color = ns.config(paths)
+                local color = ns.config(path(paths))
                 return color.r, color.g, color.b, color.a
             else
-                return ns.config(paths)
+                return ns.config(path(paths))
             end
         end,
         set = function(paths, ...)
             if paths.type == 'color' then
                 local color = {}
                 color.r, color.g, color.b, color.a = ...
-                ns.config(paths, color)
+                ns.config(path(paths), color)
             else
                 local value = ...
-                return ns.config(paths, value)
+                return ns.config(path(paths), value)
             end
         end,
         args = {
@@ -139,17 +143,22 @@ ns.login(function()
                 },
             },
             actionbar = treeItem 'Action bar' {
-                micro = inline 'Micro bar' {
-                    position = drop 'Position' { --
-                        {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
-                        {name = 'Hide', value = 'HIDE'},
-                    },
+                ['micro.position'] = drop 'Position' { --
+                    {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'}, {name = 'Hide', value = 'HIDE'},
                 },
-                -- actionbar = inline 'Action bar'{ --
-                --     macroName = toggle('Macro name'),
-                --     cropIcon = toggle('Crop icons')
-                -- },
             },
+            -- actionbar = treeItem 'Action bar' {
+            --     micro = inline 'Micro bar' {
+            --         position = drop 'Position' { --
+            --             {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
+            --             {name = 'Hide', value = 'HIDE'},
+            --         },
+            --     },
+            --     -- actionbar = inline 'Action bar'{ --
+            --     --     macroName = toggle('Macro name'),
+            --     --     cropIcon = toggle('Crop icons')
+            --     -- },
+            -- },
             tooltip = treeItem 'Tooltip' {
                 item = inline 'Item' {
                     icon = toggle('Item icon'),
@@ -173,5 +182,7 @@ local function OpenToCategory(options)
 end
 
 function ns.OpenOption()
-    OpenToCategory(optionFrame)
+    -- OpenToCategory(optionFrame)
+
+    AceConfigDialog:Open('tdUI')
 end

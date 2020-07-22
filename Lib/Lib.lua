@@ -20,6 +20,8 @@ local NewTicker = C_Timer.NewTicker
 ---@field profile Profile
 local ADDON, ns = ...
 
+local LibClass = LibStub('LibClass-2.0')
+
 local events = CreateFrame('Frame')
 
 local addonCallbacks = {}
@@ -279,57 +281,77 @@ function ns.pending(obj, func)
     events:SetScript('OnUpdate', pendingOnUpdate)
 end
 
--- do
---     local updaters = {}
+function ns.pend(...)
+    local obj, func
+    if select('#', ...) == 1 then
+        obj, func = {}, ...
+    else
+        obj, func = ...
+    end
+    return function()
+        return ns.pending(obj, func)
+    end
+end
 
---     ns.event('GET_ITEM_INFO_RECEIVED', function(id, ok)
---         if not ok then
---             return
---         end
+local function strPaths(paths)
+    local t = type(paths)
+    if t == 'string' then
+        return paths
+    elseif t == 'table' then
+        return tconcat(paths, '.')
+    else
+        assert(false)
+    end
+end
 
---         local objects = updaters[id]
---         if objects then
---             for obj, func in pairs(objects) do
---                 func(obj)
---             end
---             updaters[id] = nil
---         end
---     end)
+local function parsePaths(paths)
+    local t = type(paths)
+    if t == 'string' then
+        return {strsplit('%.', paths)}
+    elseif t == 'table' then
+        return paths
+    else
+        assert(false)
+    end
+end
 
---     local function parseItem(item)
---         return tonumber(item) or tonumber(item:match('item:(%d+)'))
---     end
+local function configListen(paths, func)
+    return append(configCallbacks, strPaths(paths), func)
+end
 
---     function ns.waititem(item, obj, func)
---         item = parseItem(item)
---         updaters[item] = updaters[item] or {}
---         updaters[item][obj] = func
---     end
--- end
+local function configRead(paths)
+    local db = ns.profile
+    for i, path in ipairs(parsePaths(paths)) do
+        db = db[path]
+        if not db then
+            return
+        end
+    end
+    return db
+end
+
+local function configWrite(paths, value)
+    local p = parsePaths(paths)
+    local n = #p
+    local db = ns.profile
+    for i, v in ipairs(p) do
+        if i < n then
+            db = db[v]
+        else
+            db[v] = value
+            call(configCallbacks, strPaths(paths))
+        end
+    end
+end
 
 function ns.config(paths, ...)
+    local arg1 = ...
     if select('#', ...) == 0 then
-        local value = ns.profile
-        for i, path in ipairs(paths) do
-            value = value[path]
-            if not value then
-                return
-            end
-        end
-        return value
-    elseif type(...) == 'function' then
-        append(configCallbacks, type(paths) == 'table' and tconcat(paths, '.') or paths, (...))
+        return configRead(paths)
+    elseif type(arg1) == 'function' then
+        return configListen(paths, arg1)
     else
-        local n = #paths
-        local db = ns.profile
-        for i, v in ipairs(paths) do
-            if i < n then
-                db = db[v]
-            else
-                db[v] = ...
-                call(configCallbacks, tconcat(paths, '.'))
-            end
-        end
+        return configWrite(paths, arg1)
     end
 end
 
@@ -342,4 +364,8 @@ function ns.runattribute(handle, attr)
     end
     Runner:SetFrameRef('handle', handle)
     Runner:SetAttribute('run', attr)
+end
+
+function ns.class(super)
+    return LibClass:New(super)
 end

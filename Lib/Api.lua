@@ -23,6 +23,13 @@ function ns.rgb(r, g, b)
     end
 end
 
+function ns.RePoint(frame, ...)
+    if frame then
+        frame:ClearAllPoints()
+        frame:SetPoint(...)
+    end
+end
+
 function ns.GetAceConfig(k)
     return LibStub('AceConfigRegistry-3.0'):GetOptionsTable(k, 'dialog', 'Inject-1.0')
 end
