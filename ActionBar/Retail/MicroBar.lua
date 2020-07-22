@@ -215,7 +215,8 @@ local LayoutMicroBar = ns.pend(function()
 end)
 
 ns.config('actionbar.micro.position', UpdatePosition)
-ns.login(UpdatePosition)
+ns.load(UpdatePosition)
+ns.load(LayoutMicroBar)
 
 ---- MicroButton
 
