@@ -9,6 +9,11 @@ local optionFrame
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
 local AceConfigDialog = LibStub('AceConfigDialog-3.0')
 local LSM = LibStub('LibSharedMedia-3.0')
+local L = setmetatable({}, {
+    __index = function(t, k)
+        return k
+    end,
+})
 
 ns.login(function()
 
@@ -117,48 +122,38 @@ ns.login(function()
             end
         end,
         args = {
-            watch = treeItem 'Trackers' {
-                frame = inline 'Frame' {width = range('Width', 100, 500, 1)},
-                bar = inline 'Bar' {
-                    height = range('Height', 1, 64, 1),
-                    inlineHeight = range('Inline height', 1, 64, 1),
-                    spacing = range('Spacing', 0, 20, 1),
-                    texture = statusbar('Texture'),
-                },
-                font = inline 'Font' {
-                    name = font('Font name'),
-                    size = range('Font size', 6, 32, 0.5),
-                    style = drop 'Font flag' { --
-                        {name = 'NONE', value = ''}, --
-                        {name = 'OUTLINE', value = 'OUTLINE'}, --
-                        {name = 'THICKOUTLINE', value = 'THICKOUTLINE'}, --
-                    },
-                    color = rgba('Font color'),
-                },
-                Recount = inline 'Recount' { --
-                    maxLines = range('Max lines', 2, 40, 1),
-                },
-                ThreatClassic2 = inline 'ThreatClassic2' { --
-                    maxLines = range('Max lines', 2, 40, 1),
-                },
-            },
-            actionbar = treeItem 'Action bar' {
-                ['micro.position'] = drop 'Position' { --
+            actionbar = treeItem(ACTIONBARS_LABEL) {
+                ['micro.position'] = drop(L['Micro menu bar location']) { --
                     {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'}, {name = 'Hide', value = 'HIDE'},
                 },
             },
-            -- actionbar = treeItem 'Action bar' {
-            --     micro = inline 'Micro bar' {
-            --         position = drop 'Position' { --
-            --             {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'},
-            --             {name = 'Hide', value = 'HIDE'},
-            --         },
-            --     },
-            --     -- actionbar = inline 'Action bar'{ --
-            --     --     macroName = toggle('Macro name'),
-            --     --     cropIcon = toggle('Crop icons')
-            --     -- },
-            -- },
+            watch = treeItem(L['Right watch panel']) {
+                frame = inline(L['Frame']) { --
+                    width = range('Width', 100, 500, 1),
+                },
+                bar = inline(L['Bar']) {
+                    height = range(L['Height'], 1, 64, 1),
+                    inlineHeight = range(L['Inline height'], 1, 64, 1),
+                    spacing = range(L['Spacing'], 0, 20, 1),
+                    texture = statusbar(L['Texture']),
+                },
+                font = inline(L['Font']) {
+                    name = font(L['Font name']),
+                    size = range(L['Font size'], 6, 32, 0.5),
+                    style = drop(L['Font flag']) { --
+                        {name = L.NONE, value = ''}, --
+                        {name = L.OUTLINE, value = 'OUTLINE'}, --
+                        {name = L.THICKOUTLINE, value = 'THICKOUTLINE'}, --
+                    },
+                    color = rgba(L['Font color']),
+                },
+                Recount = inline 'Recount' { --
+                    maxLines = range(L['Max lines'], 2, 40, 1),
+                },
+                ThreatClassic2 = inline 'ThreatClassic2' { --
+                    maxLines = range(L['Max lines'], 2, 40, 1),
+                },
+            },
             tooltip = treeItem 'Tooltip' {
                 item = inline 'Item' {
                     icon = toggle('Item icon'),

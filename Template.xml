@@ -104,6 +104,9 @@
                             end
                         end
                     </OnUpdate>
+                    <OnShow>
+                        self.timer = nil
+                    </OnShow>
                 </Scripts>
             </Frame>
         </Frames>

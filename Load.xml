@@ -24,7 +24,6 @@
     <Script file="ActionBar\TradeSkill.lua" />
 
     <Script file="ActionBar\Retail\ActionBar.lua" />
-    <Script file="ActionBar\Retail\MicroButton.lua" />
     <Script file="ActionBar\Retail\MicroBar.lua" />
     <Script file="ActionBar\Retail\AddonMicro.lua" />
     <Script file="ActionBar\Retail\Scale.lua" />

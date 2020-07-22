@@ -212,7 +212,6 @@ local LayoutMicroBar = ns.pend(function()
         end
     end
     MicroButtonAndBagsBar:SetWidth(26 * count + 12)
-    print(MicroButtonAndBagsBar, 26 * count + 12)
 end)
 
 ns.config('actionbar.micro.position', UpdatePosition)
@@ -257,6 +256,7 @@ function MicroButton:Constructor(_, opts)
         self:SetScript('OnEvent', self.OnEvent)
     else
         self.text = opts.text
+        self.tooltipText = opts.text
     end
 
     if opts.frame then
