@@ -13,6 +13,7 @@ ns.login(function()
     -- @end-debug@
 
     SetCVar('alwaysCompareItems', false)
+    SetCVar('chatClassColorOverride', false)
     SetCVar('xpBarText', true)
 
     SetCVar('nameplateLargerScale', 1.2)
