@@ -86,3 +86,33 @@ function ns.SetTextColor(label, r, g, b)
         label:SetTextColor(r, g, b)
     end
 end
+
+local fades = setmetatable({}, {
+    __index = function(t, frame)
+        local fade = frame:CreateAnimationGroup()
+        local alpha = fade:CreateAnimation('Alpha')
+        alpha:SetOrder(1)
+        fade:SetToFinalAlpha(true)
+        fade.alpha = alpha
+        t[frame] = fade
+        return fade
+    end,
+})
+
+function ns.FadeIn(frame, seconds)
+    local fade = fades[frame]
+    fade:Stop()
+    fade.alpha:SetFromAlpha(0)
+    fade.alpha:SetToAlpha(1)
+    fade.alpha:SetDuration(seconds or 0.2)
+    fade:Play()
+end
+
+function ns.FadeOut(frame, seconds)
+    local fade = fades[frame]
+    fade:Stop()
+    fade.alpha:SetFromAlpha(1)
+    fade.alpha:SetToAlpha(0)
+    fade.alpha:SetDuration(seconds or 0.2)
+    fade:Play()
+end

@@ -45,11 +45,11 @@ function Collect:OnLoad()
     self:InitFrame()
     self:InitEnter()
 
+    self:OnLeaveMinimap()
+
     ns.timer(3, function()
         return self:Collect()
     end)
-
-    self:OnLeaveMinimap()
 
     self.OnLoad = nil
     self.InitMinimap = nil
@@ -82,8 +82,6 @@ function Collect:InitMinimap()
     LDBIcon:Register(ADDON, obj, ns.profile.window.minimap)
 
     local button = LDBIcon:GetMinimapButton(ADDON)
-    self:InitAnim(button)
-
     self.ToggleButton = button
 end
 
@@ -111,81 +109,58 @@ end
 
 function Collect:InitEnter()
     local EnterListener = CreateFrame('Frame', nil, Minimap)
+    local LeaveListener = CreateFrame('Frame', nil, Minimap)
+
     EnterListener:SetFrameStrata('TOOLTIP')
     EnterListener:SetPoint('TOPLEFT', -20, 20)
     EnterListener:SetPoint('BOTTOMRIGHT', 20, -20)
     EnterListener:SetFrameLevel(MinimapBackdrop:GetFrameLevel() + 100)
+    EnterListener:SetScript('OnEnter', function()
+        return LeaveListener:Show()
+    end)
 
     local timer
-    local LeaveListener = CreateFrame('Frame', nil, Minimap)
+
     LeaveListener:SetScript('OnShow', function()
         timer = nil
         EnterListener:Hide()
-        self:OnEnterMinimap()
+        self:OnMinimapEnter()
     end)
     LeaveListener:SetScript('OnHide', function()
         EnterListener:Show()
-        self:OnLeaveMinimap()
+        self:OnMinimapLeave()
     end)
     LeaveListener:SetScript('OnUpdate', function(_, elapsed)
-        if self:IsInEdit() or EnterListener:IsMouseOver() or (self:IsShown() and self.AutoHide:IsMouseOver()) then
+        if EnterListener:IsMouseOver() or self:IsInEdit() or (self.AutoHide:IsShown() and self.AutoHide:IsMouseOver()) then
             timer = nil
         else
-            timer = (timer or 0.5) - elapsed
+            timer = (timer or 2) - elapsed
             if timer < 0 then
                 LeaveListener:Hide()
             end
         end
     end)
-
-    EnterListener:SetScript('OnEnter', function()
-        LeaveListener:Show()
-    end)
 end
 
 function Collect:OnEnterMinimap()
-    self:FadeIn(self.ToggleButton)
+    ns.FadeIn(self.ToggleButton)
 
     for button, env in pairs(self.buttonEnv) do
         if not env.collected then
-            self:FadeIn(button)
+            ns.FadeIn(button)
         end
     end
 end
 
 function Collect:OnLeaveMinimap()
     self:Hide()
-    self:FadeOut(self.ToggleButton)
+    ns.FadeOut(self.ToggleButton)
 
     for button, env in pairs(self.buttonEnv) do
         if not env.collected then
-            self:FadeOut(button)
+            ns.FadeOut(button)
         end
     end
-end
-
-local function Stop(anim)
-    if anim then
-        anim:Stop()
-    end
-end
-
-local function Play(anim)
-    if anim then
-        anim:Play()
-    end
-end
-
-function Collect:FadeIn(button)
-    Stop(button.__tdFadeIn)
-    Stop(button.__tdFadeOut)
-    Play(button.__tdFadeIn)
-end
-
-function Collect:FadeOut(button)
-    Stop(button.__tdFadeIn)
-    Stop(button.__tdFadeOut)
-    Play(button.__tdFadeOut)
 end
 
 function Collect:Refresh()
@@ -240,42 +215,12 @@ function Collect:SetIgnored(button, flag)
     ns.profile.minimap.buttons.ignores[button:GetName()] = flag or nil
 end
 
-function Collect:InitAnim(button)
-    if not button.__tdFadeOut then
-        local fadeOut = button:CreateAnimationGroup()
-        button.__tdFadeOut = fadeOut
-
-        local animOut = fadeOut:CreateAnimation('Alpha')
-        animOut:SetOrder(1)
-        animOut:SetDuration(0.2)
-        animOut:SetFromAlpha(1)
-        animOut:SetToAlpha(0)
-
-        fadeOut:SetToFinalAlpha(true)
-    end
-
-    if not button.__tdFadeIn then
-        local fadeIn = button:CreateAnimationGroup()
-        button.__tdFadeIn = fadeIn
-
-        local animIn = fadeIn:CreateAnimation('Alpha')
-        animIn:SetOrder(1)
-        animIn:SetDuration(0.2)
-        animIn:SetFromAlpha(0)
-        animIn:SetToAlpha(1)
-
-        fadeIn:SetToFinalAlpha(true)
-    end
-end
-
 function Collect:InitButton(button)
     button.showOnMouseover = nil
 
     if not self.buttonEnv[button] then
         self.buttonEnv[button] = {}
     end
-
-    self:InitAnim(button)
 end
 
 ---@param button Button
