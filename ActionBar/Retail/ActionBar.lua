@@ -163,22 +163,23 @@ ns.securehook('MultiActionBar_Update', function()
     end
 end)
 
-local function HideGrid()
+local showGrid = false
+local UpdateGrid = ns.pend(function()
     for _, button in ipairs(NO_GRID_BUTTONS) do
-        if not HasAction(button.action) then
-            button:SetAlpha(0)
-        else
-            button:SetAlpha(1)
-        end
+        button:SetAlpha((showGrid or HasAction(button.action)) and 1 or 0)
     end
-end
-
-ns.event('ACTIONBAR_SHOWGRID', function()
-    for _, button in ipairs(NO_GRID_BUTTONS) do
-        button:SetAlpha(1)
-    end
+    print(1)
 end)
-ns.event('ACTIONBAR_HIDEGRID', ns.spawned(HideGrid))
+
+ns.login(UpdateGrid)
+ns.event('ACTIONBAR_SHOWGRID', function()
+    showGrid = true
+    UpdateGrid()
+end)
+ns.event('ACTIONBAR_HIDEGRID', function()
+    showGrid = false
+    UpdateGrid()
+end)
 
 ns.securehook('MainMenuTrackingBar_Configure', function(ReputationWatchBar)
     ReputationWatchBar.OverlayFrame.Text:SetPoint('CENTER')
@@ -317,4 +318,3 @@ SetupShowHide(ReputationWatchBar, 'hasRep')
 SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
 SetupShowHide(PetActionBarFrame, 'hasPetBar')
 
-ns.login(HideGrid)

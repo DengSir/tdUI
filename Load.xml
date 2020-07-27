@@ -16,7 +16,6 @@
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
-    <Script file="Emu.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
