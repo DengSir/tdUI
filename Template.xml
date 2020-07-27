@@ -115,6 +115,9 @@
                 self:SetBackdropBorderColor(1, 0.82, 0)
                 self:SetBackdropColor(0.1, 0.082, 0, 0.8)
             </OnLoad>
+            <OnHide>
+                self:Hide()
+            </OnHide>
         </Scripts>
     </Frame>
     <Button name="tdUICollectEditButtonTemplate" hidden="true" setAllPoints="true" virtual="true">
