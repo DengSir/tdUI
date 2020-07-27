@@ -10,6 +10,7 @@
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
+    <Script file="Fonts.lua" />
 
     <Script file="Aura.lua" />
     <Script file="Channel.lua" />
