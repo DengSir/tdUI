@@ -124,11 +124,11 @@ function Collect:InitEnter()
     LeaveListener:SetScript('OnShow', function()
         timer = nil
         EnterListener:Hide()
-        self:OnMinimapEnter()
+        self:OnEnterMinimap()
     end)
     LeaveListener:SetScript('OnHide', function()
         EnterListener:Show()
-        self:OnMinimapLeave()
+        self:OnLeaveMinimap()
     end)
     LeaveListener:SetScript('OnUpdate', function(_, elapsed)
         if EnterListener:IsMouseOver() or self:IsInEdit() or (self.AutoHide:IsShown() and self.AutoHide:IsMouseOver()) then
