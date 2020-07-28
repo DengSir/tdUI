@@ -31,6 +31,8 @@ ns.addonlogin('MonkeyQuest', function()
     local MonkeyQuestTitleButton = MonkeyQuestTitleButton
     local MonkeyQuestMinimizeButton = MonkeyQuestMinimizeButton
 
+    local C = MonkeyQuestConfig[MonkeyQuest.m_global]
+
     local QuestButtons = ns.GetFrames('MonkeyQuestButton%d', MonkeyQuest.m_iNumQuestButtons, 'Text')
 
     local LSM = LibStub('LibSharedMedia-3.0')
@@ -71,7 +73,7 @@ ns.addonlogin('MonkeyQuest', function()
         MinimizeLabel:SetText(QUESTS_LABEL)
 
         function MonkeyQuestMinimizeButton:Update()
-            if MonkeyQuestConfig[MonkeyQuest.m_global].m_bMinimized then
+            if C.m_bMinimized then
                 self:Fold()
                 MonkeyQuestTitleButton:Hide()
                 MinimizeLabel:Show()
@@ -142,7 +144,6 @@ ns.addonlogin('MonkeyQuest', function()
     end
 
     local function Reset()
-        local db = MonkeyQuestConfig[MonkeyQuest.m_global]
         local defaults = {
             m_bAllowRightClick = false,
             m_bAlwaysHeaders = true,
@@ -182,7 +183,7 @@ ns.addonlogin('MonkeyQuest', function()
         }
 
         for k, v in pairs(defaults) do
-            db[k] = v
+            C[k] = v
         end
     end
 
@@ -204,7 +205,7 @@ ns.addonlogin('MonkeyQuest', function()
 
         for _, button in ipairs(QuestButtons) do
             if button:IsShown() then
-                totalHeight = totalHeight + button.Text:GetHeight()
+                totalHeight = totalHeight + button.Text:GetHeight() + C.m_iQuestPadding
             end
         end
 
@@ -219,9 +220,8 @@ ns.addonlogin('MonkeyQuest', function()
     end
 
     local function Init()
-        local db = MonkeyQuestConfig[MonkeyQuest.m_global]
-        if not db._tdui then
-            db._tdui = true
+        if not C._tdui then
+            C._tdui = true
             Reset()
         end
     end
