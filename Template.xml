@@ -2,9 +2,9 @@
 ..\FrameXML\UI.xsd">
     <Frame name="tdUICollectFrameTemplate" hidden="true" enableMouse="true" virtual="true">
         <Backdrop bgFile="Interface\BUTTONS\WHITE8x8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-            <EdgeSize val="16"/>
-            <TileSize val="16"/>
-            <BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+            <EdgeSize val="16" />
+            <TileSize val="16" />
+            <BackgroundInsets left="4" right="4" top="4" bottom="4" />
         </Backdrop>
         <Layers>
             <Layer level="OVERLAY" textureSubLevel="1">
@@ -145,4 +145,41 @@
             </OnLoad>
         </Scripts>
     </Button>
+    <Frame name="tdUIMicroButtonAndBagsBarTemplate" virtual="true">
+        <Size x="1" y="87" />
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="BgLeft" file="Interface\MainMenuBar\MainMenuBar">
+                    <Size x="30" y="43" />
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BgRight" file="Interface\MainMenuBar\MainMenuBar">
+                    <Size x="30" y="43" />
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BgMiddle" file="Interface\MainMenuBar\MainMenuBar">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.BgLeft" relativePoint="TOPRIGHT" />
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BgRight" relativePoint="BOTTOMLEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BgBag" file="Interface\MainMenuBar\MainMenuBar">
+                    <Size x="184" y="45" />
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BgKeyring" file="Interface\MainMenuBar\MainMenuBar">
+                    <Size x="24" y="45" />
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
 </Ui>

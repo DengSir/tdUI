@@ -37,8 +37,7 @@ local KEYRING_BG_COORDS = {423 / 1024, (423 + 24) / 1024, 167 / 256, 212 / 256}
 local point = ns.RePoint
 
 local MicroButton = ns.class('Button')
-local MicroButtonAndBagsBar = CreateFrame('Frame', 'MicroButtonAndBagsBar', MainMenuBarArtFrame)
-MicroButtonAndBagsBar:SetHeight(87)
+local Bar = CreateFrame('Frame', 'MicroButtonAndBagsBar', MainMenuBarArtFrame, 'tdUIMicroButtonAndBagsBarTemplate')
 
 local MICRO_BUTTONS = (function()
     local t = {}
@@ -74,39 +73,15 @@ local function coord(region, db)
     return region:SetTexCoord(coords(db))
 end
 
-local MicroLeft = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-MicroLeft:SetPoint('BOTTOMLEFT')
-MicroLeft:SetTexture(1721259)
-MicroLeft:SetSize(30, 43)
-
-local MicroRight = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-MicroRight:SetPoint('BOTTOMRIGHT')
-MicroRight:SetTexture(1721259)
-MicroRight:SetSize(30, 43)
-
-local MicroMiddle = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-MicroMiddle:SetPoint('TOPLEFT', MicroLeft, 'TOPRIGHT')
-MicroMiddle:SetPoint('BOTTOMRIGHT', MicroRight, 'BOTTOMLEFT')
-MicroMiddle:SetTexture(1721259)
-
-local BagBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND')
-BagBg:SetTexture(1721259)
-BagBg:SetSize(184, 45)
-BagBg:SetPoint('TOPRIGHT')
-
-local KeyringBg = MicroButtonAndBagsBar:CreateTexture(nil, 'BACKGROUND', nil, -1)
-KeyringBg:SetTexture(1721259)
-KeyringBg:SetSize(24, 45)
-
 for _, button in ipairs(MICRO_BUTTONS) do
-    button:SetParent(MicroButtonAndBagsBar)
+    button:SetParent(Bar)
 end
 
 for _, button in pairs(BAGSLOTS) do
-    button:SetParent(MicroButtonAndBagsBar)
+    button:SetParent(Bar)
 end
 
-MainMenuBarBackpackButton:SetParent(MicroButtonAndBagsBar)
+MainMenuBarBackpackButton:SetParent(Bar)
 
 MainMenuBarPerformanceBar:ClearAllPoints()
 MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
@@ -155,43 +130,43 @@ end)
 local UpdatePosition = ns.pend(function()
     local style = ns.profile.actionbar.micro.position
     if style == 'LEFT' then
-        coord(MicroLeft, MICRO_RIGHT_COORDS)
-        coord(MicroMiddle, MICRO_MIDDLE_COORDS)
-        coord(MicroRight, MICRO_LEFT_COORDS)
-        coord(BagBg, BAG_BG_COORDS)
-        coord(KeyringBg, KEYRING_BG_COORDS)
+        coord(Bar.BgLeft, MICRO_RIGHT_COORDS)
+        coord(Bar.BgMiddle, MICRO_MIDDLE_COORDS)
+        coord(Bar.BgRight, MICRO_LEFT_COORDS)
+        coord(Bar.BgBag, BAG_BG_COORDS)
+        coord(Bar.BgKeyring, KEYRING_BG_COORDS)
 
-        point(MicroButtonAndBagsBar, 'BOTTOMLEFT', UIParent, 'BOTTOMLEFT')
-        point(BagBg, 'TOPLEFT')
-        point(KeyringBg, 'BOTTOMLEFT', BagBg, 'BOTTOMRIGHT', -8, 0)
-        point(MainMenuBarBackpackButton, 'TOPLEFT', MicroButtonAndBagsBar, 'TOPLEFT', 6, -4)
+        point(Bar, 'BOTTOMLEFT', UIParent, 'BOTTOMLEFT')
+        point(Bar.BgBag, 'TOPLEFT')
+        point(Bar.BgKeyring, 'BOTTOMLEFT', Bar.BgBag, 'BOTTOMRIGHT', -8, 0)
+        point(MainMenuBarBackpackButton, 'TOPLEFT', Bar, 'TOPLEFT', 6, -4)
         point(CharacterBag0Slot, 'LEFT', MainMenuBarBackpackButton, 'RIGHT', 4, -5)
 
         for i, button in ipairs(BAGSLOTS) do
             point(button, 'LEFT', BAGSLOTS[i - 1], 'RIGHT', 2.5, 0)
         end
 
-        MicroButtonAndBagsBar:Show()
+        Bar:Show()
     elseif style == 'RIGHT' then
-        coord(MicroLeft, MICRO_LEFT_COORDS)
-        coord(MicroMiddle, MICRO_MIDDLE_COORDS)
-        coord(MicroRight, MICRO_RIGHT_COORDS)
-        coord(BagBg, BAG_BG_COORDS)
-        coord(KeyringBg, KEYRING_BG_COORDS)
+        coord(Bar.BgLeft, MICRO_LEFT_COORDS)
+        coord(Bar.BgMiddle, MICRO_MIDDLE_COORDS)
+        coord(Bar.BgRight, MICRO_RIGHT_COORDS)
+        coord(Bar.BgBag, BAG_BG_COORDS)
+        coord(Bar.BgKeyring, KEYRING_BG_COORDS)
 
-        point(MicroButtonAndBagsBar, 'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
-        point(BagBg, 'TOPRIGHT')
-        point(KeyringBg, 'BOTTOMRIGHT', BagBg, 'BOTTOMLEFT', 8, 0)
-        point(MainMenuBarBackpackButton, 'TOPRIGHT', MicroButtonAndBagsBar, 'TOPRIGHT', -6, -4)
+        point(Bar, 'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
+        point(Bar.BgBag, 'TOPRIGHT')
+        point(Bar.BgKeyring, 'BOTTOMRIGHT', Bar.BgBag, 'BOTTOMLEFT', 8, 0)
+        point(MainMenuBarBackpackButton, 'TOPRIGHT', Bar, 'TOPRIGHT', -6, -4)
         point(CharacterBag0Slot, 'RIGHT', MainMenuBarBackpackButton, 'LEFT', -4, -5)
 
         for i, button in ipairs(BAGSLOTS) do
             point(button, 'RIGHT', BAGSLOTS[i - 1], 'LEFT', -2.5, 0)
         end
 
-        MicroButtonAndBagsBar:Show()
+        Bar:Show()
     elseif style == 'HIDE' then
-        MicroButtonAndBagsBar:Hide()
+        Bar:Hide()
     end
 end)
 
@@ -204,14 +179,14 @@ local LayoutMicroBar = ns.pend(function()
             if prev then
                 button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
             else
-                button:SetPoint('BOTTOMLEFT', MicroButtonAndBagsBar, 5, 3)
+                button:SetPoint('BOTTOMLEFT', Bar, 5, 3)
             end
 
             count = count + 1
             prev = button
         end
     end
-    MicroButtonAndBagsBar:SetWidth(26 * count + 12)
+    Bar:SetWidth(26 * count + 12)
 end)
 
 ns.config('actionbar.micro.position', UpdatePosition)
@@ -221,7 +196,7 @@ ns.load(LayoutMicroBar)
 ---- MicroButton
 
 function MicroButton:Create(opts)
-    return self:Bind(CreateFrame('Button', nil, MicroButtonAndBagsBar, 'MainMenuBarMicroButton'), opts)
+    return self:Bind(CreateFrame('Button', nil, Bar, 'MainMenuBarMicroButton'), opts)
 end
 
 function MicroButton:Constructor(_, opts)

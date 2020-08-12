@@ -132,11 +132,6 @@ ReputationWatchBarDelegate:SetScript('OnLeave', function()
     return OnLeave(ReputationWatchBar)
 end)
 
-for _, button in ipairs(NO_GRID_BUTTONS) do
-    local FloatingBG = _G[button:GetName() .. 'FloatingBG']
-    FloatingBG:Hide()
-end
-
 ns.securehook('MultiActionBar_Update', function()
     if Controller:GetAttribute('hasBottomRight') then
         ReputationWatchBarDelegate:SetWidth(LARGE_WIDTH)
@@ -163,12 +158,16 @@ ns.securehook('MultiActionBar_Update', function()
     end
 end)
 
+for _, button in ipairs(NO_GRID_BUTTONS) do
+    local FloatingBG = _G[button:GetName() .. 'FloatingBG']
+    FloatingBG:Hide()
+end
+
 local showGrid = false
 local UpdateGrid = ns.pend(function()
     for _, button in ipairs(NO_GRID_BUTTONS) do
         button:SetAlpha((showGrid or HasAction(button.action)) and 1 or 0)
     end
-    print(1)
 end)
 
 ns.login(UpdateGrid)

@@ -6,7 +6,7 @@
 local ADDON, ns = ...
 
 local pairs, ipairs = pairs, ipairs
-local max = math.max
+local max, abs = math.max, math.abs
 local wipe = table.wipe or wipe
 local sort = table.sort or sort
 local unpack = table.unpack or unpack
@@ -20,14 +20,10 @@ local GameTooltip = GameTooltip
 local Collect = CreateFrame('Frame', nil, UIParent, 'tdUICollectFrameTemplate')
 
 local BLACK_LIST = { --
-    ['BattlefieldMinimap'] = true,
+    -- ['MinimapBackdrop'] = true,
+    -- ['BattlefieldMinimap'] = true,
     ['MiniMapBattlefieldFrame'] = true,
-    ['TimeManagerClockButton'] = true,
-}
-
-local WHITE_LIST = { --
-    ['BagSync_MinimapButton'] = true,
-    ['RecipeRadarMinimapButtonFrame'] = true,
+    -- ['TimeManagerClockButton'] = true,
 }
 
 local Button = {}
@@ -189,19 +185,28 @@ end
 
 function Collect:IsCollectable(button)
     if button == self.ToggleButton then
-        return
+        return false
     end
     local name = button:GetName()
     if not name or BLACK_LIST[name] then
-        return
+        return false
     end
     if not button:IsShown() then
-        return
+        return false
     end
-    if WHITE_LIST[name] then
-        return true
+
+    local width, height = button:GetSize()
+    if width < 30 or height < 30 then
+        return false
     end
-    return button:GetObjectType() == 'Button' and button:GetNumRegions() >= 3
+    if width > 50 or height > 50 then
+        return false
+    end
+
+    if abs(width - height) > 2 then
+        return false
+    end
+    return true
 end
 
 ---@param button Button
@@ -399,7 +404,7 @@ function Collect:UpdateEdit()
 
     if self:IsInEdit() then
         for button, env in pairs(self.buttonEnv) do
-            local edit = self.buttonEdits[button] or self:GetEditButton(button)
+            local edit = self:GetEditButton(button)
             edit:Show()
         end
     else

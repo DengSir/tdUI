@@ -369,3 +369,16 @@ end
 function ns.class(super)
     return LibClass:New(super)
 end
+
+function ns.memorize(func)
+    local cache = {}
+    return function(k, ...)
+        if not k then
+            return
+        end
+        if cache[k] == nil then
+            cache[k] = func(k, ...)
+        end
+        return cache[k]
+    end
+end
