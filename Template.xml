@@ -182,4 +182,109 @@
             </Layer>
         </Layers>
     </Frame>
+    <Button name="tdUIAuctionBrowseItemTemplate" virtual="true">
+        <Size x="1" y="18" />
+        <Frames>
+            <Button parentKey="Enter">
+                <Size x="18" y="18" />
+                <Anchors>
+                    <Anchor point="LEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnEnter>
+                        local parent = self:GetParent()
+                        parent:LockHighlight()
+                        AuctionFrameItem_OnEnter(self, 'list', parent.id)
+                    </OnEnter>
+                    <OnLeave>
+                        local parent = self:GetParent()
+                        parent:UnlockHighlight()
+                        GameTooltip_Hide()
+                        ResetCursor()
+                    </OnLeave>
+                    <OnUpdate>
+                        if ( GameTooltip:IsOwned(self) ) then
+                            AuctionFrameItem_OnEnter(self, 'list', self:GetParent():GetID())
+                        end
+                    </OnUpdate>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon">
+                    <Size x="18" y="18" />
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="Name" inherits="GameFontHighlightSmallLeft" wordWrap="false">
+                    <Size x="142"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativePoint="LEFT" x="20" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Level" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="CENTER" relativePoint="LEFT" x="175" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Time" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="CENTER" relativePoint="LEFT" x="225" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Seller" inherits="GameFontHighlightSmall" wordWrap="false">
+                    <Size x="73"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativePoint="LEFT" x="295" y="0" />
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="UnitPrice" inherits="GameFontHighlightSmallRight">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-3" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Buyout" inherits="GameFontHighlightSmallRight">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-103" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Bid" inherits="GameFontHighlightSmallRight">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-203" y="0" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Selected" hidden="true" setAllPoints="true">
+                    <Color r="1" g="0.81" b="0" a="0.3" />
+                </Texture>
+                <Texture parentKey="Highlight" setAllPoints="true">
+                    <Color r="1" g="0.81" b="0" a="0.3" />
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="-1">
+                <Texture parentKey="Bg" hidden="true" setAllPoints="true">
+                    <Color r="1" g="1" b="1" a="0.1" />
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:SetHighlightTexture(self.Highlight)
+            </OnLoad>
+        </Scripts>
+    </Button>
+    <Frame name="tdUIAuctionBrowseFrameTemplate" virtual="true">
+        <Size x="616" y="306" />
+        <Anchors>
+            <Anchor point="TOPLEFT" x="188" y="-102" />
+        </Anchors>
+        <Frames>
+            <ScrollFrame parentKey="ScrollFrame" inherits="BasicHybridScrollFrameTemplate">
+            </ScrollFrame>
+        </Frames>
+    </Frame>
 </Ui>

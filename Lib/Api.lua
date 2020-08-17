@@ -13,6 +13,17 @@ local format = string.format
 
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
+ns.debug = (function()
+    local Log = LibStub('LibLog-1.0', true)
+    if Log then
+        local logger = Log:GetLogger()
+        return function(...)
+            return logger:Debug(...)
+        end
+    end
+    return nop
+end)()
+
 function ns.rgb(r, g, b)
     if b then
         return r, g, b
@@ -87,12 +98,22 @@ function ns.SetTextColor(label, r, g, b)
     end
 end
 
+local function OnFinished(fade)
+    print(fade)
+    fade:Stop()
+
+    if not fade.fadeIn then
+        fade:GetParent():Hide()
+    end
+end
+
 local fades = setmetatable({}, {
     __index = function(t, frame)
         local fade = frame:CreateAnimationGroup()
         local alpha = fade:CreateAnimation('Alpha')
         alpha:SetOrder(1)
         fade:SetToFinalAlpha(true)
+        fade:SetScript('OnFinished', OnFinished)
         fade.alpha = alpha
         t[frame] = fade
         return fade
@@ -101,11 +122,13 @@ local fades = setmetatable({}, {
 
 function ns.FadeIn(frame, seconds)
     local fade = fades[frame]
+    frame:Show()
     fade:Stop()
     fade.alpha:SetFromAlpha(0)
     fade.alpha:SetToAlpha(1)
     fade.alpha:SetDuration(seconds or 0.2)
     fade:Play()
+    fade.fadeIn = true
 end
 
 function ns.FadeOut(frame, seconds)
@@ -115,4 +138,15 @@ function ns.FadeOut(frame, seconds)
     fade.alpha:SetToAlpha(0)
     fade.alpha:SetDuration(seconds or 0.2)
     fade:Play()
+    fade.fadeIn = nil
+end
+
+local hider
+function ns.hide(obj)
+    if not hider then
+        hider = CreateFrame('Frame')
+        hider:Hide()
+    end
+    obj:Hide()
+    obj:SetParent(hider)
 end

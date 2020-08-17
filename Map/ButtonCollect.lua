@@ -22,7 +22,9 @@ local Collect = CreateFrame('Frame', nil, UIParent, 'tdUICollectFrameTemplate')
 local BLACK_LIST = { --
     -- ['MinimapBackdrop'] = true,
     -- ['BattlefieldMinimap'] = true,
+    ['MiniMapTrackingFrame'] = true,
     ['MiniMapBattlefieldFrame'] = true,
+    ['MiniMapMailFrame'] = true,
     -- ['TimeManagerClockButton'] = true,
 }
 
@@ -41,7 +43,7 @@ function Collect:OnLoad()
     self:InitFrame()
     self:InitEnter()
 
-    self:OnLeaveMinimap()
+    -- self:OnLeaveMinimap()
 
     ns.timer(3, function()
         return self:Collect()
@@ -149,7 +151,6 @@ function Collect:OnEnterMinimap()
 end
 
 function Collect:OnLeaveMinimap()
-    self:Hide()
     ns.FadeOut(self.ToggleButton)
 
     for button, env in pairs(self.buttonEnv) do
@@ -171,7 +172,7 @@ end
 function Collect:Collect()
     local found
     for _, child in ipairs({Minimap:GetChildren()}) do
-        if self:IsCollectable(child) and not self.buttonEnv[child] then
+        if not self.buttonEnv[child] and self:IsCollectable(child) then
             self:GotButton(child)
             found = true
         end
@@ -329,6 +330,7 @@ function Collect:RestoreButton(button)
         button:ClearAllPoints()
         button:SetPoint(unpack(env.points))
         button:SetFrameLevel(MinimapBackdrop:GetFrameLevel() + env.frameLevelDelta)
+        button:SetAlpha(0)
     end
     wipe(env)
 
