@@ -17,6 +17,7 @@
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
+    <Script file="Auction.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
@@ -49,6 +50,7 @@
 
     <Script file="Tooltip\TinyTooltip.lua" />
     <Script file="Tooltip\Item.lua" />
+    <Script file="Tooltip\Bonus.lua" />
 
     <Script file="Friend\Friends.lua" />
     <Script file="Friend\Who.lua" />
