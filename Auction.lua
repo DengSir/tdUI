@@ -109,8 +109,10 @@ ns.addon('Blizzard_AuctionUI', function()
         [4] = GRAY_FONT_COLOR:WrapTextInColorCode('> 8h'),
     }
 
-    local Browse = CreateFrame('Frame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseFrameTemplate')
-    local ScrollFrame = Browse.ScrollFrame
+    local Browse = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
+    local ScrollFrame = Browse
+
+    print(Browse)
 
     local function GSC(money)
         money = floor(money)
@@ -193,19 +195,22 @@ ns.addon('Blizzard_AuctionUI', function()
         end
     end
 
-    local UpdateBrowseList = ns.pend(function(self)
+    local UpdateBrowseList = function(self)
         self = self or ScrollFrame
         if not self:IsVisible() then
             return
         end
 
         local offset = HybridScrollFrame_GetOffset(self)
+        local numItems = #self.buttons
         local numBatchAuctions, totalAuctions = GetNumAuctionItems('list')
+
         local selectedId = GetSelectedAuctionItem('list')
-        local width = numBatchAuctions > #self.buttons and 614 or 634
+        local hasScrollBar = numBatchAuctions > numItems
+        local buttonWidth = hasScrollBar and 608 or 630
         local playerLevel = UnitLevel('player')
 
-        self:GetParent():SetWidth(width)
+        self:SetWidth(hasScrollBar and 612 or 632)
         BrowseNoResultsText:SetShown(numBatchAuctions == 0)
 
         for i, button in ipairs(self.buttons) do
@@ -224,7 +229,7 @@ ns.addon('Blizzard_AuctionUI', function()
 
                 button.id = id
                 button:SetID(id)
-                button:SetWidth(width)
+                button:SetWidth(buttonWidth)
 
                 button.Bg:SetShown(id % 2 == 1)
                 button.Selected:SetShown(selectedId == id)
@@ -272,7 +277,7 @@ ns.addon('Blizzard_AuctionUI', function()
             BrowseNextPageButton:Hide()
             BrowseSearchCountText:Hide()
         end
-    end)
+    end
 
     local function UpdateSelectedItem()
         BrowseBidButton:Show()

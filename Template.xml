@@ -277,14 +277,18 @@
             </OnLoad>
         </Scripts>
     </Button>
-    <Frame name="tdUIAuctionBrowseFrameTemplate" virtual="true">
-        <Size x="616" y="306" />
+    <ScrollFrame name="tdUIAuctionBrowseScrollFrameTemplate" inherits="HybridScrollFrameTemplate" virtual="true">
+        <Size x="612" y="304" />
         <Anchors>
-            <Anchor point="TOPLEFT" x="188" y="-102" />
+            <Anchor point="TOPLEFT" x="190" y="-104" />
         </Anchors>
         <Frames>
-            <ScrollFrame parentKey="ScrollFrame" inherits="BasicHybridScrollFrameTemplate">
-            </ScrollFrame>
+            <Slider parentKey="scrollBar" inherits="HybridScrollBarTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-15"/>
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
+                </Anchors>
+            </Slider>
         </Frames>
-    </Frame>
+    </ScrollFrame>
 </Ui>
