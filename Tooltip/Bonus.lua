@@ -1,14 +1,9 @@
 -- Bonus.lua
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
--- @Date   : 8/12/2020, 10:05:45 AM
+-- @Date   : 8/19/2020, 12:22:27 PM
 ---@type ns
 local ns = select(2, ...)
-local Token = AtlasLoot.Data.Token
-
-local BonusTooltip = {}
-local tooltips = {}
-local hooked = {}
 
 -- from  https://github.com/Hoizame/AtlasLootClassic/blob/master/AtlasLootClassic/Data/Token.lua
 local DATA = {
@@ -211,142 +206,183 @@ for k, v in pairs(DATA) do
     end
 end
 
-local CURRENT = '|T130843:14:14:0:-2:64:16:16:32:0:16|t '
-local NORMAL = '|T130843:14:14:0:-2:64:16:48:64:0:16|t '
+local SIZE = 26
+local SPACING = 3
+local Bonus = tdUIBonusFrame
 
-function BonusTooltip:SetItems(items)
-    if self.bonusItems ~= items then
-        self.bonusItems = items
-        self.bonusCurrentIndex = 1
+local function GetTipItemId(tip)
+    local name, link = tip:GetItem()
+    return link and tonumber(link:match('item:(%d+)'))
+end
+
+local function GetTipBonusItems(tip)
+    local itemId = GetTipItemId(tip)
+    return itemId and DATA[itemId]
+end
+
+Bonus.buttons = {}
+Bonus.buttons[0] = Bonus.Token
+Bonus.Token.index = 0
+
+function Bonus:SetItemRef(itemId)
+    ShowUIPanel(ItemRefTooltip)
+
+    if not ItemRefTooltip:IsShown() then
+        ItemRefTooltip:SetOwner(UIParent, 'ANCHOR_PRESERVE')
     end
-    BonusTooltip.Update(self)
-end
 
-function BonusTooltip:Update()
-    local tooltip, anchorFrame, shoppingTooltip1, shoppingTooltip2 = GameTooltip_InitializeComparisonTooltips(self)
-    GameTooltip_AnchorComparisonTooltips(tooltip, anchorFrame, shoppingTooltip1, shoppingTooltip2, true, false)
-
-    shoppingTooltip1:SetItemByID(self.bonusItems[self.bonusCurrentIndex])
-    shoppingTooltip1:Show()
-end
-
-function BonusTooltip:Next()
-    if self.bonusCurrentIndex then
-        self.bonusCurrentIndex = self.bonusCurrentIndex % #self.bonusItems + 1
-        BonusTooltip.Update(self)
+    if itemId ~= GetTipItemId(ItemRefTooltip) then
+        ItemRefTooltip:SetItemByID(itemId)
     end
 end
 
-local function GetBonusItems(itemId)
-    return DATA[itemId]
+function Bonus:GetButton(i)
+    if not self.buttons[i] then
+        local button = CreateFrame('Button', nil, self, 'tdUIBonusItemTemplate')
+        button:SetSize(SIZE, SIZE)
+        button:SetPoint('LEFT', 42 + (i - 1) * (SIZE + SPACING) + 3, 0)
+        button.index = i
+        self.buttons[i] = button
+    end
+    return self.buttons[i]
 end
 
-GetBonusItems = ns.memorize(GetBonusItems)
+function Bonus:UpdateButton(index, itemId)
+    local button = self:GetButton(index)
+    button.itemId = itemId
+    button.hasItem = true
+    button.Icon:SetTexture(GetItemIcon(itemId))
+    button:Show()
+end
 
-function BonusTooltip:GetItemId()
-    local name, link = self:GetItem()
-    if not link then
+function Bonus:GetItemByIndex(index)
+    if not index then
         return
     end
-    return tonumber(link:match('item:(%d+)'))
+    if index > 0 then
+        return self.currentItems[index]
+    else
+        return self.tokenItemId
+    end
 end
 
-function BonusTooltip:OnTooltipSetItem()
-    local itemId = BonusTooltip.GetItemId(self)
-    if not itemId then
-        return
+function Bonus:Update()
+    for i = 0, max(#self.currentItems, #self.buttons) do
+        local itemId = self:GetItemByIndex(i)
+        if itemId then
+            self:UpdateButton(i, itemId)
+        elseif self.buttons[i] then
+            self.buttons[i]:Hide()
+        end
     end
 
-    local items = GetBonusItems(itemId)
-    if not items then
-        return
+    self:SetWidth(40 + (#self.currentItems + 1) * (SIZE + SPACING))
+end
+
+function Bonus:SetItems(itemId, items, force)
+    if force or self.tokenItemId ~= itemId or self.currentItems ~= items then
+        self.tokenItemId = itemId
+        self.currentItems = items
+    end
+    self:Update()
+end
+
+function Bonus:SendChat(chatType, target)
+    local text = ''
+
+    for i = 0, #self.currentItems do
+        local link = select(2, GetItemInfo(self:GetItemByIndex(i)))
+
+        if #text + #link > 255 then
+            SendChatMessage(text, chatType, nil, target)
+            text = ''
+        end
+
+        text = text .. link
+        if i == 0 then
+            text = text .. '->'
+        end
     end
 
-    BonusTooltip.SetItems(self, items)
-    tooltips[self] = self.shoppingTooltips[1]
-
-    print(1)
+    if #text > 0 then
+        SendChatMessage(text, chatType, nil, target)
+    end
 end
 
-function BonusTooltip:OnTooltipCleared()
-    tooltips[self] = nil
-end
+local channels = { --
+    {channel = 'SAY'},
+    {channel = 'YELL'},
+    {
+        channel = 'PARTY',
+        visible = function()
+            return IsInGroup(1)
+        end,
+    },
+    {
+        channel = 'RAID',
+        visible = function()
+            return IsInRaid(1)
+        end,
+    },
+    {channel = 'GUILD', visible = IsInGuild},
+}
 
-local function GetBonusTooltip(shoppingTooltip)
-    for tooltip, v in pairs(tooltips) do
-        if shoppingTooltip == v then
-            return tooltip
+local function Initialize()
+    for i, v in ipairs(channels) do
+        if not v.visible or v.visible() then
+            UIDropDownMenu_AddButton {
+                text = v.text or _G[v.channel],
+                func = function()
+                    return Bonus:SendChat(v.channel)
+                end,
+            }
         end
     end
 end
 
-local function ShoppingOnTooltipSetItem(self)
-    local tooltip = GetBonusTooltip(self)
-    if not tooltip then
-        return
+local DropMenu
+function Bonus:OpenChatMenu()
+    if not DropMenu then
+        DropMenu = CreateFrame('Frame', 'tdUIBonusDropMenu', UIParent, 'UIDropDownMenuTemplate')
+        DropMenu.displayMode = 'MENU'
+        DropMenu.initialize = Initialize
     end
+    ToggleDropDownMenu(1, nil, DropMenu, self.Token, 0, 0)
+end
 
-    self:AddLine(' ')
-    self:AddLine('Press SHIFT to toggle other items', 0, 1, 1)
+ns.hookscript(ItemRefTooltip, 'OnTooltipSetItem', function(self)
+    local itemId = GetTipItemId(ItemRefTooltip)
+    if itemId then
+        local items = DATA[itemId]
+        if items then
+            Bonus:SetItems(itemId, items, true)
+            Bonus:Show()
+        end
+    else
+        Bonus:Hide()
+    end
+end)
 
-    local currentItem = tooltip.bonusItems[tooltip.bonusCurrentIndex]
-    local caching = false
-
-    for _, itemId in pairs(tooltip.bonusItems) do
-        local checked = itemId == currentItem and CURRENT or NORMAL
-        local name, link, quality = GetItemInfo(itemId)
-        local r, g, b
-        if name then
-            r, g, b = GetItemQualityColor(quality)
+ns.hookscript(GameTooltip, 'OnTooltipSetItem', function(self)
+    if GetTipBonusItems(self) then
+        if not self:IsOwned(Bonus.Token) then
+            self:AddLine('Press CTRL to see bouns')
         else
-            name = RETRIEVING_ITEM_INFO
-            r, g, b = 1, 0, 0
-            caching = true
+            self:AddLine('Right click to chat')
         end
-        self:AddLine(checked .. name, r, g, b)
     end
-
-    if caching then
-        ns.after(0, function()
-            BonusTooltip.Update(tooltip)
-        end)
-    end
-end
-
-local function HookTip(tooltip)
-    if not hooked[tooltip] then
-        hooked[tooltip] = true
-        ns.hookscript(tooltip, 'OnHide', BonusTooltip.OnTooltipCleared)
-    end
-
-    local shoppingTooltip = tooltip.shoppingTooltips[1]
-    if not hooked[shoppingTooltip] then
-        hooked[shoppingTooltip] = true
-        ns.hookscript(shoppingTooltip, 'OnTooltipSetItem', ShoppingOnTooltipSetItem)
-    end
-end
-
-ns.securehook('GameTooltip_ShowCompareItem', function(tip)
-    tip = tip or GameTooltip
-
-    HookTip(tip)
-    BonusTooltip.OnTooltipSetItem(tip)
 end)
 
 ns.event('MODIFIER_STATE_CHANGED', function(key, down)
-    if (key == 'LSHIFT' or key == 'RSHIFT') and down == 1 then
-        for tooltip, shoppingTooltip in pairs(tooltips) do
-            BonusTooltip.Next(tooltip)
+    if (key == 'LCTRL' or key == 'RCTRL') and down == 0 then
+        local itemId = GetTipItemId(GameTooltip)
+        if not itemId then
+            return
+        end
+        local items = DATA[itemId]
+        if items then
+            Bonus:SetItems(itemId, items)
+            Bonus:Show()
         end
     end
-end)
-
-ns.addon('AtlasLootClassic', function()
-    local Item = AtlasLoot.Button:GetType('Item')
-
-    setfenv(Item.OnEnter, setmetatable({
-        IsShiftKeyDown = function()
-            return IsModifiedClick('COMPAREITEMS') or GetCVarBool('alwaysCompareItems')
-        end,
-    }, {__index = _G}))
 end)

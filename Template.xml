@@ -291,4 +291,78 @@
             </Slider>
         </Frames>
     </ScrollFrame>
+    <Button name="tdUIBonusItemTemplate" virtual="true">
+        <Size x="26" y="26" />
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Icon" />
+            </Layer>
+        </Layers>
+        <NormalTexture file="Interface\Buttons\UI-Quickslot2">
+            <Size x="46" y="46" />
+            <Anchors>
+                <Anchor point="CENTER" x="0" y="-1" />
+            </Anchors>
+        </NormalTexture>
+        <PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
+        <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+        <CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+        <Scripts>
+            <OnLoad>
+                self.UpdateTooltip = self:GetScript('OnEnter')
+            </OnLoad>
+            <OnClick>
+                HandleModifiedItemClick(select(2, GetItemInfo(self.itemId)))
+            </OnClick>
+            <OnEnter>
+                GameTooltip:SetOwner(self, 'ANCHOR_TOP')
+                GameTooltip:SetItemByID(self.itemId)
+                CursorUpdate(self)
+            </OnEnter>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </Button>
+    <Frame name="tdUIBonusFrame" hidden="true" parent="UIParent">
+        <Size x="1" y="26"/>
+        <Anchors>
+            <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="200" />
+        </Anchors>
+        <Frames>
+            <Button parentKey="Token" inherits="tdUIBonusItemTemplate" registerForClicks="LeftButtonUp,RightButtonUp">
+                <Anchors>
+                    <Anchor point="LEFT" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        if button == 'RightButton' then
+                            self:GetParent():OpenChatMenu()
+                        else
+                            HandleModifiedItemClick(select(2, GetItemInfo(self.itemId)))
+                        end
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button inherits="UIPanelCloseButton">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="RIGHT" x="-2" y="0" />
+                </Anchors>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture file="Interface\Transmogrify\transmog-tooltip-arrow">
+                    <Size x="12" y="12"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeKey="$parent.Token" relativePoint="RIGHT" x="4" y="0" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnHide>
+                self:Hide()
+            </OnHide>
+        </Scripts>
+    </Frame>
 </Ui>

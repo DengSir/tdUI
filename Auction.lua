@@ -66,9 +66,6 @@ ns.addon('Blizzard_AuctionUI', function()
         {column = 'buyout', reverse = false},
     }
 
-    AuctionFrameBrowse:UnregisterEvent('AUCTION_ITEM_LIST_UPDATE')
-    AuctionFrame_SetSort('list', 'unitprice')
-
     ns.hide(BrowseQualitySort)
     ns.hide(BrowseLevelSort)
     ns.hide(BrowseDurationSort)
@@ -101,6 +98,9 @@ ns.addon('Blizzard_AuctionUI', function()
 
     BrowseBidPrice:SetPoint('BOTTOM', 115, 18)
 
+    AuctionFrameBrowse:UnregisterEvent('AUCTION_ITEM_LIST_UPDATE')
+    AuctionFrame_SetSort('list', 'unitprice')
+
     local NONE = GRAY_FONT_COLOR:WrapTextInColorCode(NONE)
     local DURATION_TEXT = { --
         [1] = RED_FONT_COLOR:WrapTextInColorCode('< 30m'),
@@ -111,8 +111,6 @@ ns.addon('Blizzard_AuctionUI', function()
 
     local Browse = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
     local ScrollFrame = Browse
-
-    print(Browse)
 
     local function GSC(money)
         money = floor(money)
@@ -167,26 +165,6 @@ ns.addon('Blizzard_AuctionUI', function()
         end
     end
 
-    ns.override('AuctionFrameBrowse_Update', nop)
-
-    ns.override('AuctionFrameBrowse_UpdateArrows', function()
-        for _, button in ipairs(sortButtons) do
-            SortButton_UpdateArrow(button, 'list', button.sortColumn)
-        end
-    end)
-
-    ns.hookscript(BrowseSearchButton, 'OnEnable', function()
-        for _, button in ipairs(sortButtons) do
-            button:Enable()
-        end
-    end)
-
-    ns.hookscript(BrowseSearchButton, 'OnDisable', function()
-        for _, button in ipairs(sortButtons) do
-            button:Disable()
-        end
-    end)
-
     local function UsableColor(usable)
         if usable then
             return 1, 1, 1
@@ -195,7 +173,7 @@ ns.addon('Blizzard_AuctionUI', function()
         end
     end
 
-    local UpdateBrowseList = function(self)
+    local function UpdateBrowseList(self)
         self = self or ScrollFrame
         if not self:IsVisible() then
             return
@@ -206,7 +184,7 @@ ns.addon('Blizzard_AuctionUI', function()
         local numBatchAuctions, totalAuctions = GetNumAuctionItems('list')
 
         local selectedId = GetSelectedAuctionItem('list')
-        local hasScrollBar = numBatchAuctions > numItems
+        local hasScrollBar = numBatchAuctions * 18 > self:GetHeight()
         local buttonWidth = hasScrollBar and 608 or 630
         local playerLevel = UnitLevel('player')
 
@@ -227,6 +205,8 @@ ns.addon('Blizzard_AuctionUI', function()
                     GetAuctionItemInfo('list', id)
                 local duration = GetAuctionItemTimeLeft('list', id)
 
+                print(highBidder, bidAmount, minBid)
+
                 button.id = id
                 button:SetID(id)
                 button:SetWidth(buttonWidth)
@@ -246,7 +226,17 @@ ns.addon('Blizzard_AuctionUI', function()
                 button.Time:SetText(DURATION_TEXT[duration])
                 button.Seller:SetText(owner)
 
-                button.Bid:SetText(GSC(bidAmount == 0 and minBid or bidAmount))
+                local bid = GSC(bidAmount == 0 and minBid or bidAmount)
+
+                button.Bid:SetText(bid)
+
+                if highBidder then
+                    button.Bid:SetTextColor(0, 1, 0)
+                elseif bidAmount ~= 0 then
+                    button.Bid:SetTextColor(1, 0, 0)
+                else
+                    button.Bid:SetTextColor(1, 1, 1)
+                end
 
                 if buyoutPrice == 0 then
                     button.Buyout:SetText(NONE)
@@ -363,14 +353,41 @@ ns.addon('Blizzard_AuctionUI', function()
         end
     end
 
+    local function UpdateSortButtons()
+        for _, button in ipairs(sortButtons) do
+            SortButton_UpdateArrow(button, 'list', button.sortColumn)
+        end
+    end
+
     ns.securehook('BrowseWowTokenResults_Update', function()
         return Browse:SetShown(not AuctionFrame_DoesCategoryHaveFlag('WOW_TOKEN_FLAG',
                                                                      AuctionFrameBrowse.selectedCategoryIndex))
     end)
 
+    ns.securehook('QueryAuctionItems', function()
+        ScrollFrame.scrollBar:SetValue(0)
+    end)
+
+    ns.override('AuctionFrameBrowse_Update', nop)
+
+    ns.override('AuctionFrameBrowse_UpdateArrows', UpdateSortButtons)
+
+    ns.hookscript(BrowseSearchButton, 'OnEnable', function()
+        for _, button in ipairs(sortButtons) do
+            button:Enable()
+        end
+    end)
+
+    ns.hookscript(BrowseSearchButton, 'OnDisable', function()
+        for _, button in ipairs(sortButtons) do
+            button:Disable()
+        end
+    end)
+
     ScrollFrame:SetScript('OnShow', UpdateBrowseList)
 
     ns.event('AUCTION_ITEM_LIST_UPDATE', function()
+        UpdateSortButtons()
         UpdateBrowseList()
         UpdateSelectedItem()
         AuctionFrameBrowse.isSearching = nil
