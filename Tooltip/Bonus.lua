@@ -5,6 +5,121 @@
 ---@type ns
 local ns = select(2, ...)
 
+local ITEM_CLASSES = {
+    [21330] = 'WARRIOR',
+    [21332] = 'WARRIOR',
+    [21334] = 'WARLOCK',
+    [21336] = 'WARLOCK',
+    [21338] = 'WARLOCK',
+    [21344] = 'MAGE',
+    [21346] = 'MAGE',
+    [21348] = 'PRIEST',
+    [21350] = 'PRIEST',
+    [21352] = 'PRIEST',
+    [21354] = 'DRUID',
+    [21356] = 'DRUID',
+    [19834] = 'ROGUE',
+    [21360] = 'ROGUE',
+    [21362] = 'ROGUE',
+    [21364] = 'ROGUE',
+    [21366] = 'HUNTER',
+    [21368] = 'HUNTER',
+    [19846] = 'MAGE',
+    [21372] = 'SHAMAN',
+    [21374] = 'SHAMAN',
+    [21376] = 'SHAMAN',
+    [18713] = 'HUNTER',
+    [18715] = 'HUNTER',
+    [18465] = 'ROGUE',
+    [18467] = 'WARLOCK',
+    [18469] = 'PRIEST',
+    [18471] = 'SHAMAN',
+    [18473] = 'HUNTER',
+    [21396] = 'PALADIN',
+    [21398] = 'SHAMAN',
+    [21400] = 'SHAMAN',
+    [21402] = 'HUNTER',
+    [21404] = 'ROGUE',
+    [21406] = 'ROGUE',
+    [21408] = 'DRUID',
+    [21410] = 'PRIEST',
+    [21412] = 'PRIEST',
+    [21414] = 'MAGE',
+    [21416] = 'WARLOCK',
+    [21418] = 'WARLOCK',
+    [20033] = 'WARLOCK',
+    [21393] = 'WARRIOR',
+    [21373] = 'SHAMAN',
+    [19826] = 'PALADIN',
+    [19836] = 'ROGUE',
+    [18646] = 'PRIEST',
+    [21392] = 'WARRIOR',
+    [21394] = 'WARRIOR',
+    [19824] = 'WARRIOR',
+    [19838] = 'DRUID',
+    [19825] = 'PALADIN',
+    [19828] = 'SHAMAN',
+    [19840] = 'DRUID',
+    [21329] = 'WARRIOR',
+    [21331] = 'WARRIOR',
+    [21333] = 'WARRIOR',
+    [21335] = 'WARLOCK',
+    [21337] = 'WARLOCK',
+    [19848] = 'WARLOCK',
+    [19843] = 'PRIEST',
+    [21343] = 'MAGE',
+    [21345] = 'MAGE',
+    [21347] = 'MAGE',
+    [21349] = 'PRIEST',
+    [19827] = 'PALADIN',
+    [21353] = 'DRUID',
+    [21355] = 'DRUID',
+    [19833] = 'HUNTER',
+    [19835] = 'ROGUE',
+    [21361] = 'ROGUE',
+    [19839] = 'DRUID',
+    [19841] = 'PRIEST',
+    [21367] = 'HUNTER',
+    [19845] = 'MAGE',
+    [21370] = 'HUNTER',
+    [19849] = 'WARLOCK',
+    [21375] = 'SHAMAN',
+    [21351] = 'PRIEST',
+    [21357] = 'DRUID',
+    [18714] = 'HUNTER',
+    [21389] = 'PALADIN',
+    [19832] = 'HUNTER',
+    [18466] = 'WARRIOR',
+    [18468] = 'MAGE',
+    [18470] = 'DRUID',
+    [18472] = 'PALADIN',
+    [21395] = 'PALADIN',
+    [21397] = 'PALADIN',
+    [21399] = 'SHAMAN',
+    [21401] = 'HUNTER',
+    [21403] = 'HUNTER',
+    [21405] = 'ROGUE',
+    [21407] = 'DRUID',
+    [21409] = 'DRUID',
+    [21411] = 'PRIEST',
+    [21413] = 'MAGE',
+    [21415] = 'MAGE',
+    [21417] = 'WARLOCK',
+    [19830] = 'SHAMAN',
+    [21365] = 'HUNTER',
+    [21387] = 'PALADIN',
+    [21388] = 'PALADIN',
+    [21390] = 'PALADIN',
+    [21391] = 'PALADIN',
+    [20034] = 'MAGE',
+    [19822] = 'WARRIOR',
+    [19823] = 'WARRIOR',
+    [19829] = 'SHAMAN',
+    [19831] = 'HUNTER',
+    [19842] = 'PRIEST',
+    [21359] = 'ROGUE',
+}
+
 -- from  https://github.com/Hoizame/AtlasLootClassic/blob/master/AtlasLootClassic/Data/Token.lua
 local DATA = {
     -- Dire Maul books
@@ -200,13 +315,28 @@ local DATA = {
     [12337] = 12219, -- Gemstone of Bloodaxe
 }
 
-for k, v in pairs(DATA) do
-    if type(v) == 'number' then
-        DATA[k] = assert(DATA[v])
+do
+    local IgnoreClass = UnitFactionGroup('player') == 'Alliance' and 'SHAMAN' or 'PALADIN'
+
+    local function Filter(itemId)
+        local class = ITEM_CLASSES[itemId]
+        return not class or class ~= IgnoreClass
+    end
+
+    for k, v in pairs(DATA) do
+        if type(v) == 'table' then
+            DATA[k] = tFilter(v, Filter, true)
+        end
+    end
+
+    for k, v in pairs(DATA) do
+        if type(v) == 'number' then
+            DATA[k] = assert(DATA[v])
+        end
     end
 end
 
-local SIZE = 26
+local SIZE = 30
 local SPACING = 3
 local Bonus = tdUIBonusFrame
 
@@ -240,7 +370,7 @@ function Bonus:GetButton(i)
     if not self.buttons[i] then
         local button = CreateFrame('Button', nil, self, 'tdUIBonusItemTemplate')
         button:SetSize(SIZE, SIZE)
-        button:SetPoint('LEFT', 42 + (i - 1) * (SIZE + SPACING) + 3, 0)
+        button:SetPoint('LEFT', SIZE + 16 + (i - 1) * (SIZE + SPACING) + 3, 0)
         button.index = i
         self.buttons[i] = button
     end
@@ -253,6 +383,16 @@ function Bonus:UpdateButton(index, itemId)
     button.hasItem = true
     button.Icon:SetTexture(GetItemIcon(itemId))
     button:Show()
+
+    local class = ITEM_CLASSES[itemId]
+    if not class then
+        button.Class:Hide()
+        button.ClassBorder:Hide()
+    else
+        button.Class:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+        button.Class:Show()
+        button.ClassBorder:Show()
+    end
 end
 
 function Bonus:GetItemByIndex(index)
@@ -287,25 +427,43 @@ function Bonus:SetItems(itemId, items, force)
     self:Update()
 end
 
+local CLASSES = FillLocalizedClassList {}
+
 function Bonus:SendChat(chatType, target)
-    local text = ''
+    SendChatMessage(select(2, GetItemInfo(self.tokenItemId)) .. ' exchange:', chatType, nil, target)
 
-    for i = 0, #self.currentItems do
-        local link = select(2, GetItemInfo(self:GetItemByIndex(i)))
+    local classItems = {}
+    for _, itemId in ipairs(self.currentItems) do
+        local link = select(2, GetItemInfo(itemId))
+        local classFileName = ITEM_CLASSES[itemId] or ''
 
-        if #text + #link > 255 then
-            SendChatMessage(text, chatType, nil, target)
-            text = ''
-        end
-
-        text = text .. link
-        if i == 0 then
-            text = text .. '->'
-        end
+        classItems[classFileName] = classItems[classFileName] or {}
+        tinsert(classItems[classFileName], itemId)
     end
 
-    if #text > 0 then
-        SendChatMessage(text, chatType, nil, target)
+    for classFileName, items in pairs(classItems) do
+        local text, classText
+        local className = CLASSES[classFileName]
+        if className then
+            classText = className .. ': '
+        else
+            classText = ''
+        end
+        text = classText
+
+        for _, itemId in ipairs(items) do
+            local link = select(2, GetItemInfo(itemId))
+            if #text + #link > 255 then
+                SendChatMessage(text, chatType, nil, target)
+                text = classText
+            end
+
+            text = text .. link
+        end
+
+        if text ~= classText then
+            SendChatMessage(text, chatType, nil, target)
+        end
     end
 end
 

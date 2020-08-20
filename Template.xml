@@ -292,14 +292,30 @@
         </Frames>
     </ScrollFrame>
     <Button name="tdUIBonusItemTemplate" virtual="true">
-        <Size x="26" y="26" />
+        <Size x="30" y="30" />
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture parentKey="Icon" />
             </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="Class" file="Interface\TargetingFrame\UI-Classes-Circles">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="-2" y="7" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <Texture parentKey="ClassBorder" file="Interface\Common\RingBorder">
+                    <Size x="20" y="20" />
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.Class" />
+                    </Anchors>
+                </Texture>
+            </Layer>
         </Layers>
         <NormalTexture file="Interface\Buttons\UI-Quickslot2">
-            <Size x="46" y="46" />
+            <Size x="53" y="53" />
             <Anchors>
                 <Anchor point="CENTER" x="0" y="-1" />
             </Anchors>
@@ -323,7 +339,7 @@
         </Scripts>
     </Button>
     <Frame name="tdUIBonusFrame" hidden="true" parent="UIParent">
-        <Size x="1" y="26"/>
+        <Size x="1" y="30"/>
         <Anchors>
             <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="200" />
         </Anchors>
