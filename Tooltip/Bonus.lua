@@ -370,7 +370,7 @@ function Bonus:GetButton(i)
     if not self.buttons[i] then
         local button = CreateFrame('Button', nil, self, 'tdUIBonusItemTemplate')
         button:SetSize(SIZE, SIZE)
-        button:SetPoint('LEFT', SIZE + 16 + (i - 1) * (SIZE + SPACING) + 3, 0)
+        button:SetPoint('LEFT', self.Token, 'RIGHT', 16 + (i - 1) * (SIZE + SPACING) + 3, 0)
         button.index = i
         self.buttons[i] = button
     end
@@ -384,6 +384,14 @@ function Bonus:UpdateButton(index, itemId)
     button.Icon:SetTexture(GetItemIcon(itemId))
     button:Show()
 
+    local quality = select(3, GetItemInfo(itemId))
+    if quality and quality > LE_ITEM_QUALITY_COMMON then
+        local r, g, b = GetItemQualityColor(quality)
+        button.Border:SetVertexColor(r, g, b, 0.5)
+    else
+        button.Border:Hide()
+    end
+
     local class = ITEM_CLASSES[itemId]
     if not class then
         button.Class:Hide()
@@ -392,6 +400,7 @@ function Bonus:UpdateButton(index, itemId)
         button.Class:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
         button.Class:Show()
         button.ClassBorder:Show()
+        return true
     end
 end
 
@@ -407,16 +416,30 @@ function Bonus:GetItemByIndex(index)
 end
 
 function Bonus:Update()
+    local hasClass = false
     for i = 0, max(#self.currentItems, #self.buttons) do
         local itemId = self:GetItemByIndex(i)
         if itemId then
-            self:UpdateButton(i, itemId)
+            if self:UpdateButton(i, itemId) then
+                hasClass = true
+            end
         elseif self.buttons[i] then
             self.buttons[i]:Hide()
         end
     end
 
+    local name, _, quality = GetItemInfo(self.tokenItemId)
+    if name then
+        local r, g, b = GetItemQualityColor(quality)
+        self.Name:SetText(name)
+        self.Name:SetTextColor(r, g, b)
+        -- self:SetBackdropBorderColor(r, g, b)
+    else
+        self.Name:SetText('')
+    end
+
     self:SetWidth(40 + (#self.currentItems + 1) * (SIZE + SPACING))
+    self:SetHeight(hasClass and 74 or 68)
 end
 
 function Bonus:SetItems(itemId, items, force)
@@ -499,13 +522,13 @@ local function Initialize()
 end
 
 local DropMenu
-function Bonus:OpenChatMenu()
+function Bonus:OpenChatMenu(anchorFrame)
     if not DropMenu then
         DropMenu = CreateFrame('Frame', 'tdUIBonusDropMenu', UIParent, 'UIDropDownMenuTemplate')
         DropMenu.displayMode = 'MENU'
         DropMenu.initialize = Initialize
     end
-    ToggleDropDownMenu(1, nil, DropMenu, self.Token, 0, 0)
+    ToggleDropDownMenu(1, nil, DropMenu, anchorFrame, 0, 0)
 end
 
 ns.hookscript(ItemRefTooltip, 'OnTooltipSetItem', function(self)
@@ -525,8 +548,6 @@ ns.hookscript(GameTooltip, 'OnTooltipSetItem', function(self)
     if GetTipBonusItems(self) then
         if not self:IsOwned(Bonus.Token) then
             self:AddLine('Press CTRL to see bouns')
-        else
-            self:AddLine('Right click to chat')
         end
     end
 end)
