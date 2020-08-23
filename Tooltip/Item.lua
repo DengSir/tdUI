@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/17/2020, 12:43:36 AM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -20,6 +19,7 @@ local INVALID_EQUIP_LOC = {[''] = true, ['INVTYPE_BAG'] = true, ['INVTYPE_AMMO']
 
 ---@param tip GameTooltip
 local function OnTooltipItem(tip, item)
+    print(tip, item)
     if not item then
         return
     end
@@ -42,12 +42,15 @@ local function OnTooltipItem(tip, item)
         if icon and nameLine:GetText() then
             nameLine:SetFormattedText('|T%s:18|t %s', icon, nameLine:GetText())
         end
+
+        print(nameLine:GetText())
     end
 
-    tip:Show()
+    -- tip:Show()
 end
 
 local function OnTooltipSetItem(tip)
+    print(tip, 'OnTooltipSetItem')
     if tip._tdtipitem then
         return
     end
@@ -55,21 +58,27 @@ local function OnTooltipSetItem(tip)
     local _, item = tip:GetItem()
     if item then
         OnTooltipItem(tip, item)
-        tip._tdtipitem = true
+        -- tip._tdtipitem = true
     end
 end
 
 local function OnTooltipCleared(tip)
     tip._tdtipitem = nil
+    print(tip, 'cleared')
 end
 
 local function HookTip(tip)
-    tip:HookScript('OnTooltipSetItem', OnTooltipSetItem)
-    tip:HookScript('OnTooltipCleared', OnTooltipCleared)
-    tip:HookScript('OnHide', OnTooltipCleared)
+    ns.hookscript(tip, 'OnTooltipSetItem', OnTooltipSetItem)
+    ns.hookscript(tip, 'OnHide', OnTooltipCleared)
+
+    ns.securehook(tip, 'SetOwner', OnTooltipCleared)
+
+    if tip.shoppingTooltips then
+        for _, v in ipairs(tip.shoppingTooltips) do
+            HookTip(v)
+        end
+    end
 end
 
 HookTip(GameTooltip)
 HookTip(ItemRefTooltip)
-HookTip(ShoppingTooltip1)
-HookTip(ShoppingTooltip2)

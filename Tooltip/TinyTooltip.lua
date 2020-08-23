@@ -17,6 +17,7 @@ ns.addon('TinyTooltip', function()
         LibDBIconTooltip, --
         AceGUITooltip, --
         AceConfigDialogTooltip, --
+        tdUIBonusFrame,
         function()
             local tdDropMenu = LibStub('tdGUI-1.0.Class.DropMenu', true)
             return tdDropMenu and tdDropMenu.Public

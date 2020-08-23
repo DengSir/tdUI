@@ -377,6 +377,10 @@ function Bonus:GetButton(i)
     return self.buttons[i]
 end
 
+function Bonus:RefreshButton(index, itemId)
+    return ns.itemready(itemId, self.UpdateButton, self, index, itemId)
+end
+
 function Bonus:UpdateButton(index, itemId)
     local button = self:GetButton(index)
     button.itemId = itemId
@@ -388,6 +392,7 @@ function Bonus:UpdateButton(index, itemId)
     if quality and quality > LE_ITEM_QUALITY_COMMON then
         local r, g, b = GetItemQualityColor(quality)
         button.Border:SetVertexColor(r, g, b, 0.5)
+        button.Border:Show()
     else
         button.Border:Hide()
     end
@@ -400,7 +405,6 @@ function Bonus:UpdateButton(index, itemId)
         button.Class:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
         button.Class:Show()
         button.ClassBorder:Show()
-        return true
     end
 end
 
@@ -420,9 +424,12 @@ function Bonus:Update()
     for i = 0, max(#self.currentItems, #self.buttons) do
         local itemId = self:GetItemByIndex(i)
         if itemId then
-            if self:UpdateButton(i, itemId) then
+            self:RefreshButton(i, itemId)
+
+            if ITEM_CLASSES[itemId] then
                 hasClass = true
             end
+
         elseif self.buttons[i] then
             self.buttons[i]:Hide()
         end
@@ -433,13 +440,14 @@ function Bonus:Update()
         local r, g, b = GetItemQualityColor(quality)
         self.Name:SetText(name)
         self.Name:SetTextColor(r, g, b)
-        -- self:SetBackdropBorderColor(r, g, b)
+        local bg = (self.style or self)
+        bg:SetBackdropBorderColor(r, g, b)
     else
         self.Name:SetText('')
     end
 
     self:SetWidth(40 + (#self.currentItems + 1) * (SIZE + SPACING))
-    self:SetHeight(hasClass and 74 or 68)
+    self:SetHeight(hasClass and 78 or 72)
 end
 
 function Bonus:SetItems(itemId, items, force)

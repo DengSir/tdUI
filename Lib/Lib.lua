@@ -28,6 +28,7 @@ local addonCallbacks = {}
 local eventCallbacks = {}
 local onceEventCallbacks = {}
 local configCallbacks = {}
+local itemReadyCallbacks = {}
 local pendings = {}
 
 local function append(t, k, v)
@@ -95,6 +96,16 @@ events:SetScript('OnEvent', function(self, event, ...)
         addonCallbacks[addon] = nil
         if not next(addonCallbacks) then
             events:UnregisterEvent('ADDON_LOADED')
+        end
+    elseif event == 'GET_ITEM_INFO_RECEIVED' then
+        local itemId, ok = ...
+        if ok then
+            call(itemReadyCallbacks, itemId)
+
+            itemReadyCallbacks[itemId] = nil
+            if not next(itemReadyCallbacks) then
+                events:UnregisterEvent('GET_ITEM_INFO_RECEIVED')
+            end
         end
     else
         ns.fire(event, ...)
@@ -381,4 +392,16 @@ function ns.memorize(func)
         end
         return cache[k]
     end
+end
+
+function ns.itemready(itemId, func, ...)
+    if GetItemInfo(itemId) then
+        return func(...)
+    end
+
+    local p = ns.pack(...)
+    append(itemReadyCallbacks, itemId, function()
+        return func(p())
+    end)
+    events:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 end
