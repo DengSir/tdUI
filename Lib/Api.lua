@@ -150,3 +150,20 @@ function ns.hide(obj)
     obj:Hide()
     obj:SetParent(hider)
 end
+
+function ns.gsc(money)
+    money = floor(money)
+    local text = ''
+    if (money % 100 > 0) and (money < 10000) or (money == 0) then
+        text = COPPER_AMOUNT_TEXTURE:format(money % 100, 0, 0)
+    end
+    money = floor(money / 100)
+    if (money % 100 > 0) and (money < 100000) then
+        text = SILVER_AMOUNT_TEXTURE:format(money % 100) .. ' ' .. text
+    end
+    money = floor(money / 100)
+    if (money > 0) then
+        text = GOLD_AMOUNT_TEXTURE:format(money, 0, 0) .. ' ' .. text
+    end
+    return text
+end

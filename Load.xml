@@ -17,7 +17,11 @@
     <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
-    <Script file="Auction.lua" />
+    <!-- <Script file="Auction.lua" /> -->
+
+    <Script file="Auction\BrowseItem.lua" />
+    <Script file="Auction\Browse.lua" />
+    <Script file="Auction\Auction.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />

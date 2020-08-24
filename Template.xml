@@ -191,6 +191,9 @@
                     <Anchor point="LEFT"/>
                 </Anchors>
                 <Scripts>
+                    <OnClick>
+                        self:GetParent():OnClick()
+                    </OnClick>
                     <OnEnter>
                         local parent = self:GetParent()
                         parent:LockHighlight()
@@ -203,8 +206,8 @@
                         ResetCursor()
                     </OnLeave>
                     <OnUpdate>
-                        if ( GameTooltip:IsOwned(self) ) then
-                            AuctionFrameItem_OnEnter(self, 'list', self:GetParent():GetID())
+                        if GameTooltip:IsOwned(self) then
+                            AuctionFrameItem_OnEnter(self, 'list', self:GetParent().id)
                         end
                     </OnUpdate>
                 </Scripts>
@@ -259,7 +262,7 @@
             </Layer>
             <Layer level="BACKGROUND">
                 <Texture parentKey="Selected" hidden="true" setAllPoints="true">
-                    <Color r="1" g="0.81" b="0" a="0.3" />
+                    <Color r="0" g="1" b="1" a="0.3" />
                 </Texture>
                 <Texture parentKey="Highlight" setAllPoints="true">
                     <Color r="1" g="0.81" b="0" a="0.3" />

@@ -11,3 +11,18 @@
 ---@class tdUICollectFrame: Frame
 ---@field buttonList Button[]
 ---@field buttonEnv table<Button, tdUICollectButtonEnv>
+
+---@class tdUIAuctionBrowse: ScrollFrame
+---@field buttons tdUIAuctionBrowseItem[]
+
+---@class tdUIAuctionBrowseItem: Button
+---@field Bg Texture
+---@field Selected Texture
+---@field Icon Texture
+---@field Name FontString
+---@field Level FontString
+---@field Time FontString
+---@field Seller FontString
+---@field Bid FontString
+---@field Buyout FontString
+---@field UnitPrice FontString

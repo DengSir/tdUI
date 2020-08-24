@@ -465,7 +465,6 @@ function Bonus:SendChat(chatType, target)
 
     local classItems = {}
     for _, itemId in ipairs(self.currentItems) do
-        local link = select(2, GetItemInfo(itemId))
         local classFileName = ITEM_CLASSES[itemId] or ''
 
         classItems[classFileName] = classItems[classFileName] or {}
