@@ -19,7 +19,6 @@ local INVALID_EQUIP_LOC = {[''] = true, ['INVTYPE_BAG'] = true, ['INVTYPE_AMMO']
 
 ---@param tip GameTooltip
 local function OnTooltipItem(tip, item)
-    print(tip, item)
     if not item then
         return
     end
@@ -42,40 +41,51 @@ local function OnTooltipItem(tip, item)
         if icon and nameLine:GetText() then
             nameLine:SetFormattedText('|T%s:18|t %s', icon, nameLine:GetText())
         end
-
-        print(nameLine:GetText())
     end
-
-    -- tip:Show()
 end
 
-local function OnTooltipSetItem(tip)
-    print(tip, 'OnTooltipSetItem')
-    if tip._tdtipitem then
-        return
-    end
-
+local function OnTooltipSetItem(tip, ...)
     local _, item = tip:GetItem()
     if item then
         OnTooltipItem(tip, item)
-        -- tip._tdtipitem = true
     end
 end
 
-local function OnTooltipCleared(tip)
-    tip._tdtipitem = nil
-    print(tip, 'cleared')
+local function OnCompareItem(tip1, tip2)
+    OnTooltipSetItem(tip1)
+    OnTooltipSetItem(tip2)
 end
 
-local function HookTip(tip)
-    ns.hookscript(tip, 'OnTooltipSetItem', OnTooltipSetItem)
-    ns.hookscript(tip, 'OnHide', OnTooltipCleared)
+local apis = {
+    'SetMerchantItem',
+    'SetBuybackItem',
+    'SetBagItem',
+    'SetAuctionItem',
+    'SetAuctionSellItem',
+    'SetLootItem',
+    'SetLootRollItem',
+    'SetInventoryItem',
+    'SetTradePlayerItem',
+    'SetTradeTargetItem',
+    'SetQuestItem',
+    'SetQuestLogItem',
+    'SetInboxItem',
+    'SetSendMailItem',
+    'SetHyperlink',
+    'SetCraftItem',
+    'SetTradeSkillItem',
+    'SetAction',
+    'SetItemByID',
+}
 
-    ns.securehook(tip, 'SetOwner', OnTooltipCleared)
+local function HookTip(tip)
+    for _, method in ipairs(apis) do
+        ns.securehook(tip, method, OnTooltipSetItem)
+    end
 
     if tip.shoppingTooltips then
         for _, v in ipairs(tip.shoppingTooltips) do
-            HookTip(v)
+            ns.securehook(v, 'SetCompareItem', OnCompareItem)
         end
     end
 end

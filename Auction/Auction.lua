@@ -6,6 +6,8 @@
 ---@type ns
 local ns = select(2, ...)
 
+ns.Auction = {}
+
 ns.addon('Blizzard_AuctionUI', function()
     -- list sorts
     AuctionSort['list_level'] = {
@@ -69,5 +71,5 @@ ns.addon('Blizzard_AuctionUI', function()
 
     AuctionFrame_SetSort('list', 'unitprice')
 
-    ns.Browse:Bind(CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate'))
+    ns.Auction.Browse:Bind(CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate'))
 end)

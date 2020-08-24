@@ -6,6 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
+local _G = _G
 local point = ns.RePoint
 local ipairs = ipairs
 
@@ -18,7 +19,7 @@ local MoneyInputFrame_SetCopper = MoneyInputFrame_SetCopper
 
 ---@type tdUIAuctionBrowse
 local Browse = ns.class('ScrollFrame')
-ns.Browse = Browse
+ns.Auction.Browse = Browse
 
 function Browse:Constructor()
     self:SetupBlizzard()
@@ -81,32 +82,41 @@ function Browse:SetupBlizzard()
     self.NextPageButton:Show()
     self.NextPageButton.Hide = nop
 
-    local menuList = {
-        { --
-            text = ALL,
-            value = -1,
-            func = BrowseDropDown_OnClick,
-        },
-    }
+    do
+        local BrowseDropDown = BrowseDropDown
 
-    for i = 0, 4 do
-        local r, g, b = GetItemQualityColor(i)
-        tinsert(menuList, {
-            text = _G['ITEM_QUALITY' .. i .. '_DESC'],
-            colorCode = format('|cff%02x%02x%02x', r * 255, g * 255, b * 255),
-            value = i,
-            func = BrowseDropDown_OnClick,
-        })
-    end
-
-    BrowseDropDown:SetScript('OnShow', nil)
-    UIDropDownMenu_Initialize(BrowseDropDown, function(_, level)
-        for _, v in ipairs(menuList) do
-            v.checked = nil
-            UIDropDownMenu_AddButton(v)
+        local function OnClick(_, value)
+            UIDropDownMenu_SetSelectedValue(BrowseDropDown, value)
         end
-    end)
-    UIDropDownMenu_SetSelectedValue(BrowseDropDown, -1)
+
+        local function Checked(button)
+            return UIDropDownMenu_GetSelectedValue(BrowseDropDown) == button.arg1
+        end
+
+        local menuList = {}
+        do
+            tinsert(menuList, {text = ALL, arg1 = -1, func = OnClick, checked = Checked})
+
+            for i = Enum.ItemQuality.Poor, Enum.ItemQuality.Epic do
+                local r, g, b = GetItemQualityColor(i)
+                tinsert(menuList, {
+                    text = _G['ITEM_QUALITY' .. i .. '_DESC'],
+                    colorCode = format('|cff%02x%02x%02x', r * 255, g * 255, b * 255),
+                    arg1 = i,
+                    func = OnClick,
+                    checked = Checked,
+                })
+            end
+        end
+
+        BrowseDropDown:SetScript('OnShow', nil)
+        UIDropDownMenu_Initialize(BrowseDropDown, function(self, level)
+            for _, info in ipairs(menuList) do
+                UIDropDownMenu_AddButton(info, level)
+            end
+        end, nil, nil, menuList)
+        UIDropDownMenu_SetSelectedValue(BrowseDropDown, -1)
+    end
 end
 
 function Browse:SetupScrollFrame()
@@ -114,7 +124,7 @@ function Browse:SetupScrollFrame()
     HybridScrollFrame_CreateButtons(self, 'tdUIAuctionBrowseItemTemplate')
 
     for _, button in ipairs(self.buttons) do
-        ns.BrowseItem:Bind(button)
+        ns.Auction.BrowseItem:Bind(button)
     end
 end
 
@@ -126,7 +136,7 @@ function Browse:SetupSortButtons()
     end
 
     local headers = {
-        {text = NAME, width = 160, sortColumn = 'quality'},
+        {text = NAME, width = 152, sortColumn = 'quality'},
         {text = REQ_LEVEL_ABBR, width = 30, sortColumn = 'level'},
         {text = 'Time', width = 70, sortColumn = 'duration'},
         {text = AUCTION_CREATOR, width = 70, sortColumn = 'seller'},
@@ -135,23 +145,18 @@ function Browse:SetupSortButtons()
         {text = 'Unit price', width = 96, sortColumn = 'unitprice'},
     }
 
-    local prev
-    for i, v in ipairs(headers) do
+    local x = 204
+    for i, header in ipairs(headers) do
         local button = CreateFrame('Button', 'BrowseButtonSort' .. i, self, 'AuctionSortButtonTemplate')
+        button.sortColumn = header.sortColumn
         button:SetHeight(19)
-        button:SetWidth(v.width)
-        button:SetText(v.text)
-        button.sortColumn = v.sortColumn
+        button:SetWidth(header.width)
+        button:SetText(header.text)
         button:SetScript('OnClick', SortOnClick)
+        button:SetPoint('TOPLEFT', AuctionFrameBrowse, 'TOPLEFT', x, -82)
         tinsert(self.sortButtons, button)
 
-        if prev then
-            button:ClearAllPoints()
-            button:SetPoint('LEFT', prev, 'RIGHT')
-        else
-            button:SetPoint('TOPLEFT', AuctionFrameBrowse, 'TOPLEFT', 186, -82)
-        end
-        prev = button
+        x = x + header.width
     end
 end
 
@@ -187,6 +192,10 @@ function Browse:SetupEventsAndHooks()
 
     ns.event('AUCTION_ITEM_LIST_UPDATE', function()
         return self:UpdateAll()
+    end)
+
+    ns.hookscript(BrowseResetButton, 'OnClick', function()
+        self.NoResultsText:SetShown(GetNumAuctionItems('list') == 0)
     end)
 
     self:SetScript('OnShow', self.UpdateAll)

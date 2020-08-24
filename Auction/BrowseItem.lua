@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 ---@type tdUIAuctionBrowseItem
 local BrowseItem = ns.class('Button')
-ns.BrowseItem = BrowseItem
+ns.Auction.BrowseItem = BrowseItem
 
 local NONE = GRAY_FONT_COLOR:WrapTextInColorCode(NONE)
 local DURATION_TEXT = { --
