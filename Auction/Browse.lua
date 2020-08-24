@@ -29,7 +29,17 @@ function Browse:Constructor()
 end
 
 function Browse:SetupBlizzard()
+    if not BrowseResetButton then
+        local button = CreateFrame('Button', 'BrowseResetButton', AuctionFrameBrowse, 'UIPanelButtonTemplate')
+        button:SetText(RESET)
+        button:SetSize(80, 22)
+        button:SetPoint('TOPRIGHT', 67, -35)
+        button:SetScript('OnClick', AuctionFrameBrowse_Reset)
+        button:SetScript('OnUpdate', BrowseResetButton_OnUpdate)
+    end
+
     self.SearchButton = BrowseSearchButton
+    self.ResetButton = BrowseResetButton
     self.PrevPageButton = BrowsePrevPageButton
     self.NextPageButton = BrowseNextPageButton
     self.NoResultsText = BrowseNoResultsText
@@ -51,15 +61,6 @@ function Browse:SetupBlizzard()
     ns.hide(BrowseIsUsableText)
     ns.hide(BrowseShowOnCharacterText)
 
-    if not BrowseResetButton then
-        local button = CreateFrame('Button', 'BrowseResetButton', AuctionFrameBrowse, 'UIPanelButtonTemplate')
-        button:SetText(RESET)
-        button:SetSize(80, 22)
-        button:SetPoint('TOPRIGHT', 67, -35)
-        button:SetScript('OnClick', AuctionFrameBrowse_Reset)
-        button:SetScript('OnUpdate', BrowseResetButton_OnUpdate)
-    end
-
     local function text(obj, text)
         obj:SetFontObject(GameFontHighlightSmall)
         obj:SetText(text)
@@ -76,11 +77,18 @@ function Browse:SetupBlizzard()
     point(self.SearchCountText, 'BOTTOMLEFT', 190, 17)
     point(self.BidPrice, 'BOTTOM', 115, 18)
 
-    self.PrevPageButton:Show()
-    self.PrevPageButton.Hide = nop
+    self.SearchButton:SetParent(self)
+    self.ResetButton:SetParent(self)
 
-    self.NextPageButton:Show()
-    self.NextPageButton.Hide = nop
+    local function parent(obj)
+        obj:SetParent(self)
+        obj:Show()
+        obj.Hide = nop
+    end
+
+    parent(self.PrevPageButton)
+    parent(self.NextPageButton)
+    parent(self.SearchCountText)
 
     do
         local BrowseDropDown = BrowseDropDown
@@ -175,13 +183,15 @@ function Browse:SetupEventsAndHooks()
             button:Disable()
         end
     end)
-
     ns.securehook('QueryAuctionItems', function()
         self.scrollBar:SetValue(0)
     end)
     ns.securehook('BrowseWowTokenResults_Update', function()
-        return self:SetShown(not AuctionFrame_DoesCategoryHaveFlag('WOW_TOKEN_FLAG',
-                                                                   AuctionFrameBrowse.selectedCategoryIndex))
+        if not AuctionFrame_DoesCategoryHaveFlag('WOW_TOKEN_FLAG', AuctionFrameBrowse.selectedCategoryIndex) then
+            self:Show()
+        else
+            self:Hide()
+        end
     end)
     ns.securehook('SetSelectedAuctionItem', function(listType)
         if listType == 'list' then
@@ -196,6 +206,7 @@ function Browse:SetupEventsAndHooks()
 
     ns.hookscript(BrowseResetButton, 'OnClick', function()
         self.NoResultsText:SetShown(GetNumAuctionItems('list') == 0)
+        BrowseDropDownText:SetText(ALL)
     end)
 
     self:SetScript('OnShow', self.UpdateAll)
