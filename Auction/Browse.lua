@@ -38,6 +38,14 @@ function Browse:SetupBlizzard()
         button:SetScript('OnUpdate', BrowseResetButton_OnUpdate)
     end
 
+    if not ExactMatchCheckButton then
+        local button = CreateFrame('CheckButton', 'ExactMatchCheckButton', AuctionFrameBrowse, 'UICheckButtonTemplate')
+        button:SetSize(24, 24)
+        button:SetPoint('TOPLEFT', 25, -75)
+        ExactMatchCheckButtonText:SetFontObject(GameFontHighlightSmall)
+        ExactMatchCheckButtonText:SetText(AH_EXACT_MATCH)
+    end
+
     self.SearchButton = BrowseSearchButton
     self.ResetButton = BrowseResetButton
     self.PrevPageButton = BrowsePrevPageButton
@@ -60,6 +68,7 @@ function Browse:SetupBlizzard()
     ns.hide(BrowseScrollFrame)
     ns.hide(BrowseIsUsableText)
     ns.hide(BrowseShowOnCharacterText)
+    ns.hide(BrowseTabText)
 
     local function text(obj, text)
         obj:SetFontObject(GameFontHighlightSmall)
@@ -207,6 +216,11 @@ function Browse:SetupEventsAndHooks()
     ns.hookscript(BrowseResetButton, 'OnClick', function()
         self.NoResultsText:SetShown(GetNumAuctionItems('list') == 0)
         BrowseDropDownText:SetText(ALL)
+    end)
+
+    ns.hook('QueryAuctionItems',
+            function(orig, text, minLevel, maxLevel, page, usable, rarity, a1, exactMatch, filterData)
+        return orig(text, minLevel, maxLevel, page, usable, rarity, a1, ExactMatchCheckButton:GetChecked(), filterData)
     end)
 
     self:SetScript('OnShow', self.UpdateAll)

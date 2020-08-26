@@ -71,6 +71,46 @@ ns.addon('Blizzard_AuctionUI', function()
 
     AuctionFrame_SetSort('list', 'unitprice')
 
+    ns.securehook('AuctionFrameTab_OnClick', function(self)
+        local index = self:GetID()
+        if index == 1 then
+            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-TopLeft]])
+            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-Top]])
+            AuctionFrameTopRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-TopRight]])
+            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-BotLeft]])
+            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
+            AuctionFrameBotRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotRight]])
+        elseif index == 2 then
+            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-TopLeft]])
+            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Top]])
+            AuctionFrameTopRight:SetTexture(
+                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopRight]])
+            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotLeft]])
+            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
+            AuctionFrameBotRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotRight]])
+        else
+            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopLeft]])
+            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Top]])
+            AuctionFrameTopRight:SetTexture(
+                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopRight]])
+            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-BotLeft]])
+            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
+            AuctionFrameBotRight:SetTexture(
+                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-BotRight]])
+        end
+    end)
+
+    do
+        -- Auction
+
+        local t = AuctionsItemButton:CreateTexture(nil, 'BACKGROUND')
+        t:SetSize(173, 40)
+        t:SetPoint('TOPLEFT', -2, 2)
+        t:SetTexture([[Interface\AuctionFrame\UI-AuctionFrame-ItemSlot]])
+        t:SetTexCoord(0.15625, 0.83203125, 0.171875, 0.796875)
+
+    end
+
     local FullScanFrame = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrame')
     local BrowseFrame = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
     local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')

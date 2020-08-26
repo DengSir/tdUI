@@ -6,6 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
+local next = next
 local pairs = pairs
 local coroutine = coroutine
 local debugprofilestop = debugprofilestop
@@ -21,15 +22,31 @@ local FullScan = ns.class('Frame')
 ns.Auction.FullScan = FullScan
 
 function FullScan:Constructor()
+    self.used = {}
     self.pool = {}
+
+    self.firstRun = true
+
     self:SetScript('OnEvent', self.OnEvent)
     self:SetScript('OnShow', self.OnShow)
+    self:SetScript('OnHide', self.Hide)
     self:SetScript('OnUpdate', self.OnUpdate)
+
+    ns.securehook('QueryAuctionItems', function()
+        if self.running then
+            self:Kill()
+        end
+    end)
 end
 
 function FullScan:OnShow()
+    self.done = nil
     self:SetFrameLevel(self:GetParent():GetFrameLevel() + 100)
     self.Blocker:SetFrameLevel(self:GetFrameLevel() - 1)
+end
+
+function FullScan:Kill()
+    self.killed = true
 end
 
 function FullScan:Start()
@@ -37,9 +54,18 @@ function FullScan:Start()
         return
     end
 
+    if self.firstRun then
+        self.firstRun = nil
+
+        for i = 1, 10 do
+            self:CreateThread()
+        end
+    end
+
     self.startTick = GetTime()
     self.running = true
     self.waiting = true
+    self.killed = nil
     self.prices = {}
     self:RegisterEvent('AUCTION_ITEM_LIST_UPDATE')
 
@@ -48,9 +74,10 @@ end
 
 function FullScan:OnEvent(event)
     if event == 'AUCTION_ITEM_LIST_UPDATE' then
-        self.waiting = nil
-    else
-
+        if self.waiting then
+            self.waiting = nil
+            self.index = GetNumAuctionItems('list')
+        end
     end
 end
 
@@ -59,8 +86,6 @@ function FullScan:OnUpdate()
         if not self.waiting then
             self:Continue()
         end
-    else
-
     end
     self:UpdateUI()
 end
@@ -83,13 +108,28 @@ function FullScan:UpdateUI()
 
     if self.running then
         self.Time:SetText('Time left: ' .. SecondsToTime(GetTime() - self.startTick))
+    elseif self.done then
+        self.Time:SetText('Finished')
+    elseif not self:CanQuery() and self.startTick then
+        self.Time:SetText('')
     end
+end
+
+function FullScan:Main()
+    while true do
+        if self:Process() then
+            break
+        else
+            coroutine.yield()
+        end
+    end
+    self:Done()
 end
 
 function FullScan:Continue()
     if not self.co then
         self.co = coroutine.create(function()
-            return self:Process()
+            return self:Main()
         end)
     end
 
@@ -103,9 +143,7 @@ end
 
 function FullScan:WaitAuctionInfo(index)
     local link
-    local times = 0
     while true do
-        times = times + 1
         link = GetAuctionItemLink('list', index)
         if link then
             return link, GetAuctionItemInfo('list', index)
@@ -143,23 +181,75 @@ end
 function FullScan:Threshold()
     if debugprofilestop() > 16 then
         debugprofilestart()
-        coroutine.yield()
+        return true
     end
 end
 
 function FullScan:Process()
-    for i = GetNumAuctionItems('list'), 1, -1 do
-        self:ProcessAuction(i)
-        self:Threshold()
+    for co in pairs(self.used) do
+        coroutine.resume(co)
+
+        if self:Threshold() then
+            return
+        end
     end
 
+    while true do
+        if self.index == 0 then
+            break
+        end
+
+        local co = self:GetThread()
+        if not co then
+            return
+        end
+
+        coroutine.resume(co, self.index)
+        self.index = self.index - 1
+
+        if self:Threshold() then
+            return
+        end
+    end
+    return not next(self.used)
+end
+
+function FullScan:Done()
+    local count = 0
     for k, v in pairs(self.prices) do
         ns.global.auction.prices[k] = v
+        count = count + 1
     end
 
+    self.done = true
     self.running = nil
     self.prices = nil
     self:UnregisterEvent('AUCTION_ITEM_LIST_UPDATE')
 
-    print('Done')
+    print('Done', count)
+end
+
+function FullScan:ThreadMain()
+    local co = coroutine.running()
+    while true do
+        self.pool[co] = true
+        self.used[co] = nil
+
+        local index = coroutine.yield()
+
+        self.pool[co] = nil
+        self.used[co] = true
+
+        self:ProcessAuction(index)
+    end
+end
+
+function FullScan:CreateThread()
+    local co = coroutine.create(self.ThreadMain)
+    coroutine.resume(co, self)
+    return co
+end
+
+function FullScan:GetThread()
+    return next(self.pool)
 end
