@@ -167,3 +167,8 @@ function ns.gsc(money)
     end
     return text
 end
+
+function ns.parseItemLink(link)
+    local item_id, enchant_id, suffix_id, unique_id = link:match('|Hitem:(%d*):(%d*):::::(%d*):(%d*)')
+    return (tonumber(item_id) or 0) .. ':' .. (tonumber(suffix_id) or 0)
+end

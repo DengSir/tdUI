@@ -35,6 +35,9 @@ local DEFAULT_PROFILE = {
             rarityBorder = true,
             itemLevel = true,
             itemLevelOnlyEquip = false,
+            price = true,
+            auctionPrice = true,
+            decomposePrice = true,
         },
     },
     chat = { --
@@ -48,7 +51,15 @@ local DEFAULT_PROFILE = {
     window = {minimap = {minimapPos = 215.34}},
 }
 
+---@class Global
+local DEFAULT_GLOBAL = {auction = {prices = {}}}
+
 ns.load(function()
-    ns.db = LibStub('AceDB-3.0'):New('TDDB_UI', {profile = DEFAULT_PROFILE}, true)
+    ns.db = LibStub('AceDB-3.0'):New('TDDB_UI', { --
+        profile = DEFAULT_PROFILE,
+        global = DEFAULT_GLOBAL,
+    }, true)
+
     ns.profile = ns.db.profile
+    ns.global = ns.db.global
 end)

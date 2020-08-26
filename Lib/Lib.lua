@@ -16,8 +16,7 @@ local IsLoggedIn = IsLoggedIn
 local After = C_Timer.After
 local NewTicker = C_Timer.NewTicker
 
----@class ns
----@field profile Profile
+---@type ns
 local ADDON, ns = ...
 
 local LibClass = LibStub('LibClass-2.0')
@@ -66,10 +65,8 @@ local function pack(...)
         end
     else
         local args = {...}
-        local argCount = select('#', ...)
-
         return function()
-            return unpack(args, 1, argCount)
+            return unpack(args, 1, n)
         end
     end
 end

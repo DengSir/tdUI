@@ -26,3 +26,7 @@
 ---@field Bid FontString
 ---@field Buyout FontString
 ---@field UnitPrice FontString
+
+---@class ns
+---@field profile Profile
+---@field global Global

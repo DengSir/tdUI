@@ -71,5 +71,17 @@ ns.addon('Blizzard_AuctionUI', function()
 
     AuctionFrame_SetSort('list', 'unitprice')
 
-    ns.Auction.Browse:Bind(CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate'))
+    local FullScanFrame = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrame')
+    local BrowseFrame = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
+    local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')
+
+    FullScanButton:SetSize(80, 22)
+    FullScanButton:SetPoint('RIGHT', AuctionFrameCloseButton, 'LEFT')
+    FullScanButton:SetText('Full Scan')
+    FullScanButton:SetScript('OnClick', function()
+        FullScanFrame:Show()
+    end)
+
+    ns.Auction.Browse:Bind(BrowseFrame)
+    ns.Auction.FullScan:Bind(FullScanFrame)
 end)
