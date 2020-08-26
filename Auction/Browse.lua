@@ -78,13 +78,29 @@ function Browse:SetupBlizzard()
     text(ShowOnPlayerCheckButtonText, DISPLAY_ON_CHARACTER)
     text(IsUsableCheckButtonText, USABLE_ITEMS)
 
-    point(IsUsableCheckButton, 'LEFT', BrowseDropDownButton, 'RIGHT', 10, 13)
-    point(ShowOnPlayerCheckButton, 'TOPLEFT', IsUsableCheckButton, 'BOTTOMLEFT', 0, 2)
+    local labels = {BrowseLevelText, BrowseNameText, BrowseDropDownName}
+    local height = 0
+    for _, label in ipairs(labels) do
+        height = max(height, label:GetHeight())
+    end
+    for _, label in ipairs(labels) do
+        label:SetHeight(height)
+    end
+
+    BrowseName:SetWidth(240)
+
     point(self.SearchButton, 'TOPRIGHT', BrowseResetButton, 'TOPLEFT', -5, 0)
     point(self.PrevPageButton, 'TOPLEFT', 658, -53)
     point(self.NextPageButton, 'TOPRIGHT', 70, -53)
     point(self.SearchCountText, 'BOTTOMLEFT', 190, 17)
     point(self.BidPrice, 'BOTTOM', 115, 18)
+
+    point(BrowseLevelText, 'TOPLEFT', 330, -38)
+    point(BrowseDropDownName, 'TOPLEFT', AuctionFrameBrowse, 400, -38)
+    point(BrowseName, 'TOPLEFT', BrowseNameText, 'BOTTOMLEFT', 3, -3)
+    point(BrowseDropDown, 'TOPLEFT', BrowseDropDownName, 'BOTTOMLEFT', -18, 3)
+    point(IsUsableCheckButton, 'TOPLEFT',  530, -38)
+    point(ShowOnPlayerCheckButton, 'TOPLEFT', IsUsableCheckButton, 'BOTTOMLEFT', 0, 2)
 
     self.SearchButton:SetParent(self)
     self.ResetButton:SetParent(self)

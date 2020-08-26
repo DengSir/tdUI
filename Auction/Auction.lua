@@ -71,32 +71,38 @@ ns.addon('Blizzard_AuctionUI', function()
 
     AuctionFrame_SetSort('list', 'unitprice')
 
+    local BGS = {}
+    do
+        local textures = {}
+        local function T(key, ...)
+            for i = 1, 3 do
+                local val = select(i, ...)
+                if val then
+                    local obj = _G['AuctionFrame' .. key]
+                    local texture = [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-]] .. val .. '-' .. key
+                    BGS[i] = BGS[i] or {}
+                    BGS[i][obj] = texture
+
+                    textures[texture] = true
+                end
+            end
+        end
+
+        T('TopLeft', 'Browse', 'Bid', 'Auction')
+        T('Top', 'Browse', 'Auction', 'Auction')
+        T('TopRight', 'Browse', 'Auction', 'Auction')
+        T('BotLeft', 'Browse', 'Bid', 'Auction')
+        T('Bot', 'Auction', 'Auction', 'Auction')
+        T('BotRight', 'Bid', 'Bid', 'Auction')
+    end
+
     ns.securehook('AuctionFrameTab_OnClick', function(self)
         local index = self:GetID()
-        if index == 1 then
-            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-TopLeft]])
-            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-Top]])
-            AuctionFrameTopRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-TopRight]])
-            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Browse-BotLeft]])
-            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
-            AuctionFrameBotRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotRight]])
-        elseif index == 2 then
-            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-TopLeft]])
-            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Top]])
-            AuctionFrameTopRight:SetTexture(
-                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopRight]])
-            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotLeft]])
-            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
-            AuctionFrameBotRight:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Bid-BotRight]])
-        else
-            AuctionFrameTopLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopLeft]])
-            AuctionFrameTop:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Top]])
-            AuctionFrameTopRight:SetTexture(
-                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-TopRight]])
-            AuctionFrameBotLeft:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-BotLeft]])
-            AuctionFrameBot:SetTexture([[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-Bot]])
-            AuctionFrameBotRight:SetTexture(
-                [[Interface\AddOns\tdUI\Media\AuctionFrame\UI-AuctionFrame-Auction-BotRight]])
+        local bgs = BGS[index]
+        if bgs then
+            for k, v in pairs(bgs) do
+                k:SetTexture(v)
+            end
         end
     end)
 
