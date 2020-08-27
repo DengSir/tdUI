@@ -234,13 +234,14 @@
                 </FontString>
                 <FontString parentKey="Time" inherits="GameFontHighlightSmall">
                     <Anchors>
-                        <Anchor point="CENTER" relativePoint="LEFT" x="225" y="0" />
+                        <Anchor point="CENTER" relativePoint="LEFT" x="220" y="0" />
                     </Anchors>
                 </FontString>
                 <FontString parentKey="Seller" inherits="GameFontHighlightSmall" wordWrap="false">
                     <Size x="73"/>
                     <Anchors>
-                        <Anchor point="CENTER" relativePoint="LEFT" x="295" y="0" />
+                        <Anchor point="LEFT" relativePoint="LEFT" x="250" y="0" />
+                        <Anchor point="RIGHT" x="-291" y="0" />
                     </Anchors>
                 </FontString>
 
@@ -251,12 +252,12 @@
                 </FontString>
                 <FontString parentKey="Buyout" inherits="GameFontHighlightSmallRight">
                     <Anchors>
-                        <Anchor point="RIGHT" x="-103" y="0" />
+                        <Anchor point="RIGHT" x="-99" y="0" />
                     </Anchors>
                 </FontString>
                 <FontString parentKey="Bid" inherits="GameFontHighlightSmallRight">
                     <Anchors>
-                        <Anchor point="RIGHT" x="-203" y="0" />
+                        <Anchor point="RIGHT" x="-195" y="0" />
                     </Anchors>
                 </FontString>
             </Layer>
@@ -292,9 +293,19 @@
                     <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
                 </Anchors>
             </Slider>
+            <Frame parentKey="Pending" hidden="true">
+                <Scripts>
+                    <OnUpdate>
+                        if CanSendAuctionQuery('list') then
+                            self:Hide()
+                            self:GetParent():Search()
+                        end
+                    </OnUpdate>
+                </Scripts>
+            </Frame>
         </Frames>
     </ScrollFrame>
-    <Frame name="tdUIAuctionFullScanFrame" hidden="true" virtual="true">
+    <Frame name="tdUIAuctionFullScanFrameTemplate" hidden="true" virtual="true">
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
             <BackgroundInsets left="11" right="11" top="12" bottom="10"/>
             <TileSize val="32"/>
@@ -360,6 +371,51 @@
                 </FontString>
             </Layer>
         </Layers>
+    </Frame>
+    <Frame name="tdUIAuctionSliderTemplate" inherits="HorizontalSliderTemplate" virtual="true">
+        <Size x="170" y="17"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Title" inherits="GameFontNormalSmall">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Value" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:SetValueStep(1)
+                self:SetObeyStepOnDrag(true)
+                self:SetMinMaxValues(1, 1)
+                self:SetValue(1)
+            </OnLoad>
+            <OnValueChanged>
+                self.Value:SetText(value)
+            </OnValueChanged>
+            <OnMouseWheel>
+                self:SetValue(self:GetValue() - delta)
+            </OnMouseWheel>
+        </Scripts>
+    </Frame>
+    <Frame name="tdUIAuctionAuctionFrameTemplate" virtual="true">
+        <Frames>
+            <Slider parentKey="StackSizeSlider" inherits="tdUIAuctionSliderTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-150" />
+                </Anchors>
+            </Slider>
+            <Slider parentKey="NumStackSlider" inherits="tdUIAuctionSliderTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-180" />
+                </Anchors>
+            </Slider>
+        </Frames>
     </Frame>
     <Button name="tdUIBonusItemTemplate" virtual="true">
         <Size x="30" y="30" />

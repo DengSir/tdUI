@@ -18,9 +18,10 @@
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
 
-    <Script file="Auction\Auction.lua" />
+    <Script file="Auction\Addon.lua" />
     <Script file="Auction\BrowseItem.lua" />
     <Script file="Auction\Browse.lua" />
+    <Script file="Auction\Auction.lua" />
     <Script file="Auction\FullScan.lua" />
 
     <Script file="ActionBar\Style.lua" />

@@ -97,7 +97,7 @@ local function OnTooltipItem(tip, link, count)
     end
 
     if ns.profile.tooltip.item.auctionPrice then
-        local itemKey = ns.parseItemLink(link)
+        local itemKey = ns.parseItemKey(link)
         local price = itemKey and ns.global.auction.prices[itemKey]
         if price then
             AddPrice(tip, 'Auction', price, count)

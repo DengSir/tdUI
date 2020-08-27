@@ -165,10 +165,41 @@ function ns.gsc(money)
     if (money > 0) then
         text = GOLD_AMOUNT_TEXTURE:format(money, 0, 0) .. ' ' .. text
     end
-    return text
+    return text:trim()
 end
 
 function ns.parseItemLink(link)
-    local item_id, enchant_id, suffix_id, unique_id = link:match('|Hitem:(%d*):(%d*):::::(%d*):(%d*)')
-    return (tonumber(item_id) or 0) .. ':' .. (tonumber(suffix_id) or 0)
+    if not link then
+        return
+    end
+    local itemId, enchantId, suffixId, uniqueId = link:match('|Hitem:(%d*):(%d*):::::(%d*):(%d*)')
+    if not itemId then
+        return
+    end
+    return tonumber(itemId) or 0, tonumber(enchantId) or 0, tonumber(suffixId) or 0, tonumber(uniqueId) or 0
+end
+
+function ns.parseItemKey(link)
+    local itemId, _, suffixId = ns.parseItemLink(link)
+    if not itemId then
+        return '0:0'
+    end
+    return itemId .. ':' .. suffixId
+end
+
+function ns.teq(a, b)
+    if not a or not b then
+        return false
+    end
+    for k, v in pairs(a) do
+        if v ~= b[k] then
+            return false
+        end
+    end
+    for k, v in pairs(b) do
+        if v ~= a[k] then
+            return false
+        end
+    end
+    return true
 end

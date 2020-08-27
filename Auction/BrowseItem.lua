@@ -50,7 +50,7 @@ function BrowseItem:Update(id)
     self.Selected:SetShown(selectedId == id)
 
     if count > 1 then
-        self.Name:SetText(format('|cffffd100%dx|r%s', count, name))
+        self.Name:SetText(format('|cffffd100%dx|r %s', count, name))
     else
         self.Name:SetText(name)
     end
