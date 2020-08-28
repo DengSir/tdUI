@@ -405,16 +405,51 @@
     </Frame>
     <Frame name="tdUIAuctionAuctionFrameTemplate" virtual="true">
         <Frames>
-            <Slider parentKey="StackSizeSlider" inherits="tdUIAuctionSliderTemplate">
+            <Slider parentKey="StackSizeSlider" hidden="true" inherits="tdUIAuctionSliderTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-150" />
                 </Anchors>
             </Slider>
-            <Slider parentKey="NumStackSlider" inherits="tdUIAuctionSliderTemplate">
+            <Slider parentKey="NumStackSlider" hidden="true" inherits="tdUIAuctionSliderTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-180" />
                 </Anchors>
             </Slider>
+            <Frame parentKey="Duration" inherits="UIDropDownMenuTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="TOPLEFT" x="217" y="-178"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        UIDropDownMenu_SetWidth(self, 80)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="BuyoutError" enableMouse="true" hidden="true">
+                <Size x="20" y="20"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="AuctionsBuyoutText" relativePoint="RIGHT" x="6" y="2" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew">
+                            <Size x="20" y="20"/>
+                            <Anchors>
+                                <Anchor point="CENTER" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                        GameTooltip:SetText(AUCTION_BUYOUT_ERROR, 1.0, 0.0, 0.0, 1, true)
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                </Scripts>
+            </Frame>
         </Frames>
     </Frame>
     <Button name="tdUIBonusItemTemplate" virtual="true">

@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/17/2020, 1:07:09 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -85,3 +84,14 @@ end
 function GameTooltip:AppendLineFrontRight(toLine, text)
     return self:AppendLineFront(toLine, nil, text)
 end
+
+ns.securehook('SetTooltipMoney', function(tip)
+    local moneyFrame = _G[tip:GetName() .. 'MoneyFrame' .. tip.shownMoneyFrames]
+    if not moneyFrame then
+        return
+    end
+
+    local p, r, rp, x, y = moneyFrame:GetPoint()
+    moneyFrame:ClearAllPoints()
+    moneyFrame:SetPoint('BOTTOMLEFT', r, 'BOTTOMLEFT', x, 0)
+end)

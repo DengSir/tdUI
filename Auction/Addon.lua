@@ -109,17 +109,11 @@ ns.addon('Blizzard_AuctionUI', function()
     do
         -- Auction
 
-        if not DurationDropDown then
-            local dropdown = CreateFrame('Frame', 'DurationDropDown', AuctionFrameAuctions, 'UIDropDownMenuTemplate')
-            dropdown:SetPoint('BOTTOMRIGHT', AuctionFrameAuctions, 'BOTTOMLEFT', 217, 89)
-            UIDropDownMenu_SetWidth(dropdown, 80)
-        end
-
-        local t = AuctionsItemButton:CreateTexture(nil, 'BACKGROUND')
-        t:SetSize(173, 40)
-        t:SetPoint('TOPLEFT', -2, 2)
-        t:SetTexture([[Interface\AuctionFrame\UI-AuctionFrame-ItemSlot]])
-        t:SetTexCoord(0.15625, 0.83203125, 0.171875, 0.796875)
+        -- if not DurationDropDown then
+        --     local dropdown = CreateFrame('Frame', 'DurationDropDown', AuctionFrameAuctions, 'UIDropDownMenuTemplate')
+        --     dropdown:SetPoint('BOTTOMRIGHT', AuctionFrameAuctions, 'BOTTOMLEFT', 217, 89)
+        --     UIDropDownMenu_SetWidth(dropdown, 80)
+        -- end
 
         ns.hide(AuctionsShortAuctionButton)
         ns.hide(AuctionsMediumAuctionButton)
@@ -127,26 +121,21 @@ ns.addon('Blizzard_AuctionUI', function()
 
         local point = ns.RePoint
 
-        point(AuctionsItemButton, 'TOPLEFT', 30, -94)
-        point(StartPrice, 'BOTTOMLEFT', 35, 170)
-        point(BuyoutPrice, 'BOTTOMLEFT', 35, 125)
-
     end
 
-    local FullScanFrame = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrameTemplate')
-    local BrowseFrame = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
-    local AuctionFrame = CreateFrame('Frame', nil, AuctionFrameAuctions, 'tdUIAuctionAuctionFrameTemplate')
-
     local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')
+    local FullScan = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrameTemplate')
+    local Browse = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
+    local Auction = CreateFrame('Frame', nil, AuctionFrameAuctions, 'tdUIAuctionAuctionFrameTemplate')
 
     FullScanButton:SetSize(80, 22)
     FullScanButton:SetPoint('RIGHT', AuctionFrameCloseButton, 'LEFT')
     FullScanButton:SetText('Full Scan')
     FullScanButton:SetScript('OnClick', function()
-        FullScanFrame:Show()
+        FullScan:Show()
     end)
 
-    ns.Auction.Browse:Bind(BrowseFrame)
-    ns.Auction.FullScan:Bind(FullScanFrame)
-    ns.Auction.Auction:Bind(AuctionFrame)
+    ns.Auction.Browse:Bind(Browse)
+    ns.Auction.FullScan:Bind(FullScan)
+    ns.Auction.Auction:Bind(Auction)
 end)
