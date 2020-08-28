@@ -94,6 +94,7 @@ function Browse:SetupBlizzard()
     local nameWidth = 220
 
     self.NameEditBox:SetWidth(nameWidth)
+    UIDropDownMenu_SetWidth(self.QualityDropDown, 60)
 
     point(BrowseSearchDotsText, 'LEFT', self.NoResultsText, 'RIGHT')
 
@@ -107,7 +108,7 @@ function Browse:SetupBlizzard()
     point(BrowseDropDownName, 'TOPLEFT', AuctionFrameBrowse, nameWidth + 160, -38)
     point(self.NameEditBox, 'TOPLEFT', BrowseNameText, 'BOTTOMLEFT', 3, -3)
     point(self.QualityDropDown, 'TOPLEFT', BrowseDropDownName, 'BOTTOMLEFT', -18, 3)
-    point(IsUsableCheckButton, 'TOPLEFT', nameWidth + 290, -38)
+    point(IsUsableCheckButton, 'TOPLEFT', nameWidth + 240, -38)
     point(ShowOnPlayerCheckButton, 'TOPLEFT', IsUsableCheckButton, 'BOTTOMLEFT', 0, 2)
 
     local function parent(obj)
