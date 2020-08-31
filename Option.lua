@@ -96,6 +96,10 @@ ns.login(function()
         return {type = 'toggle', name = name, order = orderGen()}
     end
 
+    local function fulltoggle(name)
+        return {type = 'toggle', name = name, order = orderGen(), width = 'full'}
+    end
+
     local function path(paths)
         return table.concat(paths, '.')
     end
@@ -123,6 +127,7 @@ ns.login(function()
         end,
         args = {
             actionbar = treeItem(ACTIONBARS_LABEL) {
+                ['button.macroName'] = fulltoggle('Show or hide macro`s name'),
                 ['micro.position'] = drop(L['Micro menu bar location']) { --
                     {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'}, {name = 'Hide', value = 'HIDE'},
                 },
@@ -162,6 +167,12 @@ ns.login(function()
             },
             chat = treeItem 'Chat' { --
                 shortChannels = inline 'Short channel'(SHORT_CHANNELS),
+            },
+            unitframe = treeItem 'UnitFrame' {
+                frame = inline 'Frame' {
+                    autoHide = fulltoggle('Auto hide unit frame when power full'),
+                    totot = fulltoggle('Target Of Target Of Target')
+                },
             },
         },
     }

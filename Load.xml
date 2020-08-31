@@ -73,6 +73,8 @@
     <Script file="Watch\MonkeyQuest.lua" />
 
     <Script file="UnitFrame\UnitFrame.lua" />
+    <Script file="UnitFrame\ToToTFrame.lua" />
+    <Include file="UnitFrame\ToToTFrame.xml" />
     <Script file="UnitFrame\Range.lua" />
     <Script file="UnitFrame\Visible.lua" />
 

@@ -49,5 +49,15 @@ local function CheckShown()
     end
 end
 
-Controller:SetScript('OnEvent', CheckShown)
-CheckShown()
+local function CheckConfig()
+    if ns.profile.unitframe.frame.autoHide then
+        Controller:SetScript('OnEvent', CheckShown)
+        CheckShown()
+    else
+        Controller:SetScript('OnEvent', nil)
+        PlayerFrame:Show()
+    end
+end
+
+ns.config('unitframe.frame.autoHide', CheckConfig)
+ns.load(CheckConfig)

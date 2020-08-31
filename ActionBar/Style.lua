@@ -38,7 +38,16 @@ local function HideGrid()
     end
 end
 
+local function CheckConfig()
+    if ns.profile.actionbar.micro.name then
+        ShowGrid()
+    else
+        HideGrid()
+    end
+end
+
 ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
 ns.event('ACTIONBAR_HIDEGRID', HideGrid)
 ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
-ns.load(HideGrid)
+ns.config('actionbar.button.macroName', CheckConfig)
+ns.load(CheckConfig)

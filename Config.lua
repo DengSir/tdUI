@@ -28,6 +28,9 @@ local DEFAULT_PROFILE = {
         micro = { --
             position = 'RIGHT',
         },
+        button = {
+            macroName = false,
+        },
     },
     tooltip = { --
         item = { --
@@ -53,6 +56,12 @@ local DEFAULT_PROFILE = {
         stackSize = 0,
         duration = 2,
         durationNoDeposit = false,
+    },
+    unitframe = {
+        frame = {
+            autoHide = true,
+            totot = false,
+        },
     },
 }
 
