@@ -6,6 +6,7 @@
     <Script file="Lib\Lib.lua" />
     <Script file="Lib\Api.lua" />
     <Script file="Lib\DropDown.lua" />
+    <Script file="Lib\ComboBox.lua" />
     <Script file="Lib\GameTooltip.lua" />
 
     <Script file="Config.lua" />
@@ -19,6 +20,11 @@
     <Script file="CVars.lua" />
 
     <Script file="Auction\Addon.lua" />
+    <Script file="Auction\Query\Scaner.lua" />
+    <Script file="Auction\Query\FullScaner.lua" />
+    <Script file="Auction\Query\PriceScaner.lua" />
+    <Script file="Auction\Query\BrowseScaner.lua" />
+    <Script file="Auction\Query\Querier.lua" />
     <Script file="Auction\BrowseItem.lua" />
     <Script file="Auction\Browse.lua" />
     <Script file="Auction\Auction.lua" />

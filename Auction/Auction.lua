@@ -12,69 +12,84 @@ local Auction = ns.class('Frame')
 ns.Auction.Auction = Auction
 
 function Auction:Constructor()
-    point(AuctionsItemButton, 'TOPLEFT', 28, -94)
-    point(AuctionsDurationText, 'TOPLEFT', 28, -185)
-    point(StartPrice, 'BOTTOMLEFT', 35, 181) -- 203 125
-    point(BuyoutPrice, 'TOPLEFT', StartPrice, 'BOTTOMLEFT', 0, -20)
-    -- point(self.Duration, 'TOPRIGHT', AuctionFrameAuctions, 'TOPLEFT', 217, -178)
-
     local t = AuctionsItemButton:CreateTexture(nil, 'BACKGROUND')
     t:SetSize(173, 40)
     t:SetPoint('TOPLEFT', -2, 2)
     t:SetTexture([[Interface\AuctionFrame\UI-AuctionFrame-ItemSlot]])
     t:SetTexCoord(0.15625, 0.83203125, 0.171875, 0.796875)
 
+    ns.hide(AuctionsShortAuctionButton)
+    ns.hide(AuctionsMediumAuctionButton)
+    ns.hide(AuctionsLongAuctionButton)
+
+    point(AuctionsItemButton, 'TOPLEFT', 28, -94)
+    point(AuctionsDurationText, 'TOPLEFT', 28, -185)
+    point(StartPrice, 'BOTTOMLEFT', 35, 151)
+    point(BuyoutPrice, 'TOPLEFT', StartPrice, 'BOTTOMLEFT', 0, -20)
+
     point(AuctionsStackSizeMaxButton, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 0, 1)
     point(AuctionsNumStacksMaxButton, 'LEFT', AuctionsNumStacksEntry, 'RIGHT', 0, 1)
     point(AuctionsStackSizeEntry, 'TOPLEFT', 33, -153)
-    point(AuctionsNumStacksEntry, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 40, 0)
+    point(AuctionsNumStacksEntry, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 50, 0)
+    point(AuctionsStackSizeEntryRight, 'RIGHT')
+    point(AuctionsNumStacksEntryRight, 'RIGHT')
 
     AuctionsBuyoutErrorText:Hide()
     AuctionsBuyoutErrorText = self.BuyoutError
 
-    local function OnEnable(button)
-        button.texture:SetDesaturated(false)
-    end
+    AuctionsStackSizeEntry:SetWidth(40)
+    AuctionsNumStacksEntry:SetWidth(40)
+    AuctionsStackSizeMaxButton:SetWidth(40)
+    AuctionsNumStacksMaxButton:SetWidth(40)
 
-    local function OnDisable(button)
-        button.texture:SetDesaturated(true)
-    end
+    AuctionFrameAuctions.priceType = 1
 
-    local function OnMouseDown(button)
-        if button:IsEnabled() then
-            button.texture:SetPoint('CENTER', -1, -1)
+    local function OnTextChanged(frame, userInput)
+        if not userInput and frame:GetText() == '0' then
+            frame:SetText('')
         end
     end
 
-    local function OnMouseUp(button)
-        button.texture:SetPoint('CENTER')
+    local function HookMoneyInput(frame)
+        frame.gold:HookScript('OnTextChanged', OnTextChanged)
+        frame.silver:HookScript('OnTextChanged', OnTextChanged)
+        frame.copper:HookScript('OnTextChanged', OnTextChanged)
     end
 
-    local function styleMaxButton(button)
-        local texture = button:CreateTexture(nil, 'ARTWORK')
-        texture:SetSize(12, 12)
-        texture:SetPoint('CENTER')
-        texture:SetTexture(519957)
+    HookMoneyInput(StartPrice)
+    HookMoneyInput(BuyoutPrice)
 
-        button.texture = texture
-        button:SetWidth(20)
-        button:SetText('')
-        button:HookScript('OnEnable', OnEnable)
-        button:HookScript('OnDisable', OnDisable)
-        button:HookScript('OnMouseUp', OnMouseUp)
-        button:HookScript('OnMouseDown', OnMouseDown)
-    end
+    ns.combobox(self.Duration, {
+        {text = '2 ' .. HOURS, value = 1},
+        {text = '8 ' .. HOURS, value = 2},
+        {text = '24 ' .. HOURS, value = 3},
+    }, function(value)
+        return self:SetDuration(value)
+    end)
 
-    AuctionsStackSizeEntry:Show()
-    AuctionsStackSizeMaxButton:Show()
-    AuctionsNumStacksEntry:Show()
-    AuctionsNumStacksMaxButton:Show()
-    PriceDropDown:Show()
+    self:SetDuration(2)
+    self.scaner = ns.Auction.PriceScaner:New()
+    self.scaner:SetCallback('OnDone', function()
+        local link = ns.Auction.GetAuctionSellItemLink()
+        local itemKey = ns.parseItemKey(link)
+        local price = ns.global.auction.prices[itemKey]
 
-    styleMaxButton(AuctionsStackSizeMaxButton)
-    styleMaxButton(AuctionsNumStacksMaxButton)
+        if price then
+            local unitPrice = floor(price)
+            if unitPrice == price then
+                unitPrice = price - 1
+            end
 
-    -- AuctionFrameAuctions.priceType = 1
+            if AuctionFrameAuctions.priceType == 1 then
+                MoneyInputFrame_SetCopper(BuyoutPrice, unitPrice)
+                MoneyInputFrame_SetCopper(StartPrice, unitPrice * 0.95)
+            else
+                local stackSize = AuctionsStackSizeEntry:GetNumber()
+                MoneyInputFrame_SetCopper(BuyoutPrice, unitPrice * stackSize)
+                MoneyInputFrame_SetCopper(StartPrice, unitPrice * 0.95 * stackSize)
+            end
+        end
+    end)
 
     ns.event('NEW_AUCTION_UPDATE', function()
         local name, texture, count, quality, canUse, price, pricePerUnit, stackCount, totalCount, itemId =
@@ -84,10 +99,53 @@ function Auction:Constructor()
             if totalCount > 1 then
                 AuctionsItemButtonCount:SetText(totalCount)
                 AuctionsItemButtonCount:Show()
+                AuctionsStackSizeEntry:Show()
+                AuctionsStackSizeMaxButton:Show()
+                AuctionsNumStacksEntry:Show()
+                AuctionsNumStacksMaxButton:Show()
+                PriceDropDown:Show()
                 UpdateMaximumButtons()
             else
                 AuctionsItemButtonCount:Hide()
+                AuctionsStackSizeEntry:Hide()
+                AuctionsStackSizeMaxButton:Hide()
+                AuctionsNumStacksEntry:Hide()
+                AuctionsNumStacksMaxButton:Hide()
+                PriceDropDown:Hide()
+            end
+
+            if totalCount > 0 then
+                local stackSize = ns.profile.auction.stackSize
+                if stackSize == 0 then
+                    stackSize = stackCount
+                end
+                stackSize = min(stackSize, totalCount, stackCount)
+                local numStacks = floor(totalCount / stackSize)
+
+                AuctionsStackSizeEntry:SetNumber(stackSize)
+                AuctionsNumStacksEntry:SetNumber(numStacks)
+
+                local deposit = GetAuctionDeposit(ns.profile.auction.duration, 1, 1, stackSize, numStacks)
+                if ns.profile.auction.durationNoDeposit and deposit == 0 then
+                    self:SetDuration(3)
+                else
+                    self:SetDuration(ns.profile.auction.duration)
+                end
+
+                MoneyInputFrame_SetCopper(StartPrice, 0)
+                MoneyInputFrame_SetCopper(BuyoutPrice, 0)
+
+                local link = ns.Auction.GetAuctionSellItemLink()
+                self.scaner:SetItem(link)
+
+                ns.Auction.Querier:Query({text = link}, self.scaner)
             end
         end
     end)
+end
+
+function Auction:SetDuration(duration)
+    AuctionFrameAuctions.duration = duration
+    self.Duration:SetValue(duration)
+    UpdateDeposit()
 end

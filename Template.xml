@@ -293,16 +293,6 @@
                     <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
                 </Anchors>
             </Slider>
-            <Frame parentKey="Pending" hidden="true">
-                <Scripts>
-                    <OnUpdate>
-                        if CanSendAuctionQuery('list') then
-                            self:Hide()
-                            self:GetParent():Search()
-                        end
-                    </OnUpdate>
-                </Scripts>
-            </Frame>
         </Frames>
     </ScrollFrame>
     <Frame name="tdUIAuctionFullScanFrameTemplate" hidden="true" virtual="true">
@@ -405,16 +395,6 @@
     </Frame>
     <Frame name="tdUIAuctionAuctionFrameTemplate" virtual="true">
         <Frames>
-            <Slider parentKey="StackSizeSlider" hidden="true" inherits="tdUIAuctionSliderTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-150" />
-                </Anchors>
-            </Slider>
-            <Slider parentKey="NumStackSlider" hidden="true" inherits="tdUIAuctionSliderTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="AuctionFrameAuctions" x="30" y="-180" />
-                </Anchors>
-            </Slider>
             <Frame parentKey="Duration" inherits="UIDropDownMenuTemplate">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="TOPLEFT" x="217" y="-178"/>

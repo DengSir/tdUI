@@ -24,6 +24,14 @@ local Browse = ns.class('ScrollFrame')
 ns.Auction.Browse = Browse
 
 function Browse:Constructor()
+    self.prevSearchParams = {}
+
+    self.scaner = ns.Auction.BrowseScaner:New()
+    self.scaner:SetCallback('OnDone', function()
+        self.prevSearchParams = self.searchParams
+        self:UpdateAll()
+    end)
+
     self:SetupBlizzard()
     self:SetupScrollFrame()
     self:SetupSortButtons()
@@ -49,9 +57,6 @@ function Browse:SetupBlizzard()
     self.PrevPageButton = BrowsePrevPageButton
     self.NextPageButton = BrowseNextPageButton
     self.QualityDropDown = BrowseDropDown
-
-    self.QualityDropDown.SetValue = UIDropDownMenu_SetSelectedValue
-    self.QualityDropDown.GetValue = UIDropDownMenu_GetSelectedValue
 
     self.BidPrice = BrowseBidPrice
     self.BidButton = BrowseBidButton
@@ -121,44 +126,24 @@ function Browse:SetupBlizzard()
     parent(self.NextPageButton)
     parent(self.SearchCountText)
 
+    local menuList = {}
     do
-        local function OnClick(_, value)
-            return self.QualityDropDown:SetValue(value)
-        end
+        tinsert(menuList, { --
+            text = ALL,
+            value = -1,
+        })
 
-        local function Checked(button)
-            return self.QualityDropDown:GetValue() == button.arg1
-        end
-
-        local menuList = {}
-        do
-            tinsert(menuList, { --
-                text = ALL,
-                arg1 = -1,
-                func = OnClick,
-                checked = Checked,
+        for i = Enum.ItemQuality.Poor, Enum.ItemQuality.Epic do
+            local r, g, b = GetItemQualityColor(i)
+            tinsert(menuList, {
+                text = format('|cff%02x%02x%02x%s|r', r * 255, g * 255, b * 255, _G['ITEM_QUALITY' .. i .. '_DESC']),
+                value = i,
             })
-
-            for i = Enum.ItemQuality.Poor, Enum.ItemQuality.Epic do
-                local r, g, b = GetItemQualityColor(i)
-                tinsert(menuList, {
-                    text = _G['ITEM_QUALITY' .. i .. '_DESC'],
-                    colorCode = format('|cff%02x%02x%02x', r * 255, g * 255, b * 255),
-                    arg1 = i,
-                    func = OnClick,
-                    checked = Checked,
-                })
-            end
         end
-
-        self.QualityDropDown:SetScript('OnShow', nil)
-        UIDropDownMenu_Initialize(self.QualityDropDown, function(self, level)
-            for _, info in ipairs(menuList) do
-                UIDropDownMenu_AddButton(info, level)
-            end
-        end, nil, nil, menuList)
-        self.QualityDropDown:SetValue(-1)
     end
+
+    ns.combobox(self.QualityDropDown, menuList)
+    self.QualityDropDown:SetValue(-1)
 end
 
 function Browse:SetupScrollFrame()
@@ -297,24 +282,36 @@ function Browse:OnShow()
 end
 
 function Browse:BuildSearchParams()
-    return {
+    local params = {
         text = self.NameEditBox:GetText(),
         minLevel = BrowseMinLevel:GetNumber(),
         maxLevel = BrowseMaxLevel:GetNumber(),
-        categoryIndex = AuctionFrameBrowse.selectedCategoryIndex,
-        subCategoryIndex = AuctionFrameBrowse.selectedSubCategoryIndex,
-        subSubCategoryIndex = AuctionFrameBrowse.selectedSubSubCategoryIndex,
+        filters = self:GetFilters(),
         usable = IsUsableCheckButton:GetChecked(),
         quality = self.QualityDropDown:GetValue(),
     }
+
+    local prevParams = self.prevSearchParams
+
+    if (params.text ~= prevParams.text or params.minLevel ~= prevParams.minLevel or params.maxLevel ~=
+        prevParams.maxLevel or params.filters ~= prevParams.filters or params.usable ~= prevParams.usable or
+        params.quality ~= prevParams.quality) then
+
+        self.searchParams = params
+        self.searchParams.page = 0
+        self:SetPage(0)
+    else
+        self.searchParams.page = self:GetPage()
+    end
 end
 
 function Browse:RequestSearch()
-    self.searchParams = self:BuildSearchParams()
-    self.Pending:Show()
     self.noSearch = nil
+    self:BuildSearchParams()
     self:SetIsSearching(true)
     self:UpdateList()
+
+    ns.Auction.Querier:Query(self.searchParams, self.scaner)
 end
 
 function Browse:IsSearching()
@@ -348,49 +345,22 @@ function Browse:IsFullScan()
     return num and num > NUM_AUCTION_ITEMS_PER_PAGE
 end
 
-function Browse:Search()
-    if not ns.teq(self.prevSearchParams, self.searchParams) then
-        self:SetPage(0)
-    end
-
-    local params = self.searchParams
-
-    local text = params.text
-    local exact = false
-
-    local itemId, _, suffixId = ns.parseItemLink(params.text)
-    if itemId then
-        local name = GetItemInfo(params.text)
-        if name then
-            exact = true
-            text = name
-
-            if suffixId ~= 0 then
-                local origName = GetItemInfo(itemId)
-                if origName then
-                    local suffix = name:gsub(origName, ''):trim()
-                    text = origName .. ' ' .. suffix
-                end
-            end
-        end
-    end
-
+function Browse:GetFilters()
+    local categoryIndex = AuctionFrameBrowse.selectedCategoryIndex
+    local subCategoryIndex = AuctionFrameBrowse.selectedSubCategoryIndex
+    local subSubCategoryIndex = AuctionFrameBrowse.selectedSubSubCategoryIndex
     local filters
-    if params.categoryIndex and params.subCategoryIndex and params.subSubCategoryIndex then
-        filters =
-            AuctionCategories[params.categoryIndex].subCategories[params.subCategoryIndex].subCategories[params.subSubCategoryIndex]
-                .filters
-    elseif params.categoryIndex and params.subCategoryIndex then
-        filters = AuctionCategories[params.categoryIndex].subCategories[params.subCategoryIndex].filters
-    elseif params.categoryIndex then
-        filters = AuctionCategories[params.categoryIndex].filters
+
+    if categoryIndex and subCategoryIndex and subSubCategoryIndex then
+        filters = AuctionCategories[categoryIndex].subCategories[subCategoryIndex].subCategories[subSubCategoryIndex]
+                      .filters
+    elseif categoryIndex and subCategoryIndex then
+        filters = AuctionCategories[categoryIndex].subCategories[subCategoryIndex].filters
+    elseif categoryIndex then
+        filters = AuctionCategories[categoryIndex].filters
     else
     end
-
-    QueryAuctionItems(text, params.minLevel, params.maxLevel, self:GetPage(), params.usable, params.quality, false,
-                      exact, filters)
-
-    self.prevSearchParams = params
+    return filters
 end
 
 function Browse:IsAtWowToken()

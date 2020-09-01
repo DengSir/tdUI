@@ -8,6 +8,39 @@ local ns = select(2, ...)
 
 ns.Auction = {}
 
+function ns.Auction.parseSearchText(link)
+    local exact = false
+    local text = link
+    local itemId, _, suffixId = ns.parseItemLink(link)
+    if itemId then
+        local name = GetItemInfo(link)
+        if name then
+            exact = true
+            text = name
+
+            if suffixId ~= 0 then
+                local origName = GetItemInfo(itemId)
+                if origName then
+                    local suffix = name:gsub(origName, ''):trim()
+                    text = origName .. ' ' .. suffix
+                end
+            end
+        end
+    end
+    return text, exact
+end
+
+local Tooltip
+function ns.Auction.GetAuctionSellItemLink()
+    if not Tooltip then
+        Tooltip = CreateFrame('GameTooltip', 'tdUIAuctionSellScaner', UIParent, 'GameTooltipTemplate')
+        -- Tooltip = GameTooltip
+    end
+    Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+    Tooltip:SetAuctionSellItem()
+    return select(2, Tooltip:GetItem())
+end
+
 ns.addon('Blizzard_AuctionUI', function()
     -- list sorts
     AuctionSort['list_level'] = {
@@ -105,23 +138,6 @@ ns.addon('Blizzard_AuctionUI', function()
             end
         end
     end)
-
-    do
-        -- Auction
-
-        -- if not DurationDropDown then
-        --     local dropdown = CreateFrame('Frame', 'DurationDropDown', AuctionFrameAuctions, 'UIDropDownMenuTemplate')
-        --     dropdown:SetPoint('BOTTOMRIGHT', AuctionFrameAuctions, 'BOTTOMLEFT', 217, 89)
-        --     UIDropDownMenu_SetWidth(dropdown, 80)
-        -- end
-
-        ns.hide(AuctionsShortAuctionButton)
-        ns.hide(AuctionsMediumAuctionButton)
-        ns.hide(AuctionsLongAuctionButton)
-
-        local point = ns.RePoint
-
-    end
 
     local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')
     local FullScan = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrameTemplate')

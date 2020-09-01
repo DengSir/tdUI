@@ -49,6 +49,11 @@ local DEFAULT_PROFILE = {
         },
     },
     window = {minimap = {minimapPos = 215.34}},
+    auction = { --
+        stackSize = 0,
+        duration = 2,
+        durationNoDeposit = false,
+    },
 }
 
 ---@class Global
