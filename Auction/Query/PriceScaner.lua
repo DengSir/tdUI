@@ -40,6 +40,6 @@ end
 function PriceScaner:ProcessAuction(index)
     local itemKey, count, unitPrice = FullScaner.ProcessAuction(self, index)
     if itemKey == self.itemKey then
-        tinsert(self.items, {count, unitPrice})
+        tinsert(self.items, {count = count, price = unitPrice})
     end
 end

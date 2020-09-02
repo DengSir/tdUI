@@ -397,7 +397,7 @@
         <Frames>
             <Frame parentKey="Duration" inherits="UIDropDownMenuTemplate">
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="TOPLEFT" x="217" y="-178"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="217" y="89"/>
                 </Anchors>
                 <Scripts>
                     <OnLoad>
@@ -431,7 +431,7 @@
                 </Scripts>
             </Frame>
             <Frame parentKey="PriceReading" enableMouse="true" hidden="true">
-                <Size x="190" y="145"/>
+                <Size x="190" y="170"/>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="20" y="90" />
                 </Anchors>

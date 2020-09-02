@@ -22,10 +22,11 @@ function Auction:Constructor()
     ns.hide(AuctionsMediumAuctionButton)
     ns.hide(AuctionsLongAuctionButton)
 
-    point(AuctionsItemButton, 'TOPLEFT', 28, -94)
-    point(AuctionsDurationText, 'TOPLEFT', 28, -185)
-    point(StartPrice, 'BOTTOMLEFT', 35, 181)
-    point(BuyoutPrice, 'TOPLEFT', StartPrice, 'BOTTOMLEFT', 0, -18)
+    point(AuctionsItemButton, 'TOPLEFT', 30, -94)
+    point(AuctionsDurationText, 'LEFT', self.Duration, 'RIGHT', -192, 3)
+    point(StartPrice, 'BOTTOMLEFT', 35, 196)
+    point(BuyoutPrice, 'BOTTOMLEFT', StartPrice, 'BOTTOMLEFT', 0, -35)
+    point(PriceDropDown, 'TOPRIGHT', AuctionFrameAuctions, 'TOPLEFT', 217, -192)
 
     point(AuctionsStackSizeMaxButton, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 0, 1)
     point(AuctionsNumStacksMaxButton, 'LEFT', AuctionsNumStacksEntry, 'RIGHT', 0, 1)
@@ -33,6 +34,8 @@ function Auction:Constructor()
     point(AuctionsNumStacksEntry, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 50, 0)
     point(AuctionsStackSizeEntryRight, 'RIGHT')
     point(AuctionsNumStacksEntryRight, 'RIGHT')
+
+    point(AuctionsWowTokenAuctionFrame.BuyoutPriceLabel, 'TOPLEFT', 6, -58)
 
     AuctionsBuyoutErrorText:Hide()
     AuctionsBuyoutErrorText = self.BuyoutError
@@ -143,6 +146,9 @@ function Auction:Constructor()
                 ns.Auction.Querier:Query({text = link}, self.scaner)
                 self.PriceReading:Show()
             end
+            self.Duration:Show()
+        else
+            self.Duration:Hide()
         end
     end)
 end
