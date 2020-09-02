@@ -24,8 +24,8 @@ function Auction:Constructor()
 
     point(AuctionsItemButton, 'TOPLEFT', 28, -94)
     point(AuctionsDurationText, 'TOPLEFT', 28, -185)
-    point(StartPrice, 'BOTTOMLEFT', 35, 151)
-    point(BuyoutPrice, 'TOPLEFT', StartPrice, 'BOTTOMLEFT', 0, -20)
+    point(StartPrice, 'BOTTOMLEFT', 35, 181)
+    point(BuyoutPrice, 'TOPLEFT', StartPrice, 'BOTTOMLEFT', 0, -18)
 
     point(AuctionsStackSizeMaxButton, 'LEFT', AuctionsStackSizeEntry, 'RIGHT', 0, 1)
     point(AuctionsNumStacksMaxButton, 'LEFT', AuctionsNumStacksEntry, 'RIGHT', 0, 1)
@@ -73,6 +73,7 @@ function Auction:Constructor()
         local link = ns.Auction.GetAuctionSellItemLink()
         local itemKey = ns.parseItemKey(link)
         local price = ns.global.auction.prices[itemKey]
+        local items = self.scaner:GetResponseItems()
 
         if price then
             local unitPrice = floor(price)
@@ -89,6 +90,7 @@ function Auction:Constructor()
                 MoneyInputFrame_SetCopper(StartPrice, unitPrice * 0.95 * stackSize)
             end
         end
+        self.PriceReading:Hide()
     end)
 
     ns.event('NEW_AUCTION_UPDATE', function()
@@ -115,7 +117,7 @@ function Auction:Constructor()
             end
 
             if totalCount > 0 then
-                local stackSize = ns.profile.auction.stackSize
+                local stackSize = ns.profile.auction.sell.stackSize
                 if stackSize == 0 then
                     stackSize = stackCount
                 end
@@ -125,11 +127,11 @@ function Auction:Constructor()
                 AuctionsStackSizeEntry:SetNumber(stackSize)
                 AuctionsNumStacksEntry:SetNumber(numStacks)
 
-                local deposit = GetAuctionDeposit(ns.profile.auction.duration, 1, 1, stackSize, numStacks)
-                if ns.profile.auction.durationNoDeposit and deposit == 0 then
-                    self:SetDuration(3)
+                local deposit = GetAuctionDeposit(ns.profile.auction.sell.duration, 1, 1, stackSize, numStacks)
+                if ns.profile.auction.sell.durationNoDeposit ~= 0 and deposit == 0 then
+                    self:SetDuration(ns.profile.auction.sell.durationNoDeposit)
                 else
-                    self:SetDuration(ns.profile.auction.duration)
+                    self:SetDuration(ns.profile.auction.sell.duration)
                 end
 
                 MoneyInputFrame_SetCopper(StartPrice, 0)
@@ -139,6 +141,7 @@ function Auction:Constructor()
                 self.scaner:SetItem(link)
 
                 ns.Auction.Querier:Query({text = link}, self.scaner)
+                self.PriceReading:Show()
             end
         end
     end)

@@ -42,9 +42,7 @@ end
 
 function Querier:OnEvent(event)
     if event == 'AUCTION_ITEM_LIST_UPDATE' then
-        self.scaner:OnResponse()
-        self.status = STATUS_RUNNING
-        self:UnregisterEvent('AUCTION_ITEM_LIST_UPDATE')
+        self:OnResponse()
     elseif event == 'AUCTION_HOUSE_CLOSED' then
         self.queryAllDisabled = nil
         self:Hide()
@@ -56,6 +54,19 @@ function Querier:OnUpdate()
     if method then
         method(self)
     end
+end
+
+function Querier:OnResponse()
+    local count, total = GetNumAuctionItems('list')
+    if total == 0 then
+        self.pageMax = 0
+    else
+        self.pageMax = floor(total / max(count, NUM_AUCTION_ITEMS_PER_PAGE))
+    end
+
+    self.scaner:OnResponse()
+    self.status = STATUS_RUNNING
+    self:UnregisterEvent('AUCTION_ITEM_LIST_UPDATE')
 end
 
 function Querier:CanQuery()
@@ -96,11 +107,14 @@ function Querier:Running()
         return
     end
 
-    if self.scaner:Next() then
+    if self.scaner:Next() and self.page < self.pageMax then
         self.page = self.page + 1
+        print(self.page)
         self.status = STATUS_PENDING
         return
     end
+
+    print('Done')
 
     self.scaner:Done()
     self:Hide()

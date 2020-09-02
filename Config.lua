@@ -28,9 +28,7 @@ local DEFAULT_PROFILE = {
         micro = { --
             position = 'RIGHT',
         },
-        button = {
-            macroName = false,
-        },
+        button = {macroName = false},
     },
     tooltip = { --
         item = { --
@@ -53,16 +51,13 @@ local DEFAULT_PROFILE = {
     },
     window = {minimap = {minimapPos = 215.34}},
     auction = { --
-        stackSize = 0,
-        duration = 2,
-        durationNoDeposit = false,
-    },
-    unitframe = {
-        frame = {
-            autoHide = true,
-            totot = false,
+        sell = { --
+            stackSize = 0,
+            duration = 2,
+            durationNoDeposit = 0,
         },
     },
+    unitframe = {frame = {autoHide = true, totot = false}},
 }
 
 ---@class Global

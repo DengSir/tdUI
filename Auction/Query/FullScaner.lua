@@ -23,10 +23,7 @@ function FullScaner:OnStart()
 end
 
 function FullScaner:OnResponse()
-    local count, total = GetNumAuctionItems('list')
-
-    self.index = count
-    self.maxPage = ceil(total / count)
+    self.index = GetNumAuctionItems('list')
 end
 
 function FullScaner:OnContinue()
@@ -89,5 +86,6 @@ function FullScaner:ProcessAuction(index)
         else
             self.prices[itemKey] = min(self.prices[itemKey], unitPrice)
         end
+        return itemKey, count, unitPrice
     end
 end

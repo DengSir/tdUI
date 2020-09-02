@@ -129,7 +129,9 @@ ns.login(function()
             actionbar = treeItem(ACTIONBARS_LABEL) {
                 ['button.macroName'] = fulltoggle('Show or hide macro`s name'),
                 ['micro.position'] = drop(L['Micro menu bar location']) { --
-                    {name = 'Left', value = 'LEFT'}, {name = 'Right', value = 'RIGHT'}, {name = 'Hide', value = 'HIDE'},
+                    {name = 'Left', value = 'LEFT'},
+                    {name = 'Right', value = 'RIGHT'},
+                    {name = 'Hide', value = 'HIDE'},
                 },
             },
             watch = treeItem(L['Right watch panel']) {
@@ -171,7 +173,26 @@ ns.login(function()
             unitframe = treeItem 'UnitFrame' {
                 frame = inline 'Frame' {
                     autoHide = fulltoggle('Auto hide unit frame when power full'),
-                    totot = fulltoggle('Target Of Target Of Target')
+                    totot = fulltoggle('Target Of Target Of Target'),
+                },
+            },
+            auction = treeItem 'Auction' {
+                sell = inline 'Sell' {
+                    stackSize = drop('Stack size') { --
+                        {name = 'Max', value = 0},
+                        {name = '1', value = 1},
+                    },
+                    duration = drop('Duration') { --
+                        {name = '2 ' .. HOURS, value = 1},
+                        {name = '8 ' .. HOURS, value = 2},
+                        {name = '24 ' .. HOURS, value = 3},
+                    },
+                    durationNoDeposit = drop('Duration no deposit') {
+                        {name = 'Ignore', value = 0},
+                        {name = '2 ' .. HOURS, value = 1},
+                        {name = '8 ' .. HOURS, value = 2},
+                        {name = '24 ' .. HOURS, value = 3},
+                    },
                 },
             },
         },

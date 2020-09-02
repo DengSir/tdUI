@@ -139,6 +139,18 @@ ns.addon('Blizzard_AuctionUI', function()
         end
     end)
 
+    ns.securehook('ContainerFrameItemButton_OnModifiedClick', function(button)
+        if AuctionFrame:IsShown() and IsAltKeyDown() then
+            local bag = button:GetParent():GetID()
+            local slot = button:GetID()
+
+            AuctionFrameTab_OnClick(AuctionFrameTab3)
+            PickupContainerItem(bag, slot)
+            ClickAuctionSellItemButton()
+            ClearCursor()
+        end
+    end)
+
     local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')
     local FullScan = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrameTemplate')
     local Browse = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')

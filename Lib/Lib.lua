@@ -35,6 +35,13 @@ local function append(t, k, v)
     tinsert(t[k], v)
 end
 
+local function remove(t, k, v)
+    if not t[k] then
+        return
+    end
+    tDeleteItem(t[k], v)
+end
+
 local function call(t, k, ...)
     if not t[k] then
         return
@@ -144,6 +151,10 @@ function ns.event(event, func)
 
     append(eventCallbacks, event, func)
     register(event)
+end
+
+function ns.unevent(event, func)
+    remove(eventCallbacks, event, func)
 end
 
 function ns.login(func)

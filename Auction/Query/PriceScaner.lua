@@ -15,11 +15,31 @@ function PriceScaner:SetItem(link)
     self.itemKey = ns.parseItemKey(link)
 end
 
+function PriceScaner:GetResponseItems()
+    return self.items
+end
+
 function PriceScaner:Next()
     return not self.prices[self.itemKey]
+end
+
+function PriceScaner:OnStart()
+    FullScaner.OnStart(self)
+    self.items = {}
 end
 
 function PriceScaner:PreQuery()
     SortAuctionClearSort('list')
     SortAuctionSetSort('list', 'unitprice', false)
+end
+
+function PriceScaner:OnDone()
+    FullScaner.OnDone(self)
+end
+
+function PriceScaner:ProcessAuction(index)
+    local itemKey, count, unitPrice = FullScaner.ProcessAuction(self, index)
+    if itemKey == self.itemKey then
+        tinsert(self.items, {count, unitPrice})
+    end
 end

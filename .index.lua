@@ -12,7 +12,18 @@
 ---@field buttonList Button[]
 ---@field buttonEnv table<Button, tdUICollectButtonEnv>
 
+---@class tdUIAuctionQueryParams
+---@field text string
+---@field minLevel number
+---@field maxLevel number
+---@field page number
+---@field usable boolean
+---@field quality number
+---@field filters any
+---@field queryAll boolean
+
 ---@class tdUIAuctionBrowse: ScrollFrame
+---@field prevSearchParams tdUIAuctionQueryParams
 ---@field buttons tdUIAuctionBrowseItem[]
 
 ---@class tdUIAuctionBrowseItem: Button

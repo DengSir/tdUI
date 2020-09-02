@@ -244,7 +244,7 @@ function Browse:SetupEventsAndHooks()
     end)
 
     ns.hook('ChatEdit_InsertLink', function(orig, text)
-        if self.NameEditBox:IsVisible() then
+        if self.NameEditBox:IsVisible() and IsShiftKeyDown() then
             self.NameEditBox:Hide()
             local ok = orig(text)
             self.NameEditBox:Show()
