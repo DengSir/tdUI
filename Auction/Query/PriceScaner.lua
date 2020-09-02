@@ -26,6 +26,7 @@ end
 function PriceScaner:OnStart()
     FullScaner.OnStart(self)
     self.items = {}
+    self.itemCache = {}
 end
 
 function PriceScaner:PreQuery()
@@ -33,13 +34,23 @@ function PriceScaner:PreQuery()
     SortAuctionSetSort('list', 'unitprice', false)
 end
 
+local function compare(a, b)
+    return a.price < b.price
+end
+
 function PriceScaner:OnDone()
     FullScaner.OnDone(self)
+
+    for price, count in pairs(self.itemCache) do
+        tinsert(self.items, {price = price, count = count})
+    end
+
+    sort(self.items, compare)
 end
 
 function PriceScaner:ProcessAuction(index)
     local itemKey, count, unitPrice = FullScaner.ProcessAuction(self, index)
     if itemKey == self.itemKey then
-        tinsert(self.items, {count = count, price = unitPrice})
+        self.itemCache[unitPrice] = (self.itemCache[unitPrice] or 0) + count
     end
 end

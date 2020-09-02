@@ -393,6 +393,31 @@
             </OnMouseWheel>
         </Scripts>
     </Frame>
+    <Button name="tdUIAuctionAutoPriceItemTemplate" virtual="true">
+        <Size y="20"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Count" inherits="GameFontNormalSmall">
+                    <Anchors>
+                        <Anchor point="LEFT" x="3" y="0" />
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Price" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-3" y="0" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <HighlightTexture>
+            <Color r="1" g="1" b="1" a="0.3" />
+        </HighlightTexture>
+        <Scripts>
+            <OnClick>
+                self:GetParent():GetParent():SetPrice(self.price - 1)
+            </OnClick>
+        </Scripts>
+    </Button>
     <Frame name="tdUIAuctionAuctionFrameTemplate" virtual="true">
         <Frames>
             <Frame parentKey="Duration" inherits="UIDropDownMenuTemplate">
@@ -405,6 +430,17 @@
                     </OnLoad>
                 </Scripts>
             </Frame>
+            <Button parentKey="Duratio1n" inherits="UIPanelButtonTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="217" y="119"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        local frame = self:GetParent().AutoPrice
+                        frame:SetShown(not frame:IsShown())
+                    </OnClick>
+                </Scripts>
+            </Button>
             <Frame parentKey="BuyoutError" enableMouse="true" hidden="true">
                 <Size x="20" y="20"/>
                 <Anchors>
@@ -490,7 +526,62 @@
                     </OnHide>
                 </Scripts>
             </Frame>
+            <Frame parentKey="AutoPrice" enableMouse="true" hidden="true">
+                <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+                    <BackgroundInsets left="11" right="11" top="12" bottom="10"/>
+                    <TileSize val="32"/>
+                    <EdgeSize val="32"/>
+                </Backdrop>
+                <Size x="190" y="193"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.PriceReading" relativePoint="TOPRIGHT" x="0" y="11" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="CountLabel" inherits="GameFontNormalSmall">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="20" y="-20" />
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="PriceLabel" inherits="GameFontNormalSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" x="-20" y="-20" />
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                    <Button parentArray="buttons" inherits="tdUIAuctionAutoPriceItemTemplate"/>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        for i, button in ipairs(self.buttons) do
+                            if i == 1 then
+                                button:SetPoint('TOPLEFT', 20, -40)
+                                button:SetPoint('TOPRIGHT', -20, -40)
+                            else
+                                button:SetPoint('TOPLEFT', self.buttons[i-1], 'BOTTOMLEFT')
+                                button:SetPoint('TOPRIGHT', self.buttons[i-1], 'BOTTOMRIGHT')
+                            end
+                        end
+                    </OnLoad>
+                    <OnHide>
+                        self:Hide()
+                    </OnHide>
+                </Scripts>
+            </Frame>
         </Frames>
+        <Scripts>
+            <OnShow>
+                self:SetFrameLevel(AuctionFrameAuctions:GetFrameLevel() + 100)
+            </OnShow>
+        </Scripts>
     </Frame>
     <Button name="tdUIBonusItemTemplate" virtual="true">
         <Size x="30" y="30" />

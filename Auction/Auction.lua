@@ -45,6 +45,9 @@ function Auction:Constructor()
     AuctionsStackSizeMaxButton:SetWidth(40)
     AuctionsNumStacksMaxButton:SetWidth(40)
 
+    self.AutoPrice.CountLabel:SetText('Count')
+    self.AutoPrice.PriceLabel:SetText('Price')
+
     AuctionFrameAuctions.priceType = 1
 
     local function OnTextChanged(frame, userInput)
@@ -77,21 +80,41 @@ function Auction:Constructor()
         local itemKey = ns.parseItemKey(link)
         local price = ns.global.auction.prices[itemKey]
         local items = self.scaner:GetResponseItems()
+        local err
+
+        if not price then
+            local p = select(11, GetItemInfo(link))
+            if p then
+                price = p * 10
+                err = 'Use merchant price x10'
+            else
+                err = 'No price'
+            end
+        else
+            price = price - 1
+            if #items == 0 then
+                err = 'Use history price'
+            end
+        end
+
+        if #items > 0 then
+            local buttons = self.AutoPrice.buttons
+
+            for i, button in ipairs(buttons) do
+                local item = items[i]
+                if item then
+                    button.price = item.price
+                    button.Count:SetText(item.count)
+                    button.Price:SetText(GetMoneyString(item.price))
+                    button:Show()
+                else
+                    button:Hide()
+                end
+            end
+        end
 
         if price then
-            local unitPrice = floor(price)
-            if unitPrice == price then
-                unitPrice = price - 1
-            end
-
-            if AuctionFrameAuctions.priceType == 1 then
-                MoneyInputFrame_SetCopper(BuyoutPrice, unitPrice)
-                MoneyInputFrame_SetCopper(StartPrice, unitPrice * 0.95)
-            else
-                local stackSize = AuctionsStackSizeEntry:GetNumber()
-                MoneyInputFrame_SetCopper(BuyoutPrice, unitPrice * stackSize)
-                MoneyInputFrame_SetCopper(StartPrice, unitPrice * 0.95 * stackSize)
-            end
+            self:SetPrice(price)
         end
         self.PriceReading:Hide()
     end)
@@ -157,4 +180,15 @@ function Auction:SetDuration(duration)
     AuctionFrameAuctions.duration = duration
     self.Duration:SetValue(duration)
     UpdateDeposit()
+end
+
+function Auction:SetPrice(price)
+    if AuctionFrameAuctions.priceType == 1 then
+        MoneyInputFrame_SetCopper(BuyoutPrice, price)
+        MoneyInputFrame_SetCopper(StartPrice, price * 0.95)
+    else
+        local stackSize = AuctionsStackSizeEntry:GetNumber()
+        MoneyInputFrame_SetCopper(BuyoutPrice, price * stackSize)
+        MoneyInputFrame_SetCopper(StartPrice, price * 0.95 * stackSize)
+    end
 end

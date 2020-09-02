@@ -78,7 +78,7 @@ function FullScaner:ProcessAuction(index)
     end
 
     if buyoutPrice and buyoutPrice > 0 then
-        local unitPrice = buyoutPrice / count
+        local unitPrice = floor(buyoutPrice / count)
         local itemKey = ns.parseItemKey(link)
 
         if not self.prices[itemKey] then
