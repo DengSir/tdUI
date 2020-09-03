@@ -111,17 +111,28 @@ function Auction:Constructor()
                     button:Hide()
                 end
             end
+
+            self.AutoPriceButton:Show()
         end
 
-        if price then
-            self:SetPrice(price)
+        if err then
+            self.PriceSetText:SetText(err)
+        else
+            self.PriceSetText:SetText('Choose other price')
         end
+
+        self:SetPrice(price)
+        self.PriceSetText:Show()
         self.PriceReading:Hide()
     end)
 
     ns.event('NEW_AUCTION_UPDATE', function()
         local name, texture, count, quality, canUse, price, pricePerUnit, stackCount, totalCount, itemId =
             GetAuctionSellItemInfo()
+
+        self.AutoPrice:Hide()
+        self.AutoPriceButton:Hide()
+        self.PriceSetText:Hide()
 
         if not C_WowTokenPublic.IsAuctionableWowToken(itemId) then
             if totalCount > 1 then
@@ -183,6 +194,10 @@ function Auction:SetDuration(duration)
 end
 
 function Auction:SetPrice(price)
+    if not price then
+        return
+    end
+
     if AuctionFrameAuctions.priceType == 1 then
         MoneyInputFrame_SetCopper(BuyoutPrice, price)
         MoneyInputFrame_SetCopper(StartPrice, price * 0.95)

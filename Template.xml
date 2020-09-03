@@ -430,10 +430,15 @@
                     </OnLoad>
                 </Scripts>
             </Frame>
-            <Button parentKey="Duratio1n" inherits="UIPanelButtonTemplate">
+            <Button parentKey="AutoPriceButton" hidden="true">
+                <Size x="26" y="26"/>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="217" y="119"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="203" y="124"/>
                 </Anchors>
+                <NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+                <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+                <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+                <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
                 <Scripts>
                     <OnClick>
                         local frame = self:GetParent().AutoPrice
@@ -519,7 +524,7 @@
                 <Scripts>
                     <OnShow>
                         self.AnimFrame.Anim:Play()
-                        self:SetFrameLevel(AuctionFrameAuctions:GetFrameLevel() + 100)
+                        self:SetFrameLevel(self:GetParent():GetFrameLevel() + 100)
                     </OnShow>
                     <OnHide>
                         self.AnimFrame.Anim:Stop()
@@ -577,6 +582,15 @@
                 </Scripts>
             </Frame>
         </Frames>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="PriceSetText" inherits="GameFontNormalSmallLeft">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeTo="AuctionFrameAuctions" relativePoint="BOTTOMLEFT" x="28" y="133"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
         <Scripts>
             <OnShow>
                 self:SetFrameLevel(AuctionFrameAuctions:GetFrameLevel() + 100)
