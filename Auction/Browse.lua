@@ -20,11 +20,14 @@ local MoneyInputFrame_SetCopper = MoneyInputFrame_SetCopper
 local BUTTON_HEIGHT = 18
 
 ---@type tdUIAuctionBrowse
-local Browse = ns.class('ScrollFrame')
+local Browse = ns.class('Frame')
 ns.Auction.Browse = Browse
 
 function Browse:Constructor()
+    self.noSearch = true
     self.prevSearchParams = {}
+
+    self.Frame = CreateFrame('Frame', nil, self)
 
     self.scaner = ns.Auction.BrowseScaner:New()
     self.scaner:SetCallback('OnDone', function()
@@ -32,8 +35,8 @@ function Browse:Constructor()
         self:UpdateAll()
     end)
 
-    self:SetupBlizzard()
     self:SetupScrollFrame()
+    self:SetupBlizzard()
     self:SetupSortButtons()
     self:SetupEventsAndHooks()
     self:SaveSort()
@@ -44,25 +47,28 @@ function Browse:SetupBlizzard()
         local button = CreateFrame('Button', 'BrowseResetButton', self, 'UIPanelButtonTemplate')
         button:SetText(RESET)
         button:SetSize(80, 22)
-        button:SetPoint('TOPRIGHT', AuctionFrameBrowse, 'TOPRIGHT', 67, -35)
+        button:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 67, -35)
         button:SetScript('OnClick', AuctionFrameBrowse_Reset)
         button:SetScript('OnUpdate', BrowseResetButton_OnUpdate)
     end
 
-    local NoResultsText = self:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-    NoResultsText:SetPoint('TOP', 0, -40)
+    local NoResultsText = self.Frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+    NoResultsText:SetPoint('TOP', self.ScrollFrame, 'TOP', 0, -40)
 
-    self.NameEditBox = BrowseName
+    self.NameInput = BrowseName
     self.SearchButton = BrowseSearchButton
+    self.ResetButton = BrowseResetButton
     self.PrevPageButton = BrowsePrevPageButton
     self.NextPageButton = BrowseNextPageButton
     self.QualityDropDown = BrowseDropDown
-
+    self.IsUsableCheckButton = IsUsableCheckButton
     self.BidPrice = BrowseBidPrice
     self.BidButton = BrowseBidButton
     self.BuyoutButton = BrowseBuyoutButton
     self.SearchCountText = BrowseSearchCountText
     self.NoResultsText = NoResultsText
+    self.MinLevelInput = BrowseMinLevel
+    self.MaxLevelInput = BrowseMaxLevel
 
     for i = 1, NUM_BROWSE_TO_DISPLAY do
         ns.hide(_G['BrowseButton' .. i])
@@ -98,26 +104,27 @@ function Browse:SetupBlizzard()
 
     local nameWidth = 220
 
-    self.NameEditBox:SetWidth(nameWidth)
+    self.NameInput:SetWidth(nameWidth)
     UIDropDownMenu_SetWidth(self.QualityDropDown, 60)
 
     point(BrowseSearchDotsText, 'LEFT', self.NoResultsText, 'RIGHT')
 
-    point(self.SearchButton, 'TOPRIGHT', BrowseResetButton, 'TOPLEFT', -5, 0)
+    point(self.SearchButton, 'TOPRIGHT', self.ResetButton, 'TOPLEFT', -5, 0)
     point(self.PrevPageButton, 'TOPLEFT', 658, -53)
     point(self.NextPageButton, 'TOPRIGHT', 70, -53)
     point(self.SearchCountText, 'BOTTOMLEFT', 190, 17)
     point(self.BidPrice, 'BOTTOM', 115, 18)
 
     point(BrowseLevelText, 'TOPLEFT', nameWidth + 90, -38)
-    point(BrowseDropDownName, 'TOPLEFT', AuctionFrameBrowse, nameWidth + 160, -38)
-    point(self.NameEditBox, 'TOPLEFT', BrowseNameText, 'BOTTOMLEFT', 3, -3)
+    point(BrowseDropDownName, 'TOPLEFT', self, nameWidth + 170, -38)
+
+    point(self.NameInput, 'TOPLEFT', BrowseNameText, 'BOTTOMLEFT', 3, -3)
     point(self.QualityDropDown, 'TOPLEFT', BrowseDropDownName, 'BOTTOMLEFT', -18, 3)
-    point(IsUsableCheckButton, 'TOPLEFT', nameWidth + 240, -38)
-    point(ShowOnPlayerCheckButton, 'TOPLEFT', IsUsableCheckButton, 'BOTTOMLEFT', 0, 2)
+    point(self.IsUsableCheckButton, 'TOPLEFT', nameWidth + 260, -38)
+    point(ShowOnPlayerCheckButton, 'TOPLEFT', self.IsUsableCheckButton, 'BOTTOMLEFT', 0, 2)
 
     local function parent(obj)
-        obj:SetParent(self)
+        obj:SetParent(self.Frame)
         obj:Show()
         obj.Hide = nop
     end
@@ -125,6 +132,10 @@ function Browse:SetupBlizzard()
     parent(self.PrevPageButton)
     parent(self.NextPageButton)
     parent(self.SearchCountText)
+    parent(self.BidButton)
+    parent(self.BuyoutButton)
+    parent(self.SearchButton)
+    parent(self.ResetButton)
 
     local menuList = {}
     do
@@ -147,11 +158,15 @@ function Browse:SetupBlizzard()
 end
 
 function Browse:SetupScrollFrame()
-    self.update = self.UpdateList
+    self.ScrollFrame = CreateFrame('ScrollFrame', nil, self.Frame, 'tdAuctionBrowseScrollFrameTemplate')
+    self.ScrollFrame:SetPoint('TOPLEFT', self, 'TOPLEFT', 190, -104)
+    self.ScrollFrame.update = function()
+        return self:UpdateList()
+    end
 
-    HybridScrollFrame_CreateButtons(self, 'tdUIAuctionBrowseItemTemplate')
+    HybridScrollFrame_CreateButtons(self.ScrollFrame, 'tdAuctionBrowseItemTemplate')
 
-    for _, button in ipairs(self.buttons) do
+    for _, button in ipairs(self.ScrollFrame.buttons) do
         ns.Auction.BrowseItem:Bind(button)
     end
 end
@@ -159,7 +174,7 @@ end
 function Browse:SetupSortButtons()
     self.sortButtons = {}
 
-    local function SortOnClick(button)
+    local function OnClick(button)
         AuctionFrame_OnClickSortColumn('list', button.sortColumn)
         self:SaveSort()
     end
@@ -181,11 +196,11 @@ function Browse:SetupSortButtons()
     }
 
     for i, header in ipairs(headers) do
-        local button = CreateFrame('Button', 'BrowseButtonSort' .. i, self, 'AuctionSortButtonTemplate')
+        local button = CreateFrame('Button', 'BrowseButtonSort' .. i, self.Frame, 'AuctionSortButtonTemplate')
         button.sortColumn = header.sortColumn
         button:SetHeight(19)
         button:SetText(header.text)
-        button:SetScript('OnClick', SortOnClick)
+        button:SetScript('OnClick', OnClick)
 
         if i == 1 then
             button:SetPoint('TOPLEFT', AuctionFrameBrowse, 'TOPLEFT', 204, -82)
@@ -216,9 +231,6 @@ function Browse:SetupEventsAndHooks()
         end
     end)
 
-    ns.hookscript(BrowseResetButton, 'OnClick', function()
-        BrowseDropDownText:SetText(ALL)
-    end)
     ns.hookscript(self.SearchButton, 'OnEnable', function()
         for _, button in ipairs(self.sortButtons) do
             button:Enable()
@@ -231,10 +243,10 @@ function Browse:SetupEventsAndHooks()
     end)
 
     ns.securehook('QueryAuctionItems', function()
-        self.scrollBar:SetValue(0)
+        self.ScrollFrame.scrollBar:SetValue(0)
     end)
     ns.securehook('BrowseWowTokenResults_Update', function()
-        self:SetShown(not self:IsAtWowToken())
+        self.Frame:SetShown(not self:IsAtWowToken())
     end)
     ns.securehook('SetSelectedAuctionItem', function(listType)
         if listType == 'list' then
@@ -244,15 +256,15 @@ function Browse:SetupEventsAndHooks()
     end)
 
     ns.hook('ChatEdit_InsertLink', function(orig, text)
-        if self.NameEditBox:IsVisible() and IsShiftKeyDown() then
-            self.NameEditBox:Hide()
+        if self.NameInput:IsVisible() and IsShiftKeyDown() then
+            self.NameInput:Hide()
             local ok = orig(text)
-            self.NameEditBox:Show()
+            self.NameInput:Show()
 
             if not ok then
                 local name, link = GetItemInfo(text)
                 if link then
-                    self.NameEditBox:SetText(link)
+                    self.NameInput:SetText(link)
                     self:RequestSearch()
                     ok = true
                 end
@@ -264,30 +276,31 @@ function Browse:SetupEventsAndHooks()
     end)
 
     ns.event('AUCTION_ITEM_LIST_UPDATE', function()
+        self.isSearching = nil
         return self:UpdateAll()
     end)
-    ns.event('AUCTION_HOUSE_SHOW', function()
+    ns.event('AUCTION_HOUSE_CLOSED', function()
         self.noSearch = true
-        self.NameEditBox:SetText('')
-        self:UpdateAll()
+        self.NameInput:SetText('')
     end)
 
-    self:SetScript('OnShow', self.OnShow)
+    self:HookScript('OnShow', self.OnShow)
+    self:UnregisterAllEvents()
 end
 
 function Browse:OnShow()
-    self.NameEditBox:SetFocus()
+    self.NameInput:SetFocus()
     self:UpdateSort()
     self:UpdateAll()
 end
 
 function Browse:BuildSearchParams()
     local params = {
-        text = self.NameEditBox:GetText(),
-        minLevel = BrowseMinLevel:GetNumber(),
-        maxLevel = BrowseMaxLevel:GetNumber(),
+        text = self.NameInput:GetText(),
+        minLevel = self.MinLevelInput:GetNumber(),
+        maxLevel = self.MaxLevelInput:GetNumber(),
         filters = self:GetFilters(),
-        usable = IsUsableCheckButton:GetChecked(),
+        usable = self.IsUsableCheckButton:GetChecked(),
         quality = self.QualityDropDown:GetValue(),
     }
 
@@ -298,36 +311,18 @@ function Browse:BuildSearchParams()
         params.quality ~= prevParams.quality) then
 
         self.searchParams = params
-        self.searchParams.page = 0
-        self:SetPage(0)
-    else
-        self.searchParams.page = self:GetPage()
+        self.page = 0
     end
+    self.searchParams.page = self.page
 end
 
 function Browse:RequestSearch()
     self.noSearch = nil
+    self.isSearching = true
+
     self:BuildSearchParams()
-    self:SetIsSearching(true)
     self:UpdateList()
-
-    ns.Auction.Querier:Query(self.searchParams, self.scaner)
-end
-
-function Browse:IsSearching()
-    return AuctionFrameBrowse.isSearching
-end
-
-function Browse:SetIsSearching(flag)
-    AuctionFrameBrowse.isSearching = true
-end
-
-function Browse:GetPage()
-    return AuctionFrameBrowse.page
-end
-
-function Browse:SetPage(page)
-    AuctionFrameBrowse.page = page
+    self.scaner:Query(self.searchParams)
 end
 
 function Browse:SaveSort()
@@ -382,11 +377,12 @@ function Browse:UpdateList()
         return
     end
 
-    local offset = HybridScrollFrame_GetOffset(self)
-    local page = self:GetPage()
+    local scrollFrame = self.ScrollFrame
+    local offset = HybridScrollFrame_GetOffset(scrollFrame)
+    local page = self.page
 
     local num, total = GetNumAuctionItems('list')
-    local shouldHide = self:IsSearching() or self:IsFullScan()
+    local shouldHide = self.isSearching or self:IsFullScan() or self.noSearch
     local hasScrollBar = not shouldHide and num * BUTTON_HEIGHT > self:GetHeight()
     local buttonWidth = hasScrollBar and 608 or 630
     local totalHeight = shouldHide and 0 or num * BUTTON_HEIGHT
@@ -401,7 +397,7 @@ function Browse:UpdateList()
         self.NoResultsText:SetText('')
     end
 
-    for i, button in ipairs(self.buttons) do
+    for i, button in ipairs(scrollFrame.buttons) do
         local id = offset + i
         local index = id + NUM_AUCTION_ITEMS_PER_PAGE * page
         if shouldHide or (index > num + NUM_AUCTION_ITEMS_PER_PAGE * page) then
@@ -412,7 +408,7 @@ function Browse:UpdateList()
             button:SetWidth(buttonWidth)
         end
     end
-    HybridScrollFrame_Update(self, totalHeight, self:GetHeight())
+    HybridScrollFrame_Update(scrollFrame, totalHeight, self:GetHeight())
 end
 
 function Browse:UpdateSelected()
@@ -474,7 +470,7 @@ function Browse:UpdateButtons()
     end
 
     local num, total = GetNumAuctionItems('list')
-    local page = self:GetPage()
+    local page = self.page
     if total > NUM_AUCTION_ITEMS_PER_PAGE and num <= NUM_AUCTION_ITEMS_PER_PAGE then
         self.PrevPageButton.isEnabled = page ~= 0
         self.NextPageButton.isEnabled = page ~= ceil(total / NUM_AUCTION_ITEMS_PER_PAGE) - 1
@@ -490,14 +486,14 @@ function Browse:UpdateButtons()
 end
 
 function Browse:UpdateWidth()
-    if not self:IsVisible() or self:IsSearching() or self:IsFullScan() then
+    if not self:IsVisible() or self.isSearching or self:IsFullScan() then
         return
     end
 
     local num = GetNumAuctionItems('list')
     local hasScrollBar = num * BUTTON_HEIGHT > self:GetHeight()
 
-    self:SetWidth(hasScrollBar and 612 or 632)
+    self.ScrollFrame:SetWidth(hasScrollBar and 612 or 632)
 
     for _, button in ipairs(self.sortButtons) do
         if button.width then

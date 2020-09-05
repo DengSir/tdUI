@@ -42,7 +42,7 @@ function FullScan:OnShow()
 end
 
 function FullScan:Start()
-    ns.Auction.Querier:Query({text = '', queryAll = true}, self.scaner)
+    self.scaner:Query({text = '', queryAll = true})
 end
 
 function FullScan:OnUpdate()

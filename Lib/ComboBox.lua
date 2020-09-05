@@ -69,3 +69,9 @@ function ns.combobox(obj, menuList, callback)
         end)
     end
 end
+
+ns.securehook('UIDropDownMenu_SetSelectedValue', function(obj, value)
+    if obj and obj.GetType and obj:GetType() == ComboBox then
+        obj:SetValue(value)
+    end
+end)

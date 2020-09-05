@@ -153,7 +153,7 @@ ns.addon('Blizzard_AuctionUI', function()
 
     local FullScanButton = CreateFrame('Button', nil, AuctionFrame, 'UIPanelButtonTemplate')
     local FullScan = CreateFrame('Frame', nil, AuctionFrame, 'tdUIAuctionFullScanFrameTemplate')
-    local Browse = CreateFrame('ScrollFrame', nil, AuctionFrameBrowse, 'tdUIAuctionBrowseScrollFrameTemplate')
+    local Browse = AuctionFrameBrowse
     local Auction = CreateFrame('Frame', nil, AuctionFrameAuctions, 'tdUIAuctionAuctionFrameTemplate')
 
     FullScanButton:SetSize(80, 22)

@@ -73,6 +73,14 @@ function Auction:Constructor()
         return self:SetDuration(value)
     end)
 
+    local scrollFrame = self.AutoPrice.ScrollFrame
+
+    HybridScrollFrame_CreateButtons(scrollFrame, 'tdUIAuctionAutoPriceItemTemplate')
+    scrollFrame.update = function()
+        return self:UpdateAutoPriceList()
+    end
+    scrollFrame:SetScript('OnShow', scrollFrame.update)
+
     self:SetDuration(2)
     self.scaner = ns.Auction.PriceScaner:New()
     self.scaner:SetCallback('OnDone', function()
@@ -98,20 +106,7 @@ function Auction:Constructor()
         end
 
         if #items > 0 then
-            local buttons = self.AutoPrice.buttons
-
-            for i, button in ipairs(buttons) do
-                local item = items[i]
-                if item then
-                    button.price = item.price
-                    button.Count:SetText(item.count)
-                    button.Price:SetText(GetMoneyString(item.price))
-                    button:Show()
-                else
-                    button:Hide()
-                end
-            end
-
+            self:UpdateAutoPriceList()
             self.AutoPriceButton:Show()
         end
 
@@ -121,6 +116,7 @@ function Auction:Constructor()
             self.PriceSetText:SetText('Choose other price')
         end
 
+        self.items = items
         self:SetPrice(price)
         self.PriceSetText:Show()
         self.PriceReading:Hide()
@@ -176,8 +172,8 @@ function Auction:Constructor()
 
                 local link = ns.Auction.GetAuctionSellItemLink()
                 self.scaner:SetItem(link)
+                self.scaner:Query({text = link})
 
-                ns.Auction.Querier:Query({text = link}, self.scaner)
                 self.PriceReading:Show()
             end
             self.Duration:Show()
@@ -185,6 +181,37 @@ function Auction:Constructor()
             self.Duration:Hide()
         end
     end)
+end
+
+function Auction:UpdateAutoPriceList()
+    if not self.items then
+        return
+    end
+    local scrollFrame = self.AutoPrice.ScrollFrame
+    local buttons = scrollFrame.buttons
+    local offset = HybridScrollFrame_GetOffset(scrollFrame)
+    local hasScrollBar = #self.items * 20 > scrollFrame:GetHeight()
+    local width = hasScrollBar and 149 or 169
+
+    for i, button in ipairs(buttons) do
+        local item = self.items[i + offset]
+        if not item then
+            button:Hide()
+        else
+            button.price = item.price
+            button.Count:SetText(item.count)
+            button.Price:SetText(GetMoneyString(item.price))
+            button:Show()
+            button:SetWidth(width)
+        end
+    end
+
+    HybridScrollFrame_Update(scrollFrame, #self.items * 20, scrollFrame:GetHeight())
+
+    scrollFrame:SetWidth(width)
+
+    print(width, scrollFrame:GetWidth())
+
 end
 
 function Auction:SetDuration(duration)

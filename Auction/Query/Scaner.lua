@@ -10,6 +10,11 @@ local ns = select(2, ...)
 local Scaner = ns.class()
 ns.Auction.Scaner = Scaner
 
+function Scaner:Query(params)
+    self.params = params
+    ns.Auction.Querier:Query(params, self)
+end
+
 function Scaner:Threshold()
     if debugprofilestop() > 16 then
         debugprofilestart()
