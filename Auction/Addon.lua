@@ -30,6 +30,15 @@ function ns.Auction.parseSearchText(link)
     return text, exact
 end
 
+function ns.Auction.paramsEq(a, b)
+    if not a or not b then
+        return false
+    end
+
+    return a.text == b.text and a.minLevel == b.minLevel and a.maxLevel == b.maxLevel and a.filters == b.filters and
+               a.usable == b.usable and a.quality == b.quality
+end
+
 local Tooltip
 function ns.Auction.GetAuctionSellItemLink()
     if not Tooltip then
@@ -166,4 +175,6 @@ ns.addon('Blizzard_AuctionUI', function()
     ns.Auction.Browse:Bind(Browse)
     ns.Auction.FullScan:Bind(FullScan)
     ns.Auction.Auction:Bind(Auction)
+
+    ns.Auction.Querier:Init()
 end)

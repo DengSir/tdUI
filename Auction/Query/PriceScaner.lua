@@ -6,8 +6,10 @@
 ---@type ns
 local ns = select(2, ...)
 
-local FullScaner = ns.Auction.FullScaner
-local PriceScaner = ns.class(FullScaner)
+local Scaner = ns.Auction.Scaner
+
+---@class PriceScaner: Scaner
+local PriceScaner = ns.class(Scaner)
 ns.Auction.PriceScaner = PriceScaner
 
 function PriceScaner:SetItem(link)
@@ -24,9 +26,9 @@ function PriceScaner:Next()
 end
 
 function PriceScaner:OnStart()
-    FullScaner.OnStart(self)
+    Scaner.OnStart(self)
     self.items = {}
-    self.itemCache = {}
+    self.cache = {}
 end
 
 function PriceScaner:PreQuery()
@@ -39,9 +41,9 @@ local function compare(a, b)
 end
 
 function PriceScaner:OnDone()
-    FullScaner.OnDone(self)
+    self:SavePrices(self.prices)
 
-    for price, count in pairs(self.itemCache) do
+    for price, count in pairs(self.cache) do
         tinsert(self.items, {price = price, count = count})
     end
 
@@ -49,8 +51,8 @@ function PriceScaner:OnDone()
 end
 
 function PriceScaner:ProcessAuction(index)
-    local itemKey, count, unitPrice = FullScaner.ProcessAuction(self, index)
+    local itemKey, count, unitPrice = Scaner.ProcessAuction(self, index)
     if itemKey == self.itemKey then
-        self.itemCache[unitPrice] = (self.itemCache[unitPrice] or 0) + count
+        self.cache[unitPrice] = (self.cache[unitPrice] or 0) + count
     end
 end

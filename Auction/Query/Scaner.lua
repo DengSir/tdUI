@@ -7,8 +7,13 @@
 local ns = select(2, ...)
 
 ---@class Scaner
+---@field params tdUIAuctionQueryParams
 local Scaner = ns.class()
 ns.Auction.Scaner = Scaner
+
+function Scaner:GetDB()
+    return self.prices
+end
 
 function Scaner:Query(params)
     self.params = params
@@ -36,16 +41,79 @@ function Scaner:Next()
 end
 
 function Scaner:OnStart()
+    self.pendings = {}
+    self.prices = {}
+end
+
+function Scaner:PreQuery()
 end
 
 function Scaner:OnResponse()
+    self.index = GetNumAuctionItems('list')
 end
 
 function Scaner:OnContinue()
+    while true do
+        local index = tremove(self.pendings)
+        if not index then
+            break
+        end
+
+        self:ProcessAuction(index)
+
+        if self:Threshold() then
+            return
+        end
+    end
+
+    while true do
+        if self.index == 0 then
+            break
+        end
+
+        self:ProcessAuction(self.index)
+        self.index = self.index - 1
+
+        if self:Threshold() then
+            return
+        end
+    end
+    return #self.pendings == 0
 end
 
 function Scaner:OnDone()
 end
 
-function Scaner:PreQuery()
+function Scaner:SavePrices(prices)
+    for itemKey, price in pairs(prices) do
+        ns.global.auction.prices[itemKey] = price
+    end
+end
+
+function Scaner:ProcessAuction(index)
+    local link = GetAuctionItemLink('list', index)
+    local name, texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount,
+          highBidder, bidderFullName, owner, ownerFullName, saleStatus, itemId, hasAllInfo =
+        GetAuctionItemInfo('list', index)
+
+    if not link then
+        if itemId then
+            tinsert(self.pendings, index)
+        end
+        return
+    end
+
+    local db = self:GetDB()
+
+    if buyoutPrice and buyoutPrice > 0 then
+        local unitPrice = floor(buyoutPrice / count)
+        local itemKey = ns.parseItemKey(link)
+
+        if not db[itemKey] then
+            db[itemKey] = unitPrice
+        else
+            db[itemKey] = min(db[itemKey], unitPrice)
+        end
+        return itemKey, count, unitPrice
+    end
 end

@@ -119,5 +119,3 @@ function Querier:Running()
     self.scaner:Done()
     self:Hide()
 end
-
-Querier:Init()
