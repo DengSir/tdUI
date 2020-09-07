@@ -6,17 +6,37 @@
 ---@type ns
 local ns = select(2, ...)
 
-local pairs = pairs
-local tinsert, tremove = table.insert, table.remove
-
-local GetNumAuctionItems = GetNumAuctionItems
-local GetAuctionItemLink = GetAuctionItemLink
-local GetAuctionItemInfo = GetAuctionItemInfo
+local Scaner = ns.Auction.Scaner
 
 ---@class FullScaner: Scaner
-local FullScaner = ns.class(ns.Auction.Scaner)
+local FullScaner = ns.class(Scaner)
 ns.Auction.FullScaner = FullScaner
 
+function FullScaner:OnStart()
+    Scaner.OnStart(self)
+    self.reportCache = {}
+    self.report = nil
+end
+
 function FullScaner:OnDone()
-    self:SavePrices(self.prices)
+    local report = {}
+
+    for _, quality in pairs(self.reportCache) do
+        report[quality] = (report[quality] or 0) + 1
+    end
+
+    self.report = report
+
+    self:SavePrices(self.db)
+end
+
+function FullScaner:ProcessAuction(index)
+    local itemKey, count, unitPrice, quality = Scaner.ProcessAuction(self, index)
+    if itemKey then
+        self.reportCache[itemKey] = quality
+    end
+end
+
+function FullScaner:GetReport()
+    return self.report
 end

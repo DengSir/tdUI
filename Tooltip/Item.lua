@@ -126,7 +126,7 @@ end
 local TipMethods = {}
 
 function TipMethods:SetHyperlink(link, num)
-    return OnTooltipSetItem(self, link, num)
+    return OnTooltipSetItem(self, nil, num)
 end
 
 function TipMethods:SetItemByID(itemId, num)
@@ -190,7 +190,7 @@ end
 
 function TipMethods:SetInboxItem(index, attachIndex)
     attachIndex = attachIndex or 1
-    return OnTooltipSetItem(self, GetInboxItemLink(index, attachIndex), GetInboxItem(index, attachIndex))
+    return OnTooltipSetItem(self, GetInboxItemLink(index, attachIndex), select(4, GetInboxItem(index, attachIndex)))
 end
 
 function TipMethods:SetSendMailItem(id)

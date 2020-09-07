@@ -50,6 +50,12 @@ function ns.Auction.GetAuctionSellItemLink()
     return select(2, Tooltip:GetItem())
 end
 
+function ns.Auction.ParamsEq(a, b)
+    return a.text == b.text and a.minLevel == b.minLevel and a.maxLevel == b.maxLevel and a.filters == b.filters and
+               a.usable == b.usable and a.quality == b.quality
+
+end
+
 ns.addon('Blizzard_AuctionUI', function()
     -- list sorts
     AuctionSort['list_level'] = {

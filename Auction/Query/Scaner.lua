@@ -12,7 +12,7 @@ local Scaner = ns.class()
 ns.Auction.Scaner = Scaner
 
 function Scaner:GetDB()
-    return self.prices
+    return self.db
 end
 
 function Scaner:Query(params)
@@ -42,7 +42,7 @@ end
 
 function Scaner:OnStart()
     self.pendings = {}
-    self.prices = {}
+    self.db = {}
 end
 
 function Scaner:PreQuery()
@@ -84,8 +84,8 @@ end
 function Scaner:OnDone()
 end
 
-function Scaner:SavePrices(prices)
-    for itemKey, price in pairs(prices) do
+function Scaner:SavePrices(db)
+    for itemKey, price in pairs(db) do
         ns.global.auction.prices[itemKey] = price
     end
 end
@@ -114,6 +114,6 @@ function Scaner:ProcessAuction(index)
         else
             db[itemKey] = min(db[itemKey], unitPrice)
         end
-        return itemKey, count, unitPrice
+        return itemKey, count, unitPrice, quality
     end
 end

@@ -22,7 +22,7 @@ function PriceScaner:GetResponseItems()
 end
 
 function PriceScaner:Next()
-    return not self.prices[self.itemKey]
+    return not self.db[self.itemKey]
 end
 
 function PriceScaner:OnStart()
@@ -41,7 +41,7 @@ local function compare(a, b)
 end
 
 function PriceScaner:OnDone()
-    self:SavePrices(self.prices)
+    self:SavePrices(self.db)
 
     for price, count in pairs(self.cache) do
         tinsert(self.items, {price = price, count = count})

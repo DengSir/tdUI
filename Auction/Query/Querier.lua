@@ -81,6 +81,14 @@ function Querier:CanQuery()
     return true
 end
 
+function Querier:CanQueryAll()
+    if not self.queryAllDisabled then
+        return false
+    end
+    local canQuery, canQueryAll = CanSendAuctionQuery('list')
+    return canQuery and canQueryAll
+end
+
 function Querier:Pending()
     if not self:CanQuery() then
         return

@@ -383,7 +383,7 @@ function Browse:UpdateList()
 
     local num, total = GetNumAuctionItems('list')
     local shouldHide = self.isSearching or self:IsFullScan() or self.noSearch
-    local hasScrollBar = not shouldHide and num * BUTTON_HEIGHT > self:GetHeight()
+    local hasScrollBar = not shouldHide and num * BUTTON_HEIGHT > scrollFrame:GetHeight()
     local buttonWidth = hasScrollBar and 608 or 630
     local totalHeight = shouldHide and 0 or num * BUTTON_HEIGHT
 
@@ -408,7 +408,7 @@ function Browse:UpdateList()
             button:SetWidth(buttonWidth)
         end
     end
-    HybridScrollFrame_Update(scrollFrame, totalHeight, self:GetHeight())
+    HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight())
 end
 
 function Browse:UpdateSelected()
@@ -490,7 +490,7 @@ function Browse:UpdateWidth()
     end
 
     local num = GetNumAuctionItems('list')
-    local hasScrollBar = num * BUTTON_HEIGHT > self:GetHeight()
+    local hasScrollBar = num * BUTTON_HEIGHT > self.ScrollFrame:GetHeight()
 
     self.ScrollFrame:SetWidth(hasScrollBar and 612 or 632)
 

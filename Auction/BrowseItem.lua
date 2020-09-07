@@ -25,7 +25,14 @@ end
 function BrowseItem:OnClick()
     local link = GetAuctionItemLink('list', self.id)
     if IsModifiedClick() then
-        HandleModifiedItemClick(link)
+        if IsControlKeyDown() and IsAltKeyDown() then
+            local buyoutPrice = select(10, GetAuctionItemInfo('list', self.id))
+            if buyoutPrice and buyoutPrice > 0 then
+                PlaceAuctionBid('list', self.id, buyoutPrice)
+            end
+        else
+            HandleModifiedItemClick(link)
+        end
     else
         if GetCVarBool('auctionDisplayOnCharacter') then
             DressUpLink(link)

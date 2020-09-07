@@ -19,6 +19,7 @@
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
 
+    <Include file="Auction\Template.xml" />
     <Script file="Auction\Addon.lua" />
     <Script file="Auction\Query\Scaner.lua" />
     <Script file="Auction\Query\FullScaner.lua" />
