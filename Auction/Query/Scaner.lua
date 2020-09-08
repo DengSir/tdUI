@@ -84,7 +84,48 @@ end
 function Scaner:OnDone()
 end
 
+local VALID_NPCS = {
+    -- 幽暗城
+    [8672] = true,
+    [8721] = true,
+    [15675] = true,
+    [15676] = true,
+    [15682] = true,
+    [15683] = true,
+    [15684] = true,
+    [15686] = true,
+    -- 铁炉堡
+    [8671] = true,
+    [8720] = true,
+    [9859] = true,
+    -- 暴风城
+    [8670] = true,
+    [8719] = true,
+    [15659] = true,
+    -- 奥格瑞玛
+    [8673] = true,
+    [8724] = true,
+    [9856] = true,
+    -- 雷霆崖
+    [8674] = true,
+    [8722] = true,
+    -- 达纳苏斯
+    [8723] = true,
+    [8669] = true,
+    [15678] = true,
+    [15679] = true,
+}
+
+local function NpcId()
+    local guid = UnitGUID('npc')
+    return guid and tonumber(guid:match('.-%-%d+%-%d+%-%d+%-%d+%-(%d+)'))
+end
+
 function Scaner:SavePrices(db)
+    local npcId = NpcId()
+    if not npcId or not VALID_NPCS[npcId] then
+        return
+    end
     for itemKey, price in pairs(db) do
         ns.global.auction.prices[itemKey] = price
     end

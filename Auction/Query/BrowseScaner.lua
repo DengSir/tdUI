@@ -29,24 +29,24 @@ function BrowseScaner:OnResponse()
 end
 
 function BrowseScaner:OnDone()
-    local prices = {}
+    local db = {}
     local page = 0
 
     while true do
-        local p = self.pages[page]
-        if not p then
+        local prices = self.pages[page]
+        if not prices then
             break
         end
 
-        for itemKey, price in pairs(p) do
-            if not prices[itemKey] then
-                prices[itemKey] = price
+        for itemKey, price in pairs(prices) do
+            if not db[itemKey] then
+                db[itemKey] = price
             else
-                prices[itemKey] = min(prices[itemKey], price)
+                db[itemKey] = min(db[itemKey], price)
             end
         end
         page = page + 1
     end
 
-    self:SavePrices(prices)
+    self:SavePrices(db)
 end
