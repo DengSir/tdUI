@@ -82,7 +82,7 @@ function Querier:CanQuery()
 end
 
 function Querier:CanQueryAll()
-    if not self.queryAllDisabled then
+    if self.queryAllDisabled then
         return false
     end
     local canQuery, canQueryAll = CanSendAuctionQuery('list')
