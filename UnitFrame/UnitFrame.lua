@@ -1,7 +1,7 @@
 -- Addon.lua
 -- @Author  : DengSir (tdaddon@163.com)
 -- @Link    : https://dengsir.github.io
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -64,6 +64,8 @@ local function InitFrameFonts(frame)
     local hb = frame.healthbar
     local mb = frame.manabar
 
+    hb:SetStatusBarTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-StatusBar]])
+
     InitAlpha(hb.TextString)
     InitAlpha(hb.LeftText)
     InitAlpha(hb.RightText)
@@ -123,13 +125,13 @@ end
 ns.securehook('TargetFrame_CheckClassification', function(self)
     local classification = UnitClassification(self.unit)
     if classification == 'rareelite' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\UI-TargetingFrame-Rare-Elite]])
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare-Elite]])
     elseif classification == 'rare' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\UI-TargetingFrame-Rare]])
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare]])
     elseif classification == 'elite' or classification == 'worldboss' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\UI-TargetingFrame-Elite]])
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Elite]])
     else
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\UI-TargetingFrame]])
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
     end
 
     if classification == 'minus' then
@@ -177,4 +179,33 @@ ns.securehook('TargetFrame_UpdateLevelTextAnchor', function(self)
     self.levelText:SetPoint('CENTER', 63, -16)
 end)
 
+PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Player-Status]])
+PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
 TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
+
+-- local PLAYER_UNITS = {player = true, vehicle = true, pet = true};
+
+-- local function ShouldAuraBeLarge(caster)
+--     if not caster then
+--         return false;
+--     end
+
+--     for token, value in pairs(PLAYER_UNITS) do
+--         if UnitIsUnit(caster, token) or UnitIsOwnerOrControllerOfUnit(token, caster) then
+--             return value;
+--         end
+--     end
+-- end
+
+-- ns.hook('TargetFrame_UpdateAuraPositions', function(orig, self, auraName, numAuras, arg3, list, updateAnchor, ...)
+--     if updateAnchor == TargetFrame_UpdateBuffAnchor then
+--         for i = 1, numAuras do
+--             list[i] = ShouldAuraBeLarge(select(7, UnitBuff(self.unit, i, nil)))
+--         end
+--     else
+--         for i = 1, numAuras do
+--             list[i] = ShouldAuraBeLarge(select(7, UnitDebuff(self.unit, i, 'INCLUDE_NAME_PLATE_ONLY')))
+--         end
+--     end
+--     return orig(self, auraName, numAuras, arg3, list, updateAnchor, ...)
+-- end)
