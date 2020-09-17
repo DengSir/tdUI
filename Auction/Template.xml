@@ -202,7 +202,7 @@
         </HighlightTexture>
         <Scripts>
             <OnClick>
-                self:GetParent():GetParent():GetParent():GetParent():SetPrice(self.price - 1)
+                self:GetParent():GetParent():GetParent():GetParent():SetPrice(self.price - (not self.isMine and 1 or 0))
             </OnClick>
         </Scripts>
     </Button>

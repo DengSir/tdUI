@@ -43,16 +43,24 @@ end
 function PriceScaner:OnDone()
     self:SavePrices(self.db)
 
-    for price, count in pairs(self.cache) do
-        tinsert(self.items, {price = price, count = count})
+    for price, info in pairs(self.cache) do
+        tinsert(self.items, {price = price, count = info.count, isMine = info.isMine})
     end
 
     sort(self.items, compare)
 end
 
 function PriceScaner:ProcessAuction(index)
-    local itemKey, count, unitPrice = Scaner.ProcessAuction(self, index)
+    local itemKey, count, unitPrice, _, owner = Scaner.ProcessAuction(self, index)
     if itemKey == self.itemKey then
-        self.cache[unitPrice] = (self.cache[unitPrice] or 0) + count
+
+        if not self.cache[unitPrice] then
+            self.cache[unitPrice] = {count = 0, isMine = false}
+        end
+
+        local c = self.cache[unitPrice]
+
+        c.count = c.count + count
+        c.isMine = c.isMine or (owner and UnitIsUnit('player', owner))
     end
 end

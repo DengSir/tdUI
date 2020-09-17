@@ -99,8 +99,17 @@ function Auction:Constructor()
                 err = 'No price'
             end
         else
-            price = price - 1
-            if #items == 0 then
+            if #items > 0 then
+                for i, item in ipairs(items) do
+                    if not item.isMine then
+                        price = item.price - 1
+                        break
+                    else
+                        price = item.price
+                    end
+                end
+            else
+                price = price - 1
                 err = 'Use history price'
             end
         end
@@ -122,7 +131,7 @@ function Auction:Constructor()
         self.PriceReading:Hide()
     end)
 
-    ns.event('NEW_AUCTION_UPDATE', function()
+    ns.event('NEW_AUCTION_UPDATE', ns.spawned(function()
         local name, texture, count, quality, canUse, price, pricePerUnit, stackCount, totalCount, itemId =
             GetAuctionSellItemInfo()
 
@@ -157,6 +166,8 @@ function Auction:Constructor()
                 stackSize = min(stackSize, totalCount, stackCount)
                 local numStacks = floor(totalCount / stackSize)
 
+                print(stackSize, numStacks)
+
                 AuctionsStackSizeEntry:SetNumber(stackSize)
                 AuctionsNumStacksEntry:SetNumber(numStacks)
 
@@ -180,7 +191,8 @@ function Auction:Constructor()
         else
             self.Duration:Hide()
         end
-    end)
+    end))
+
 end
 
 function Auction:UpdateAutoPriceList()
@@ -198,20 +210,24 @@ function Auction:UpdateAutoPriceList()
         if not item then
             button:Hide()
         else
+            button.isMine = item.isMine
             button.price = item.price
             button.Count:SetText(item.count)
             button.Price:SetText(GetMoneyString(item.price))
             button:Show()
             button:SetWidth(width)
+
+            if item.isMine then
+                button.Price:SetTextColor(0, 1, 0)
+            else
+                button.Price:SetTextColor(1, 1, 1)
+            end
         end
     end
 
     HybridScrollFrame_Update(scrollFrame, #self.items * 20, scrollFrame:GetHeight())
 
     scrollFrame:SetWidth(width)
-
-    print(width, scrollFrame:GetWidth())
-
 end
 
 function Auction:SetDuration(duration)
@@ -234,3 +250,57 @@ function Auction:SetPrice(price)
         MoneyInputFrame_SetCopper(StartPrice, price * 0.95 * stackSize)
     end
 end
+
+local MultiSell = {}
+
+local function Filter(frame, event, msg, ...)
+    if msg == ERR_AUCTION_STARTED then
+        MultiSell:OnSystem()
+        return true
+    end
+end
+
+function MultiSell:Init()
+    ns.event('NEW_AUCTION_UPDATE', function()
+        self.item = ns.Auction.GetAuctionSellItemLink() or self.item
+    end)
+
+    ns.securehook('PostAuction', function(_, price, _, stackSize, maxStacks)
+        self.item = ns.Auction.GetAuctionSellItemLink() or self.item
+        self.numStacks = 0
+        self.stackSize = stackSize
+        self.maxStacks = maxStacks
+        self.price = price
+
+        print(self.item, self.stackSize, self.maxStacks, self.price)
+
+        ChatFrame_AddMessageEventFilter('CHAT_MSG_SYSTEM', Filter)
+    end)
+
+    ns.event('AUCTION_MULTISELL_FAILURE', function()
+        self.failure = true
+    end)
+end
+
+function MultiSell:OnSystem()
+    self.numStacks = self.numStacks + 1
+
+    if self.failure or self.numStacks == self.maxStacks then
+        self:Done()
+    end
+end
+
+function MultiSell:Done()
+    SendSystemMessage(format('%dx%s%s(%s)', self.numStacks * self.stackSize, self.item, ERR_AUCTION_STARTED,
+                             GetMoneyString(self.price * self.numStacks)))
+
+    self.item = nil
+    self.numStacks = nil
+    self.stackSize = nil
+    self.maxStacks = nil
+    self.price = nil
+    self.failure = nil
+    ChatFrame_RemoveMessageEventFilter('CHAT_MSG_SYSTEM', Filter)
+end
+
+MultiSell:Init()
