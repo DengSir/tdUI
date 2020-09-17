@@ -84,7 +84,64 @@ ns.addonlogin('MonkeyQuest', function()
             end
         end
 
-        MonkeyQuestMinimizeButton:HookScript('OnClick', MonkeyQuestMinimizeButton.Update)
+        ns.securehook('MonkeyQuestMinimizeButton_OnClick', function()
+            return MonkeyQuestMinimizeButton:Update()
+        end)
+    end
+
+    local FoldButton = CreateFrame('Button', nil, MonkeyQuestFrame)
+    do
+        FoldButton:SetSize(16, 16)
+        FoldButton:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT')
+
+        function FoldButton:Fold()
+            FoldButton:SetNormalTexture([[Interface\Buttons\UI-PlusButton-UP]])
+            FoldButton:SetPushedTexture([[Interface\Buttons\UI-PlusButton-Down]])
+            FoldButton:SetDisabledTexture([[Interface\Buttons\UI-PlusButton-Disabled]])
+        end
+
+        function FoldButton:Unfold()
+            FoldButton:SetNormalTexture([[Interface\Buttons\UI-MinusButton-UP]])
+            FoldButton:SetPushedTexture([[Interface\Buttons\UI-MinusButton-Down]])
+            FoldButton:SetDisabledTexture([[Interface\Buttons\UI-MinusButton-Disabled]])
+        end
+
+        local function IsAllHeaderFold()
+            local P = MonkeyQuestConfig[MonkeyQuest.m_strPlayer]
+            for k, v in pairs(P.m_aQuestList) do
+                if k:find('true$') and v.m_bChecked then
+                    return false
+                end
+            end
+            return true
+        end
+
+        FoldButton:SetScript('OnClick', function()
+            local P = MonkeyQuestConfig[MonkeyQuest.m_strPlayer]
+            local unfold = IsAllHeaderFold()
+
+            for k, v in pairs(P.m_aQuestList) do
+                if k:find('true$') then
+                    v.m_bChecked = unfold
+                end
+            end
+
+            MonkeyQuest_Refresh()
+        end)
+
+        ns.securehook('MonkeyQuest_Refresh', function()
+            if not MonkeyQuest.m_bLoaded then
+                return
+            end
+
+            FoldButton:SetShown(not C.m_bMinimized)
+
+            if IsAllHeaderFold() then
+                FoldButton:Fold()
+            else
+                FoldButton:Unfold()
+            end
+        end)
     end
 
     local ScrollFrame = CreateFrame('ScrollFrame', nil, MonkeyQuestFrame)
