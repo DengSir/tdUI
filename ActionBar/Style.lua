@@ -39,7 +39,7 @@ local function HideGrid()
 end
 
 local function CheckConfig()
-    if ns.profile.actionbar.micro.name then
+    if ns.profile.actionbar.button.macroName then
         ShowGrid()
     else
         HideGrid()
