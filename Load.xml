@@ -19,7 +19,7 @@
     <Script file="CastingBar.lua" />
     <Script file="CVars.lua" />
 
-    <Include file="Auction\Template.xml" />
+    <!-- <Include file="Auction\Template.xml" />
     <Script file="Auction\Addon.lua" />
     <Script file="Auction\Query\Scaner.lua" />
     <Script file="Auction\Query\FullScaner.lua" />
@@ -29,7 +29,7 @@
     <Script file="Auction\BrowseItem.lua" />
     <Script file="Auction\Browse.lua" />
     <Script file="Auction\Auction.lua" />
-    <Script file="Auction\FullScan.lua" />
+    <Script file="Auction\FullScan.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />

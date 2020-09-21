@@ -93,6 +93,7 @@ ns.addonlogin('MonkeyQuest', function()
     do
         FoldButton:SetSize(16, 16)
         FoldButton:SetPoint('RIGHT', MonkeyQuestMinimizeButton, 'LEFT')
+        FoldButton:SetHighlightTexture([[Interface\Buttons\UI-PlusButton-Hilight]], 'ADD')
 
         function FoldButton:Fold()
             FoldButton:SetNormalTexture([[Interface\Buttons\UI-PlusButton-UP]])

@@ -119,7 +119,7 @@ function WatchManager:SetupMinimizeButton(frame, button)
     button:SetSize(16, 16)
     button:SetNormalTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
     button:SetPushedTexture([[Interface\Buttons\UI-Panel-QuestHideButton]])
-    button:SetHighlightTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Highlight]], 'ADD')
+    button:SetHighlightTexture([[Interface\Buttons\UI-PlusButton-Hilight]], 'ADD')
     button:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 1)
     button:GetPushedTexture():SetTexCoord(0.5, 1, 0.5, 1)
 
