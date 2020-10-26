@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/2/2019, 3:15:18 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -51,3 +51,33 @@ ns.event('ACTIONBAR_HIDEGRID', HideGrid)
 ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
 ns.config('actionbar.button.macroName', CheckConfig)
 ns.load(CheckConfig)
+
+ns.addon('M6', 'tullaRange', function()
+    local function GetState(state)
+        local usable = state % 2048 < 1024
+        local nomana, norange = state % 16 > 7, state % 32 > 15
+
+        if usable then
+            if norange then
+                return 'oor'
+            else
+                return 'normal'
+            end
+        elseif nomana then
+            return 'oom'
+        else
+            return 'unusable'
+        end
+    end
+
+    M6.PainterEvents.RawActionBookUpdates = function(_, button, _, _, state)
+        if not state then
+            return
+        end
+
+        button.rangeTimer = nil
+        button.NormalTexture = nil
+
+        tullaRange:SetButtonState(button, GetState(state))
+    end
+end)
