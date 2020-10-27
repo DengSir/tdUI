@@ -42,6 +42,8 @@ local function OnTooltipItem(tip, item)
             nameLine:SetFormattedText('|T%s:18|t %s', icon, nameLine:GetText())
         end
     end
+
+    tip:Show()
 end
 
 local function OnTooltipSetItem(tip, ...)
