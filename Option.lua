@@ -176,25 +176,6 @@ ns.login(function()
                     totot = fulltoggle('Target Of Target Of Target'),
                 },
             },
-            auction = treeItem 'Auction' {
-                sell = inline 'Sell' {
-                    stackSize = drop('Stack size') { --
-                        {name = 'Max', value = 0},
-                        {name = '1', value = 1},
-                    },
-                    duration = drop('Duration') { --
-                        {name = '2 ' .. HOURS, value = 1},
-                        {name = '8 ' .. HOURS, value = 2},
-                        {name = '24 ' .. HOURS, value = 3},
-                    },
-                    durationNoDeposit = drop('Duration no deposit') {
-                        {name = 'Ignore', value = 0},
-                        {name = '2 ' .. HOURS, value = 1},
-                        {name = '8 ' .. HOURS, value = 2},
-                        {name = '24 ' .. HOURS, value = 3},
-                    },
-                },
-            },
         },
     }
 

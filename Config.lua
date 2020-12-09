@@ -50,13 +50,6 @@ local DEFAULT_PROFILE = {
         },
     },
     window = {minimap = {minimapPos = 215.34}},
-    auction = { --
-        sell = { --
-            stackSize = 0,
-            duration = 2,
-            durationNoDeposit = 0,
-        },
-    },
     unitframe = {frame = {autoHide = true, totot = false}},
 }
 

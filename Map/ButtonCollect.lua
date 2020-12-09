@@ -330,7 +330,7 @@ function Collect:RestoreButton(button)
         button:ClearAllPoints()
         button:SetPoint(unpack(env.points))
         button:SetFrameLevel(MinimapBackdrop:GetFrameLevel() + env.frameLevelDelta)
-        button:SetAlpha(0)
+        -- button:SetAlpha(0)
     end
     wipe(env)
 
