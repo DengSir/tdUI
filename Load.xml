@@ -31,6 +31,7 @@
 
     <Script file="Beauty\Blizzard.lua" />
     <Script file="Beauty\AtlasLoot.lua" />
+    <Script file="Beauty\M6.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />

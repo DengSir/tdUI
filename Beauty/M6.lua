@@ -52,4 +52,46 @@ ns.addon('M6', function()
         button:SetText('M6')
         button:SetScript('OnClick', Toggle)
     end)
+
+    ns.addon('tullaRange', function()
+        local tullaRange = tullaRange
+
+        local IsCurrentSpell = IsCurrentSpell
+        local IsAutoRepeatSpell = IsAutoRepeatSpell
+
+        local function GetState(state)
+            local usable = state % 2048 < 1024
+            local nomana, norange = state % 16 > 7, state % 32 > 15
+
+            if usable then
+                if norange then
+                    return 'oor'
+                else
+                    return 'normal'
+                end
+            elseif nomana then
+                return 'oom'
+            else
+                return 'unusable'
+            end
+        end
+
+        M6.PainterEvents.RawActionBookUpdates = function(_, button, _, _, state, _, _, _, _, _, _, spellId)
+            if not state then
+                return
+            end
+
+            button.rangeTimer = nil
+            button.NormalTexture = nil
+
+            tullaRange:SetButtonState(button, GetState(state))
+
+            if button:GetChecked() then
+                if not IsCurrentSpell(spellId) and not IsAutoRepeatSpell(spellId) then
+                    button:SetChecked(false)
+                end
+            end
+        end
+    end)
+
 end)
