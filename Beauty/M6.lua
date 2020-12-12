@@ -76,22 +76,54 @@ ns.addon('M6', function()
             end
         end
 
-        M6.PainterEvents.RawActionBookUpdates = function(_, button, _, _, state, _, _, _, _, _, _, spellId)
-            if not state then
+        local hooked = {}
+
+        ---@param button Button
+        local function Hook(button)
+            if hooked[button] then
                 return
             end
 
             button.rangeTimer = nil
             button.NormalTexture = nil
 
-            tullaRange:SetButtonState(button, GetState(state))
+            ---@type Texture
+            local checkedTextture = button:GetCheckedTexture()
+            ---@type Texture
+            local texture = button._tdCheckedTexture or button:CreateTexture(nil, checkedTextture:GetDrawLayer())
 
-            if button:GetChecked() then
-                if not IsCurrentSpell(spellId) and not IsAutoRepeatSpell(spellId) then
-                    button:SetChecked(false)
+            texture:Hide()
+            texture:SetAllPoints(checkedTextture)
+            texture:SetTexture(checkedTextture:GetTexture())
+            texture:SetTexCoord(checkedTextture:GetTexCoord())
+            texture:SetBlendMode(checkedTextture:GetBlendMode())
+
+            checkedTextture:SetAlpha(0)
+
+            button._tdCheckedTexture = texture
+            hooked[button] = true
+        end
+
+        local function Unhook(button)
+            button._tdCheckedTexture:Hide()
+            button:GetCheckedTexture():SetAlpha(1)
+
+            hooked[button] = nil
+        end
+
+        M6.PainterEvents.RawActionBookUpdates = function(event, button, _, _, state, _, _, _, _, _, _, spellId)
+            if event == 'M6_BUTTON_UPDATE' then
+                Hook(button)
+
+                if state then
+                    tullaRange:SetButtonState(button, GetState(state))
+                    button._tdCheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
+                    button.cooldown:SetDrawEdge(false)
                 end
+
+            elseif event == 'M6_BUTTON_RELEASE' then
+                Unhook(button)
             end
         end
     end)
-
 end)
