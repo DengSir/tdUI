@@ -118,7 +118,9 @@ ns.addon('M6', function()
                 if state then
                     tullaRange:SetButtonState(button, GetState(state))
                     button._tdCheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
-                    button.cooldown:SetDrawEdge(false)
+                    if button.cooldown then
+                        button.cooldown:SetDrawEdge(false)
+                    end
                 end
 
             elseif event == 'M6_BUTTON_RELEASE' then

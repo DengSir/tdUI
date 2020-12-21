@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/15/2020, 1:38:59 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -42,6 +41,31 @@ ns.addon('TinyTooltip', function()
     end)
     GameTooltipStatusBar:HookScript('OnHide', UpdateStatusBarPosition)
 
+    --  修复TinyTooltip在其它鼠标提示上显示目标
+    pcall(function()
+        local orig_TinyTooltip_FindLine = TinyTooltip.FindLine
+
+        local GameTooltip = GameTooltip
+        local UnitExists = UnitExists
+
+        function TinyTooltip:FindLine(tooltip, keyword)
+            if keyword:find(TARGET, nil, true) then
+                setfenv(2, setmetatable({
+                    UnitExists = function(unit)
+                        if not GameTooltip:GetUnit() then
+                            return
+                        end
+                        return UnitExists(unit)
+                    end,
+                }, {__index = _G}))
+
+                TinyTooltip.FindLine = orig_TinyTooltip_FindLine
+            end
+            return orig_TinyTooltip_FindLine(self, tooltip, keyword)
+        end
+    end)
+
+    -- 禁止TinyTooltip给鼠标提示字体加描边，可能导致折行
     pcall(function()
         local emptyObject = setmetatable({}, {
             __index = function()
