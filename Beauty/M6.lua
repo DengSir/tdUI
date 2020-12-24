@@ -27,13 +27,12 @@ ns.addon('M6', function()
         end
     end
 
-    local orig_SlashCmdList_M6 = SlashCmdList.M6
-    SlashCmdList.M6 = function(arg)
+    ns.hook(SlashCmdList, 'M6', function(orig, arg)
         if arg == 'vers' then
-            return orig_SlashCmdList_M6(arg)
+            return orig(arg)
         end
         Toggle()
-    end
+    end)
 
     ns.addon('Blizzard_MacroUI', function()
         ---@type Button
@@ -84,32 +83,39 @@ ns.addon('M6', function()
                 return
             end
 
-            button.rangeTimer = nil
-            button.NormalTexture = nil
-
             ---@type Texture
-            local checkedTextture = button:GetCheckedTexture()
+            local checkedTexture = button:GetCheckedTexture()
             ---@type Texture
-            local texture = button._tdCheckedTexture or button:CreateTexture(nil, checkedTextture:GetDrawLayer())
+            local texture = button._CheckedTexture or button:CreateTexture(nil, checkedTexture:GetDrawLayer())
 
             texture:Hide()
-            texture:SetAllPoints(checkedTextture)
-            texture:SetTexture(checkedTextture:GetTexture())
-            texture:SetTexCoord(checkedTextture:GetTexCoord())
-            texture:SetBlendMode(checkedTextture:GetBlendMode())
+            texture:SetAllPoints(checkedTexture)
+            texture:SetTexture(checkedTexture:GetTexture())
+            texture:SetTexCoord(checkedTexture:GetTexCoord())
+            texture:SetBlendMode(checkedTexture:GetBlendMode())
 
-            checkedTextture:SetAlpha(0)
+            checkedTexture:SetAlpha(0)
 
-            button._tdCheckedTexture = texture
+            button._CheckedTexture = texture
+            button._NormalTexture = button.NormalTexture or button._NormalTexture
+            button.NormalTexture = nil
+            button.rangeTimer = nil
+
             hooked[button] = true
         end
 
         local function Unhook(button)
-            button._tdCheckedTexture:Hide()
+            button._CheckedTexture:Hide()
             button:GetCheckedTexture():SetAlpha(1)
 
             hooked[button] = nil
         end
+
+        ns.securehook('ActionButton_ShowGrid', function(button)
+            if button._NormalTexture then
+                button._NormalTexture:SetVertexColor(1.0, 1.0, 1.0, 0.5)
+            end
+        end)
 
         M6.PainterEvents.RawActionBookUpdates = function(event, button, _, _, state, _, _, _, _, _, _, spellId)
             if event == 'M6_BUTTON_UPDATE' then
@@ -117,7 +123,11 @@ ns.addon('M6', function()
 
                 if state then
                     tullaRange:SetButtonState(button, GetState(state))
-                    button._tdCheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
+
+                    if button._CheckedTexture then
+                        button._CheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
+                    end
+
                     if button.cooldown then
                         button.cooldown:SetDrawEdge(false)
                     end
@@ -127,5 +137,18 @@ ns.addon('M6', function()
                 Unhook(button)
             end
         end
+
+        ActionBarButtonEventsFrame:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
+
+        ns.event('ACTIONBAR_UPDATE_COOLDOWN', function()
+            for i, button in ipairs(ActionBarButtonEventsFrame.frames) do
+                if not hooked[button] then
+                    ActionButton_UpdateCooldown(button)
+                    if GameTooltip:GetOwner() == button then
+                        ActionButton_SetTooltip(button)
+                    end
+                end
+            end
+        end)
     end)
 end)
