@@ -138,17 +138,17 @@ ns.addon('M6', function()
             end
         end
 
-        ActionBarButtonEventsFrame:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
+        -- ActionBarButtonEventsFrame:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
 
-        ns.event('ACTIONBAR_UPDATE_COOLDOWN', function()
-            for i, button in ipairs(ActionBarButtonEventsFrame.frames) do
-                if not hooked[button] then
-                    ActionButton_UpdateCooldown(button)
-                    if GameTooltip:GetOwner() == button then
-                        ActionButton_SetTooltip(button)
-                    end
-                end
-            end
-        end)
+        -- ns.event('ACTIONBAR_UPDATE_COOLDOWN', function()
+        --     for i, button in ipairs(ActionBarButtonEventsFrame.frames) do
+        --         if not hooked[button] then
+        --             ActionButton_UpdateCooldown(button)
+        --             if GameTooltip:GetOwner() == button then
+        --                 ActionButton_SetTooltip(button)
+        --             end
+        --         end
+        --     end
+        -- end)
     end)
 end)

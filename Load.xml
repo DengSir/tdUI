@@ -11,13 +11,15 @@
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
-    <Script file="Fonts.lua" />
 
-    <Script file="Aura.lua" />
-    <Script file="Channel.lua" />
-    <Script file="RemoveOptions.lua" />
     <Script file="CastingBar.lua" />
-    <Script file="CVars.lua" />
+
+    <Script file="Features\RemoveOptions.lua" />
+    <Script file="Features\CVars.lua" />
+    <Script file="Features\Port.lua" />
+    <Script file="Features\Aura.lua" />
+    <Script file="Features\Fonts.lua" />
+    <Script file="Features\Channel.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />

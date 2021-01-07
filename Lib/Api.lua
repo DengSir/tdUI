@@ -151,42 +151,6 @@ function ns.hide(obj)
     obj:SetParent(hider)
 end
 
-function ns.gsc(money)
-    money = floor(money)
-    local text = ''
-    if (money % 100 > 0) and (money < 10000) or (money == 0) then
-        text = COPPER_AMOUNT_TEXTURE:format(money % 100, 0, 0)
-    end
-    money = floor(money / 100)
-    if (money % 100 > 0) and (money < 100000) then
-        text = SILVER_AMOUNT_TEXTURE:format(money % 100) .. ' ' .. text
-    end
-    money = floor(money / 100)
-    if (money > 0) then
-        text = GOLD_AMOUNT_TEXTURE:format(money, 0, 0) .. ' ' .. text
-    end
-    return text:trim()
-end
-
-function ns.parseItemLink(link)
-    if not link then
-        return
-    end
-    local itemId, enchantId, suffixId, uniqueId = link:match('item:(%d*):(%d*):::::(%d*):(%d*)')
-    if not itemId then
-        return
-    end
-    return tonumber(itemId) or 0, tonumber(enchantId) or 0, tonumber(suffixId) or 0, tonumber(uniqueId) or 0
-end
-
-function ns.parseItemKey(link)
-    local itemId, _, suffixId = ns.parseItemLink(link)
-    if not itemId then
-        return '0:0'
-    end
-    return itemId .. ':' .. suffixId
-end
-
 function ns.teq(a, b)
     if not a or not b then
         return false
