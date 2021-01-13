@@ -72,4 +72,5 @@
     <Script file="UnitFrame\Visible.lua" />
 
     <Script file="Bug\ItemRack.lua" />
+    <Script file="Bug\VudDo.lua" />
 </Ui>

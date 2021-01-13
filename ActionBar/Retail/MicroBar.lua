@@ -127,6 +127,8 @@ ns.securehook(MainMenuBarDownload, 'Hide', function()
     MainMenuBarPerformanceBar:Show()
 end)
 
+Bar.BgKeyring:SetParent(KeyRingButton)
+
 local UpdatePosition = ns.pend(function()
     local style = ns.profile.actionbar.micro.position
     if style == 'LEFT' then
