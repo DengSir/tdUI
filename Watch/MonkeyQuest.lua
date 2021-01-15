@@ -37,7 +37,7 @@ ns.addonlogin('MonkeyQuest', function()
 
     local LSM = LibStub('LibSharedMedia-3.0')
 
-    ns.WatchManager:Register(MonkeyQuestFrame, 4, { --
+    ns.WatchManager:Register(MonkeyQuestFrame, 5, { --
         minimizeButton = MonkeyQuestMinimizeButton,
         header = MonkeyQuestTitleButton,
     })

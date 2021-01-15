@@ -25,8 +25,12 @@ ns.addon('VuhDo', function()
         return frame
     end)
 
+    local DropDownList1 = DropDownList1
+
     ns.securehook('ToggleDropDownMenu', function(level, _, dropdown)
-        if dropdown == SecureTemplatesDropdown and dropdown.openedFor and level == 1 and DropDownList1:IsVisible() then
+        if (not level or level == 1) and dropdown and dropdown == SecureTemplatesDropdown and dropdown.openedFor and
+            DropDownList1:IsVisible() then
+
             DropDownList1:ClearAllPoints()
             DropDownList1:SetPoint('TOPLEFT', dropdown.openedFor, 'BOTTOMLEFT')
         end

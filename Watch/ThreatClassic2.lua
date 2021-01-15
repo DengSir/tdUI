@@ -89,7 +89,10 @@ ns.addonlogin('ThreatClassic2', function()
         ns.RemoveAceConfig(options, 'appearance', 'frame', 'framePosition')
         ns.RemoveAceConfig(options, 'appearance', 'frame', 'scale')
         ns.RemoveAceConfig(options, 'appearance', 'frame', 'frameColors')
-        ns.RemoveAceConfig(options, 'appearance', 'bar')
+        ns.RemoveAceConfig(options, 'appearance', 'bar', 'height')
+        ns.RemoveAceConfig(options, 'appearance', 'bar', 'padding')
+        ns.RemoveAceConfig(options, 'appearance', 'bar', 'alpha')
+        ns.RemoveAceConfig(options, 'appearance', 'bar', 'texture')
         ns.RemoveAceConfig(options, 'appearance', 'font')
         ns.RemoveAceConfig(options, 'appearance', 'reset')
     end
@@ -203,7 +206,6 @@ ns.addonlogin('ThreatClassic2', function()
             UpdateFont(bar.val)
 
             bar.val:SetPoint('RIGHT', bar.backdrop, 'RIGHT', -C.font.size * 3.5, 0)
-            bar.name:SetPoint('RIGHT', bar.val, 'LEFT', -10, 0)
         end
 
         TC2:UpdateThreatBars()
@@ -227,6 +229,12 @@ ns.addonlogin('ThreatClassic2', function()
                 else
                     bar.icon:SetTexture([[Interface\Icons\ability_dualwield]])
                     bar.icon:SetTexCoord(0, 1, 0, 1)
+                end
+
+                if bar.ignite:IsShown() then
+                    bar.name:SetPoint('LEFT', bar.icon, 'RIGHT', TCC.igniteIndicator.size, 0)
+                else
+                    bar.name:SetPoint('LEFT', bar.icon, 'RIGHT')
                 end
             end
         end

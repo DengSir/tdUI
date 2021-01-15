@@ -235,16 +235,19 @@ function ns.spawned(func)
 end
 
 function ns.nocombated(func)
-    return function()
-        return ns.nocombat(func)
+    return function(...)
+        return ns.nocombat(func, ...)
     end
 end
 
-function ns.nocombat(func)
+function ns.nocombat(func, ...)
     if not InCombatLockdown() then
-        func()
+        func(...)
     else
-        ns.onceevent('PLAYER_REGEN_ENABLED', func)
+        local p = ns.pack(...)
+        ns.onceevent('PLAYER_REGEN_ENABLED', function()
+            return func(p())
+        end)
     end
 end
 
