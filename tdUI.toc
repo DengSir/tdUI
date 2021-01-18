@@ -3,5 +3,6 @@
 ## Author: Dencer
 ## Version: @project-version@
 ## SavedVariables: TDDB_UI
+## SavedVariablesPerCharacter: TDDB_UI_BOOMTIME
 
 Load.xml

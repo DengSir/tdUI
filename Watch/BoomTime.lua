@@ -18,10 +18,8 @@ local BOOM_TIMES_PRE_HOUR = 5
 local BoomTime = {}
 
 function BoomTime:OnLoad()
-    self.times = {}
-    self.view = {}
     self:Read()
-    self:UpdateView()
+    self:Clean(true)
 
     ns.event('CHAT_MSG_SYSTEM', function(msg)
         if msg:find(INSTANCE_RESET_FAILED_P) or msg:find(INSTANCE_RESET_SUCCESS_P) then
@@ -40,10 +38,6 @@ function BoomTime:OnLoad()
             end
         end
     end)
-
-    ns.timer(1, function()
-        return self:Clean()
-    end)
 end
 
 function BoomTime:Save()
@@ -61,6 +55,9 @@ function BoomTime:Save()
 
     local body = table.concat(sb, ',')
     local index = GetMacroIndexByName(MACRO_NAME)
+    if GetMacroBody(index) == body then
+        return
+    end
     if not index or index == 0 then
         CreateMacro(MACRO_NAME, MACRO_ICON, body, true)
     else
@@ -71,17 +68,58 @@ end
 BoomTime.Save = ns.nocombated(BoomTime.Save)
 
 function BoomTime:Read()
-    local index = GetMacroIndexByName(MACRO_NAME)
-    if not index then
-        return
+    local times = {}
+    local timesMap = {}
+
+    local function FillMap(times)
+        if not times then
+            return
+        end
+        for i, v in ipairs(times) do
+            timesMap[v] = true
+        end
     end
 
-    local body = select(3, GetMacroInfo(index)) or ''
-    for i, v in ipairs({strsplit(',', body)}) do
-        if i == 1 then
-            self.times[i] = tonumber(v)
-        else
-            self.times[i] = self.times[i - 1] + tonumber(v)
+    local index = GetMacroIndexByName(MACRO_NAME)
+    if index and index ~= 0 then
+        local body = GetMacroBody(index)
+        if body then
+            local macroTimes = {}
+            for i, v in ipairs({strsplit(',', body)}) do
+                if i == 1 then
+                    macroTimes[i] = tonumber(v)
+                else
+                    macroTimes[i] = macroTimes[i - 1] + tonumber(v)
+                end
+            end
+
+            FillMap(macroTimes)
+        end
+    end
+
+    FillMap(TDDB_UI_BOOMTIME)
+
+    for time in pairs(timesMap) do
+        tinsert(times, time)
+    end
+    sort(times)
+
+    TDDB_UI_BOOMTIME = times
+
+    self.times = times
+end
+
+function BoomTime:CheckTimer()
+    if next(self.times) then
+        if not self.timer then
+            self.timer = ns.timer(1, function()
+                return self:Clean()
+            end)
+        end
+    else
+        if self.timer then
+            self.timer:Cancel()
+            self.timer = nil
         end
     end
 end
@@ -89,9 +127,10 @@ end
 function BoomTime:OnReset()
     tinsert(self.times, time() + 86400)
     self.changed = true
+    self:CheckTimer()
 end
 
-function BoomTime:Clean()
+function BoomTime:Clean(force)
     local now = time()
     for i = #self.times, 1, -1 do
         if self.times[i] < now then
@@ -100,59 +139,52 @@ function BoomTime:Clean()
         end
     end
 
-    if self.changed then
+    if force or self.changed then
         self.changed = nil
         self:Save()
         self:UpdateView()
+        self:CheckTimer()
     end
 end
 
 function BoomTime:UpdateView()
-    local view = {}
+    self.view = {}
 
     for v in self:Iterate() do
-        tinsert(view, v)
+        tinsert(self.view, v)
     end
-
-    dump(view)
-
-    self.view = view
 end
 
 function BoomTime:Iterate()
     return coroutine.wrap(function()
-        local last = {}
+        local group = {}
         local fiveLockCount = 0
         local fiveLockLast
 
         for i = 1, BOOM_TIMES_PRE_DAY do
             local t = self.times[i]
             if t then
-                if not next(last) or (t - last[#last].time < 12 * 60 and t - last[1].time < 60 * 60) then
-                    tinsert(last, {index = i, time = t})
+                if not next(group) or (t - group[#group].time < 18 * 60 and t - group[1].time < 60 * 60) then
+                    tinsert(group, {index = i, time = t})
                 else
-                    coroutine.yield(last)
-                    last = {}
+                    coroutine.yield(group)
+                    group = {}
 
-                    tinsert(last, {index = i, time = t})
+                    tinsert(group, {index = i, time = t})
                 end
             else
-                if next(last) and last[1].time then
-                    coroutine.yield(last)
-                    last = {}
+                if next(group) and group[1].time then
+                    coroutine.yield(group)
+                    group = {}
                 end
-                tinsert(last, {index = i})
+                tinsert(group, {index = i})
             end
         end
 
-        if next(last) then
-            coroutine.yield(last)
+        if next(group) then
+            coroutine.yield(group)
         end
     end)
-end
-
-function GG()
-    BoomTime:UpdateView()
 end
 
 --- UI
@@ -252,18 +284,26 @@ function UI:Update()
     local fiveLockFirst
     local totalHeight = 0
 
-    local function t2s(t)
-        return date('%H:%M:%S', t - now + 57600 - 24)
+    local function t2s(s)
+        local hour = floor(s / 3600)
+        s = s - hour * 3600
+        local minute = floor(s / 60)
+        s = s - minute * 60
+        local second = s
+
+        if hour == 0 then
+            return format('%02d:%02d', minute, second)
+        end
+
+        return format('%02d:%02d:%02d', hour, minute, second)
     end
 
     for i, node in ipairs(BoomTime.view) do
         local line = self:GetLine(i)
 
         for i, v in ipairs(node) do
-            if v.time then
-                if v.time - now > 23 * 3600 then
-                    fiveLockCount = fiveLockCount + 1
-                end
+            if fiveLockCount < 5 and v.time and v.time - now > 23 * 3600 then
+                fiveLockCount = fiveLockCount + 1
 
                 if not fiveLockFirst then
                     fiveLockFirst = v.time - 23 * 3600
@@ -272,16 +312,22 @@ function UI:Update()
         end
 
         if #node == 1 then
-            line.textLeft:SetFormattedText('重置倒计时 %d', node[1].index)
-            line.textRight:SetFormattedText('|cffff0000%s|r', t2s(node[1].time))
-        elseif node[1].time then
-            line.textLeft:SetFormattedText('重置倒计时 %d-%d', node[1].index, node[#node].index)
-            line.textRight:SetFormattedText('|cffff0000%s-%s|r', t2s(node[1].time), t2s(node[#node].time))
-        elseif fiveLockCount >= 5 then
-            line.textLeft:SetFormattedText('重置倒计时 %d-%d', node[1].index, node[#node].index)
-            line.textRight:SetFormattedText('|cffffd100%s|r', t2s(fiveLockFirst))
+            line.textLeft:SetFormattedText('倒计时 |cffffffff%d|r', node[1].index)
         else
-            line.textLeft:SetFormattedText('重置倒计时 %d-%d', node[1].index, node[#node].index)
+            line.textLeft:SetFormattedText('倒计时 |cffffffff%d-%d|r |cff00ffff(%d)|r', node[1].index,
+                                           node[#node].index, #node)
+        end
+
+        if node[1].time then
+            if #node == 1 then
+                line.textRight:SetFormattedText('|cffff0000%s|r', t2s(node[1].time - now))
+            else
+                line.textRight:SetFormattedText('|cffff0000%s|r |cffffffff(+%s)|r', t2s(node[1].time - now),
+                                                t2s(node[#node].time - node[1].time))
+            end
+        elseif fiveLockCount >= 5 then
+            line.textRight:SetFormattedText('|cffffd100%s|r', t2s(fiveLockFirst - now))
+        else
             line.textRight:SetFormattedText('|cff00ff00可用|r')
         end
 
