@@ -343,33 +343,6 @@ function UI:Update()
         end
     end
 
-    -- for i = 1, BOOM_TIMES_PRE_DAY do
-    --     local line = self:GetLine(i)
-    --     local label = line.textRight
-
-    --     if BoomTime.times[i] then
-    --         if BoomTime.times[i] - now > 23 * 3600 then
-    --             fiveLockCount = fiveLockCount + 1
-
-    --             if not fiveLockFirst then
-    --                 fiveLockFirst = BoomTime.times[i] - 23 * 3600
-    --             end
-    --         end
-
-    --         label:SetText(date('|cffff0000%H:%M:%S|r', BoomTime.times[i] - now + 57600 - 24))
-
-    --     elseif fiveLockCount >= BOOM_TIMES_PRE_HOUR then
-    --         label:SetText(date('|cffffd100%H:%M:%S|r', fiveLockFirst - now + 57600 - 24));
-    --     else
-    --         label:SetText('|cff00ff00可用|r');
-    --     end
-
-    --     local height = max(line.textLeft:GetStringHeight(), line.textRight:GetStringHeight())
-    --     line:SetHeight(height)
-
-    --     totalHeight = totalHeight + height
-    -- end
-
     self.Body:SetHeight(totalHeight)
 end
 

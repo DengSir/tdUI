@@ -52,6 +52,19 @@ ns.addon('M6', function()
         button:SetScript('OnClick', Toggle)
     end)
 
+    pcall(function()
+        local core = OneRingLib.ext.ActionBook:compatible('Rewire', 1, 20):seclib()
+
+        setfenv(core.setMute, setmetatable({
+            GetCVar = function()
+                return GetCVar('Sound_EnableErrorSpeech')
+            end,
+            SetCVar = function(_, flag)
+                return SetCVar('Sound_EnableErrorSpeech', flag)
+            end,
+        }, {__index = _G}))
+    end)
+
     ns.addon('tullaRange', function()
         local tullaRange = tullaRange
 
@@ -83,20 +96,23 @@ ns.addon('M6', function()
                 return
             end
 
-            ---@type Texture
-            local checkedTexture = button:GetCheckedTexture()
-            ---@type Texture
-            local texture = button._CheckedTexture or button:CreateTexture(nil, checkedTexture:GetDrawLayer())
+            if button.GetCheckedTexture then
+                ---@type Texture
+                local checkedTexture = button:GetCheckedTexture()
+                ---@type Texture
+                local texture = button._CheckedTexture or button:CreateTexture(nil, checkedTexture:GetDrawLayer())
 
-            texture:Hide()
-            texture:SetAllPoints(checkedTexture)
-            texture:SetTexture(checkedTexture:GetTexture())
-            texture:SetTexCoord(checkedTexture:GetTexCoord())
-            texture:SetBlendMode(checkedTexture:GetBlendMode())
+                texture:Hide()
+                texture:SetAllPoints(checkedTexture)
+                texture:SetTexture(checkedTexture:GetTexture())
+                texture:SetTexCoord(checkedTexture:GetTexCoord())
+                texture:SetBlendMode(checkedTexture:GetBlendMode())
 
-            checkedTexture:SetAlpha(0)
+                checkedTexture:SetAlpha(0)
 
-            button._CheckedTexture = texture
+                button._CheckedTexture = texture
+            end
+
             button._NormalTexture = button.NormalTexture or button._NormalTexture
             button.NormalTexture = nil
             button.rangeTimer = nil
@@ -105,7 +121,9 @@ ns.addon('M6', function()
         end
 
         local function Unhook(button)
-            button._CheckedTexture:Hide()
+            if button._CheckedTexture then
+                button._CheckedTexture:Hide()
+            end
             button:GetCheckedTexture():SetAlpha(1)
 
             hooked[button] = nil

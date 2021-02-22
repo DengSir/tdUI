@@ -119,6 +119,7 @@ end)
 ns.pack = pack
 ns.after = After
 ns.timer = NewTicker
+ns.oncetimer = C_Timer.NewTimer
 
 function ns.spawn(func)
     return After(0, func)

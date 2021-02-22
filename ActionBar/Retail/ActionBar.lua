@@ -27,7 +27,7 @@ local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
 
 local NO_GRID_BUTTONS = ns.GetFrames('MultiBarBottomRightButton%d', 6)
 
-local Controller = CreateFrame('Frame', nil, nil, 'SecureHandlerAttributeTemplate')
+local Controller = CreateFrame('Frame', nil, nil, 'SecureHandlerBaseTemplate')
 
 local Hider = CreateFrame('Frame')
 Hider:Hide()
@@ -133,7 +133,7 @@ ReputationWatchBarDelegate:SetScript('OnLeave', function()
 end)
 
 ns.securehook('MultiActionBar_Update', function()
-    if Controller:GetAttribute('hasBottomRight') then
+    if MultiBarBottomRight:IsVisible() then
         ReputationWatchBarDelegate:SetWidth(LARGE_WIDTH)
 
         MainMenuBarArtLarge:Show()
@@ -218,41 +218,42 @@ do
 
         assert(name)
         Controller:SetFrameRef(name, v)
+        Controller:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
     end
 end
 
-Controller:SetAttribute('_layoutMainMenuBar', [[
-local width = self:GetAttribute('hasBottomRight')
-                and ]] .. LARGE_WIDTH .. [[
-                or ]] .. SMALL_WIDTH .. [[
+Controller:Execute([[env = newtable()]])
 
-self:GetFrameRef('MainMenuBar'):SetWidth(width)
-self:GetFrameRef('MainMenuExpBar'):SetWidth(width)
-]])
+Controller:SetAttribute('LayoutMainMenuBar', format([[
+local width = env.hasBottomRight and %d or %d
 
-Controller:SetAttribute('_layoutWatchBars', [[
+MainMenuBar:SetWidth(width)
+MainMenuExpBar:SetWidth(width)
+]], LARGE_WIDTH, SMALL_WIDTH))
+
+Controller:SetAttribute('LayoutWatchBars', [[
 local y = 0
-local hasExp = self:GetAttribute('hasExp')
-local hasRep = self:GetAttribute('hasRep')
+local hasExp = env.hasExp
+local hasRep = env.hasRep
 
 if hasExp then
     local height = hasRep and 10 or 13
     y = y + height
-    self:GetFrameRef('MainMenuExpBar'):SetHeight(height)
+    MainMenuExpBar:SetHeight(height)
 end
 
 if hasRep then
     local height = hasExp and 10 or 13
     y = y + height
-    self:GetFrameRef('ReputationWatchBarDelegate'):SetHeight(height)
+    ReputationWatchBarDelegate:SetHeight(height)
 end
 
-self:GetFrameRef('MainMenuBarArtFrame'):SetPoint('BOTTOM', '$parent', 'BOTTOM', 0, y)
+MainMenuBarArtFrame:SetPoint('BOTTOM', '$parent', 'BOTTOM', 0, y)
 ]])
 
-Controller:SetAttribute('_layoutPetBar', [[
-local hasExp = self:GetAttribute('hasExp')
-local hasRep = self:GetAttribute('hasRep')
+Controller:SetAttribute('LayoutPetBar', [[
+local hasExp = env.hasExp
+local hasRep = env.hasRep
 
 local y = 9
 if hasRep and hasExp then
@@ -263,51 +264,59 @@ else
     y = y - 4
 end
 
-local PetActionButton1 = self:GetFrameRef('PetActionButton1')
 PetActionButton1:ClearAllPoints()
 PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
 ]])
 
-Controller:SetAttribute('_layoutStanceBar', [[
-local StanceButton1 = self:GetFrameRef('StanceButton1')
+Controller:SetAttribute('LayoutStanceBar', [[
 StanceButton1:ClearAllPoints()
-StanceButton1:SetPoint('BOTTOMLEFT', self:GetFrameRef('ActionButton1'), 'TOPLEFT',
-    33, self:GetAttribute('hasBottomLeft') and 54 or 11)
+StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, env.hasBottomLeft and 54 or 11)
 ]])
 
-Controller:SetAttribute('_updateHeight', [[
-local hasExp = self:GetAttribute('hasExp')
-local hasRep = self:GetAttribute('hasRep')
+Controller:SetAttribute('UpdateHeight', [[
+local hasExp = env.hasExp
+local hasRep = env.hasRep
 local height = 47
 if hasExp and hasRep then
     height = height + 20
 elseif hasExp or hasRep then
     height = height + 13
 end
-self:GetFrameRef('MainMenuBar'):SetHeight(height)
+MainMenuBar:SetHeight(height)
 ]])
 
-Controller:SetAttribute('_onattributechanged', [[
-if name == 'hasbottomright' then
-    self:RunAttribute('_layoutMainMenuBar')
-elseif name == 'hasexp' or name == 'hasrep' then
-    self:RunAttribute('_layoutWatchBars')
-    self:RunAttribute('_layoutPetBar')
-    self:RunAttribute('_updateHeight')
-elseif name == 'hasbottomleft' then
-    self:RunAttribute('_layoutStanceBar')
-    self:RunAttribute('_layoutPetBar')
-elseif name == 'haspetbar' then
-    self:RunAttribute('_layoutPetBar')
+Controller:SetAttribute('OnEnvValueChanged', [[
+local key = ...
+if key == 'hasBottomRight' then
+    self:RunAttribute('LayoutMainMenuBar')
+elseif key == 'hasExp' or key == 'hasRep' then
+    self:RunAttribute('LayoutWatchBars')
+    self:RunAttribute('LayoutPetBar')
+    self:RunAttribute('UpdateHeight')
+elseif key == 'hasBottomLeft' then
+    self:RunAttribute('LayoutStanceBar')
+    self:RunAttribute('LayoutPetBar')
+elseif key == 'hasPetBar' then
+    self:RunAttribute('LayoutPetBar')
+end
+]])
+
+Controller:SetAttribute('UpdateEnvValue', [[
+local key, value = ...
+if env[key] ~= value then
+    env[key] = value
+    self:RunAttribute('OnEnvValueChanged', key)
 end
 ]])
 
 local function SetupShowHide(frame, key)
     local handle = CreateFrame('Frame', nil, frame, 'SecureHandlerShowHideTemplate')
-    handle:SetAttribute('_onshow', format([[self:GetFrameRef('controller'):SetAttribute('%s', true)]], key))
-    handle:SetAttribute('_onhide', format([[self:GetFrameRef('controller'):SetAttribute('%s', false)]], key))
+    handle:SetAttribute('_onshow', format([[controller:RunAttribute('UpdateEnvValue', '%s', true)]], key))
+    handle:SetAttribute('_onhide', format([[controller:RunAttribute('UpdateEnvValue', '%s', false)]], key))
     handle:SetFrameRef('controller', Controller)
-    ns.runattribute(handle, handle:IsVisible() and '_onshow' or '_onhide')
+    handle:Execute([[
+controller = self:GetFrameRef('controller')
+self:RunAttribute(self:IsVisible() and '_onshow' or '_onhide')]])
     return handle
 end
 
@@ -316,4 +325,3 @@ SetupShowHide(MainMenuExpBar, 'hasExp')
 SetupShowHide(ReputationWatchBar, 'hasRep')
 SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
 SetupShowHide(PetActionBarFrame, 'hasPetBar')
-

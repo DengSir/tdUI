@@ -21,6 +21,7 @@
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
     <Script file="Features\TradeBlock.lua" />
+    <Script file="Features\ItemRackBar.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
