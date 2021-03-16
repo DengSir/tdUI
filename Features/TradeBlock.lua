@@ -34,6 +34,10 @@ local function IsMyFriend()
 end
 
 ns.event('TRADE_SHOW', function()
+    if GetCVarBool('blockTrades') then
+        print('Blocked')
+        return
+    end
     local unit = 'npc'
 
     if UnitInRaid(unit) or UnitInParty(unit) or UnitIsInMyGuild(unit) or UnitIsUnit(unit, 'target') then

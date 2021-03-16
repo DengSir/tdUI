@@ -135,14 +135,26 @@ ns.addon('M6', function()
             end
         end)
 
-        M6.PainterEvents.RawActionBookUpdates = function(event, button, _, _, state, _, _, _, _, _, _, spellId)
+        M6.PainterEvents.RawActionBookUpdates = function(event, ...)
             if event == 'M6_BUTTON_UPDATE' then
+                local button, _, _, state, _, _, _, _, _, tf, id = ...
+
                 Hook(button)
+
+                local spellId, itemId
+
+                if tf == GameTooltip.SetItemByID then
+                    itemId = id
+                elseif tf == GameTooltip.SetSpellByID then
+                    spellId = id
+                else
+
+                end
 
                 if state then
                     tullaRange:SetButtonState(button, GetState(state))
 
-                    if button._CheckedTexture then
+                    if button._CheckedTexture and spellId then
                         button._CheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
                     end
 
