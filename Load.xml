@@ -22,6 +22,7 @@
     <Script file="Features\Channel.lua" />
     <Script file="Features\TradeBlock.lua" />
     <Script file="Features\ItemRackBar.lua" />
+    <Script file="Features\Flyable.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
@@ -55,7 +56,7 @@
 
     <Script file="Tooltip\TinyTooltip.lua" />
     <Script file="Tooltip\Item.lua" />
-    <Script file="Tooltip\Bonus.lua" />
+    <Script file="Tooltip\Bonus.lua" build="classic" />
     <Script file="Tooltip\SpellRank.lua" />
 
     <Script file="Friend\Friends.lua" />

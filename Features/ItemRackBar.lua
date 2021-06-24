@@ -230,8 +230,8 @@ function ItemRackBar:CreateButton(i)
 
     local macroButtonName = 'tdItemRackBarButton' .. i
 
-    button:SetAttribute('type1', 'macro')
-    button:SetAttribute('macrotext1', '/click [combat]' .. macroButtonName)
+    button:SetAttribute('type', 'macro')
+    button:SetAttribute('macrotext', '/click [combat]' .. macroButtonName)
 
     local macro = CreateFrame('Button', macroButtonName, UIParent, 'SecureActionButtonTemplate')
     macro:SetAttribute('type', 'macro')
@@ -248,7 +248,7 @@ function ItemRackBar:CreateButton(i)
     return button
 end
 
-ns.addon('ItemRack', ns.nocombated(function()
+ns.addonlogin('ItemRack', ns.nocombated(function()
     ItemRackBar:OnLoad()
 end))
 

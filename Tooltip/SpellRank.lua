@@ -10,8 +10,8 @@ local GetSpellSubtext = GetSpellSubtext
 
 local r, g, b = GRAY_FONT_COLOR:GetRGB()
 
-ns.securehook(GameTooltip, 'SetSpellByID', function(tip, spellId)
-    local subtext = GetSpellSubtext(spellId)
+local function OnSet(tip, ...)
+    local subtext = GetSpellSubtext(...)
     if subtext then
         local textRight = tip:GetFontStringRight(1)
         textRight:SetText(subtext)
@@ -19,4 +19,7 @@ ns.securehook(GameTooltip, 'SetSpellByID', function(tip, spellId)
         textRight:Show()
         tip:Show()
     end
-end)
+end
+
+ns.securehook(GameTooltip, 'SetSpellByID', OnSet)
+ns.securehook(GameTooltip, 'SetSpellBookItem', OnSet)

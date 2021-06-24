@@ -1,7 +1,7 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Frame name="tdUICollectFrameTemplate" hidden="true" enableMouse="true" virtual="true">
-        <Backdrop bgFile="Interface\BUTTONS\WHITE8x8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+        <Backdrop bgFile="Interface\BUTTONS\WHITE8x8" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" build="classic">
             <EdgeSize val="16" />
             <TileSize val="16" />
             <BackgroundInsets left="4" right="4" top="4" bottom="4" />
@@ -111,7 +111,23 @@
             </Frame>
         </Frames>
         <Scripts>
-            <OnLoad>
+            <OnLoad build="classic">
+                self:SetBackdropBorderColor(1, 0.82, 0)
+                self:SetBackdropColor(0.1, 0.082, 0, 0.8)
+            </OnLoad>
+            <OnLoad build="bcc">
+                Mixin(self, BackdropTemplateMixin)
+                self:OnBackdropLoaded()
+                self:SetScript('OnSizeChanged', self.OnBackdropSizeChanged)
+                self:SetBackdrop{
+                    bgFile = "Interface\\BUTTONS\\WHITE8x8",
+                    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                    tile = true,
+                    tileEdge = true,
+                    tileSize = 16,
+                    edgeSize = 16,
+                    insets = { left = 4, right = 4, top = 4, bottom = 4 },
+                }
                 self:SetBackdropBorderColor(1, 0.82, 0)
                 self:SetBackdropColor(0.1, 0.082, 0, 0.8)
             </OnLoad>
@@ -182,7 +198,7 @@
             </Layer>
         </Layers>
     </Frame>
-    <Button name="tdUIBonusItemTemplate" virtual="true">
+    <Button name="tdUIBonusItemTemplate" virtual="true" build="classic">
         <Size x="30" y="30" />
         <Layers>
             <Layer level="BACKGROUND">
@@ -236,12 +252,12 @@
             <OnLeave function="GameTooltip_Hide"/>
         </Scripts>
     </Button>
-    <Frame name="tdUIBonusFrame" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent">
+    <Frame name="tdUIBonusFrame" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent" build="classic">
         <Size x="1" y="56"/>
         <Anchors>
             <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="200" />
         </Anchors>
-        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" build="classic">
             <EdgeSize val="16" />
             <TileSize val="16" />
             <BackgroundInsets left="4" right="4" top="4" bottom="4" />
@@ -304,7 +320,15 @@
             </Layer>
         </Layers>
         <Scripts>
-            <OnLoad>
+            <OnLoad build="classic">
+                self:SetBackdropColor(0.09, 0.09, 0.19)
+                self:SetUserPlaced(true)
+                self:RegisterForDrag('LeftButton')
+            </OnLoad>
+            <OnLoad build="bcc">
+                Mixin(self, BackdropTemplateMixin)
+                self:OnBackdropLoaded()
+                self:SetScript('OnSizeChanged', self.OnBackdropSizeChanged)
                 self:SetBackdropColor(0.09, 0.09, 0.19)
                 self:SetUserPlaced(true)
                 self:RegisterForDrag('LeftButton')
@@ -320,4 +344,41 @@
             </OnDragStop>
         </Scripts>
     </Frame>
+
+    <Button name="tdUIWorldMapFeatureTogglesButton" parent="WorldMapFrame">
+        <Size x="31" y="31"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture file="Interface\Minimap\UI-Minimap-Background">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="7" y="-5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture file="Interface\Minimap\Tracking\None">
+                    <Size x="17" y="17"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="7" y="-6"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture file="Interface\Minimap\MiniMap-TrackingBorder">
+                    <Size x="53" y="53"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD" />
+        <Scripts>
+            <OnShow>
+                self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1000)
+                self:SetPoint('TOPRIGHT', WorldMapFrame.ScrollContainer, 'TOPRIGHT', -10, WorldMapFrame.BorderFrame:IsShown() and -10 or - 30)
+            </OnShow>
+        </Scripts>
+    </Button>
 </Ui>

@@ -1,0 +1,27 @@
+{
+    "name": "tdui",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "bcc": "wct watch bcc --output \"D:\\Games\\World of Warcraft\\_classic_\\Interface\\Addons\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DengSir/tdUI.git"
+    },
+    "author": "Dencer",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/DengSir/tdUI/issues"
+    },
+    "homepage": "https://github.com/DengSir/tdUI#readme",
+    "wow": {
+        "name": "tdUI",
+        "curse_id": 0,
+        "builds": {
+            "classic": "11307",
+            "bcc": "20501"
+        }
+    }
+}

@@ -45,11 +45,59 @@ ns.addon('AtlasLootClassic', function()
     Window.titleFrame.text:SetTextColor(1, 1, 1, 1)
     Window.titleFrame.text.SetTextColor = nop
 
-    Window.moduleSelect:SetParPoint('TOPLEFT', Window, 'TOPLEFT', 64, -40)
-    Window.moduleSelect:SetWidth(245)
-    Window.moduleSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
-    Window.subCatSelect:SetWidth(245)
-    Window.subCatSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
+    local function SkinDropdown(dropdown)
+        local frame = dropdown.frame
+        frame:SetBackdrop(nil)
+
+        local Left = frame:CreateTexture(nil, 'ARTWORK')
+        Left:SetTexture([[Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame]])
+        Left:SetTexCoord(0, 0.1953125, 0, 1)
+        Left:SetSize(25, 64)
+        Left:SetPoint('TOPLEFT', -17, 19)
+
+        local Right = frame:CreateTexture(nil, 'ARTWORK')
+        Right:SetTexture([[Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame]])
+        Right:SetTexCoord(0.8046875, 1, 0, 1)
+        Right:SetSize(25, 64)
+        Right:SetPoint('TOPRIGHT', 17, 19)
+
+        local Middle = frame:CreateTexture(nil, 'ARTWORK')
+        Middle:SetTexture([[Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame]])
+        Middle:SetTexCoord(0.1953125, 0.8046875, 0, 1)
+        Middle:SetSize(25, 64)
+        Middle:SetPoint('TOPLEFT', Left, 'TOPRIGHT')
+        Middle:SetPoint('BOTTOMRIGHT', Right, 'BOTTOMLEFT')
+
+        frame.button:SetSize(24, 24)
+        frame.button:ClearAllPoints()
+        frame.button:SetPoint('RIGHT', 0, 0)
+    end
+
+    if Window.gameVersionButton then
+        Window.gameVersionButton:SetPoint('TOPLEFT', Window, 'TOPLEFT', 57, -32)
+
+        Window.moduleSelect:SetWidth(220)
+        Window.moduleSelect:SetParPoint('LEFT', Window.gameVersionButton, 'RIGHT', 5, -4)
+
+        Window.subCatSelect:SetWidth(220)
+        Window.subCatSelect:SetParPoint('LEFT', Window.moduleSelect.frame, 'RIGHT', 5, 0)
+
+        SkinDropdown(Window.moduleSelect)
+        SkinDropdown(Window.subCatSelect)
+
+        if Window.gameVersionButton.Box then
+            for k, v in pairs(Window.gameVersionButton.Box) do
+                print(v)
+                v:Hide()
+            end
+        end
+    else
+        Window.moduleSelect:SetParPoint('TOPLEFT', Window, 'TOPLEFT', 64, -40)
+        Window.moduleSelect:SetWidth(245)
+        Window.moduleSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
+        Window.subCatSelect:SetWidth(245)
+        Window.subCatSelect.frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
+    end
 
     local function setupInset(frame, left, right, top, bottom)
         local inset = CreateFrame('Frame', nil, Window, 'InsetFrameTemplate')

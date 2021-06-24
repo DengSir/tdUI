@@ -219,7 +219,7 @@ ns.addonlogin('Recount', function()
         local WIDTH, HEIGHT
         local function UpdateWindowSize()
             local offs = Recount.db.profile.MainWindow.HideTotalBar and 0 or 1
-            local lines = min(C.Recount.maxLines, #Window.DispTableSorted + (offs))
+            local lines = max(min(C.Recount.maxLines, #Window.DispTableSorted + (offs)), 1)
 
             local width = C.frame.width - 15
             local height = (C.bar.height + C.bar.spacing) * lines + 33

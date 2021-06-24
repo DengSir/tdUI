@@ -24,7 +24,9 @@ MinimapBorderTop:SetPoint('CENTER', MinimapZoneTextButton, 'CENTER', 0, 10)
 
 MinimapCompassTexture:SetScale(0.7)
 
+-- @classic@
 MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
+-- @end-classic@
 
 MinimapZoneTextButton:SetSize(155, 20)
 MinimapZoneTextButton:SetPoint('CENTER', Minimap, 'TOP', 0, 20)

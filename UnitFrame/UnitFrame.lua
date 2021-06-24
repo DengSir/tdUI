@@ -85,6 +85,15 @@ for i, frame in ipairs({TargetFrame, FocusFrame}) do
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
+    ns.securehook(frame.healthbar, 'SetMinMaxValues', function(bar)
+        if bar.showPercentage then
+            local maxValue = UnitHealthMax(frame.unit)
+            if maxValue ~= 100 then
+                bar.showPercentage = nil
+            end
+        end
+    end)
+
     MoveUp(frame.name, 16)
     MoveUp(frame.deadText, 8)
     MoveUp(frame.healthbar.TextString, 8)
@@ -177,6 +186,16 @@ end)
 
 ns.securehook('TargetFrame_UpdateLevelTextAnchor', function(self)
     self.levelText:SetPoint('CENTER', 63, -16)
+end)
+
+ns.securehook('TargetofTarget_Update', function(self)
+    if UnitExists(self.unit) then
+        if UnitIsPlayer(self.unit) then
+            self.name:SetTextColor(UnitClassColor(self.unit))
+        else
+            self.name:SetTextColor(1, 0.81, 0)
+        end
+    end
 end)
 
 PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Player-Status]])

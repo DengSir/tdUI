@@ -5,5 +5,5 @@
 
 -- CastingBarFrame:SetAttribute('ignoreFramePositionManager', true)
 
-UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
-UIPARENT_MANAGED_FRAME_POSITIONS.ArcheologyDigsiteProgressBar.castingBar = nil
+-- UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
+-- UIPARENT_MANAGED_FRAME_POSITIONS.ArcheologyDigsiteProgressBar.castingBar = nil

@@ -5,6 +5,9 @@
 ---@type ns
 local ns = select(2, ...)
 
+ns.IS_CLASSIC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+ns.IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+
 local _G = _G
 local ipairs = ipairs
 local unpack = table.unpack or unpack
@@ -99,7 +102,6 @@ function ns.SetTextColor(label, r, g, b)
 end
 
 local function OnFinished(fade)
-    print(fade)
     fade:Stop()
 
     if not fade.fadeIn then
