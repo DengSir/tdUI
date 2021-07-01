@@ -75,7 +75,20 @@ local function InitFrameFonts(frame)
     InitAlpha(mb.RightText)
 end
 
-for i, frame in ipairs({TargetFrame, FocusFrame}) do
+local function CheckHealthBar(bar)
+    if bar.showPercentage then
+        local maxValue = UnitHealthMax(bar.unit)
+        if maxValue ~= 100 then
+            bar.showPercentage = nil
+        end
+    end
+end
+
+local function FrameOnHide(frame)
+    frame.threatIndicator:Hide()
+end
+
+for _, frame in ipairs({TargetFrame, FocusFrame}) do
     frame.nameBackground:Hide()
     frame.nameBackground.Show = nop
 
@@ -85,20 +98,21 @@ for i, frame in ipairs({TargetFrame, FocusFrame}) do
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
-    ns.securehook(frame.healthbar, 'SetMinMaxValues', function(bar)
-        if bar.showPercentage then
-            local maxValue = UnitHealthMax(frame.unit)
-            if maxValue ~= 100 then
-                bar.showPercentage = nil
-            end
-        end
-    end)
+    frame.threatIndicator = frame:CreateTexture(nil, 'BACKGROUND')
+    frame.threatIndicator:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Flash]])
+    frame.threatIndicator:SetSize(256, 128)
+    frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
+    frame.threatIndicator:Hide()
+    frame.threatIndicator:SetAlpha(0.8)
 
     MoveUp(frame.name, 16)
     MoveUp(frame.deadText, 8)
     MoveUp(frame.healthbar.TextString, 8)
     MoveUp(frame.healthbar.LeftText, 8)
     MoveUp(frame.healthbar.RightText, 8)
+
+    ns.securehook(frame.healthbar, 'SetMinMaxValues', CheckHealthBar)
+    ns.hookscript(frame, 'OnHide', FrameOnHide)
 
     InitFrameFonts(frame)
 end
@@ -188,7 +202,7 @@ ns.securehook('TargetFrame_UpdateLevelTextAnchor', function(self)
     self.levelText:SetPoint('CENTER', 63, -16)
 end)
 
-ns.securehook('TargetofTarget_Update', function(self)
+ns.securehook('TargetofTarget_CheckDead', function(self)
     if UnitExists(self.unit) then
         if UnitIsPlayer(self.unit) then
             self.name:SetTextColor(UnitClassColor(self.unit))
@@ -198,33 +212,38 @@ ns.securehook('TargetofTarget_Update', function(self)
     end
 end)
 
+local function GetThreatStatusColor(status)
+    if status == 0 then
+        return 0.69, 0.69, 0.69
+    elseif status == 1 then
+        return 1, 1, 0.47
+    elseif status == 2 then
+        return 1, 0.6, 0
+    elseif status == 3 then
+        return 1, 0, 0
+    end
+end
+
+ns.securehook('TargetFrame_OnUpdate', function(self, elapsed)
+    self.elapsed = (self.elapsed or 0) + elapsed;
+    if (self.elapsed > 0.5) then
+        self.elapsed = 0;
+        local unit = self.unit
+        local status = UnitThreatSituation('player', unit)
+
+        if status and status > 0 then
+            self.threatIndicator:SetVertexColor(GetThreatStatusColor(status))
+            self.threatIndicator:Show()
+        else
+            self.threatIndicator:Hide()
+        end
+    end
+end)
+
 PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Player-Status]])
 PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
 TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
 
--- local PLAYER_UNITS = {player = true, vehicle = true, pet = true};
-
--- local function ShouldAuraBeLarge(caster)
---     if not caster then
---         return false;
---     end
-
---     for token, value in pairs(PLAYER_UNITS) do
---         if UnitIsUnit(caster, token) or UnitIsOwnerOrControllerOfUnit(token, caster) then
---             return value;
---         end
---     end
--- end
-
--- ns.hook('TargetFrame_UpdateAuraPositions', function(orig, self, auraName, numAuras, arg3, list, updateAnchor, ...)
---     if updateAnchor == TargetFrame_UpdateBuffAnchor then
---         for i = 1, numAuras do
---             list[i] = ShouldAuraBeLarge(select(7, UnitBuff(self.unit, i, nil)))
---         end
---     else
---         for i = 1, numAuras do
---             list[i] = ShouldAuraBeLarge(select(7, UnitDebuff(self.unit, i, 'INCLUDE_NAME_PLATE_ONLY')))
---         end
---     end
---     return orig(self, auraName, numAuras, arg3, list, updateAnchor, ...)
--- end)
+-- @bcc@
+TargetFrame:SetAttribute('type1', 'focus')
+-- @end-bcc@

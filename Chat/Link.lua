@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/14/2020, 11:36:55 PM
-
 local select = select
 local format = string.format
 
@@ -10,6 +9,12 @@ local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 
 local LINK_PATTERN = '(|H([^:|]+):([^|]-)|h(.-)|h)'
+
+local function Colorful(color)
+    return function(text)
+        return '|cff' .. color .. text .. '|r'
+    end
+end
 
 local FIXES = {
     item = function(text, type, link)
@@ -20,10 +25,16 @@ local FIXES = {
         end
     end,
 
-    enchant = function(text)
-        return '|cffffffff' .. text .. '|r'
-    end,
+    talent = Colorful('4e96f7'),
+    spell = Colorful('71d5ff'),
 }
+
+-- @classic@
+FIXES.enchant = Colorful('ffffff')
+-- @end-classic@
+-- @bcc@
+FIXES.enchant = Colorful('ffd000')
+-- @end-bcc@
 
 local function FixLinkColor(frame, event, msg, ...)
     msg = msg:gsub(LINK_PATTERN, function(text, type, link, ...)

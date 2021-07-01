@@ -234,7 +234,7 @@ ns.addonlogin('MonkeyQuest', function()
             m_bWorkComplete = false,
             m_iAlpha = 0,
             m_iFont = 2,
-            m_iFontHeight = 15,
+            m_iFontHeight = 14,
             m_iFrameAlpha = 1,
             m_iHighlightAlpha = 1,
             m_iQuestPadding = 2,
@@ -278,10 +278,10 @@ ns.addonlogin('MonkeyQuest', function()
     end
 
     local function Init()
-        if not C._tdui then
+        -- if not C._tdui then
             C._tdui = true
             Reset()
-        end
+        -- end
     end
 
     ns.securehook('MonkeyQuest_Resize', function()
