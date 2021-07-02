@@ -30,7 +30,7 @@ ns.addon('MeetingHorn', function()
         keybinding = 'MEETINGHORN_TOGGLE',
         icon = [[Interface\LFGFrame\BattleNetworking0]],
         -- template = 'LFG',
-        frame = MeetingHornMainPanel,
+        frame = Addon.MainPanel,
         after = 'WorldMapMicroButton',
         onClick = function()
             return Addon:Toggle()

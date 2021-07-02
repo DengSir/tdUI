@@ -45,6 +45,9 @@ ns.addon('AtlasLootClassic', function()
     Window.titleFrame.text:SetTextColor(1, 1, 1, 1)
     Window.titleFrame.text.SetTextColor = nop
 
+    Window.contentFrame.map.overlay:Hide()
+    Window.contentFrame.map.overlay.Show = nop
+
     local function SkinDropdown(dropdown)
         local frame = dropdown.frame
         frame:SetBackdrop(nil)
@@ -87,7 +90,6 @@ ns.addon('AtlasLootClassic', function()
 
         if Window.gameVersionButton.Box then
             for k, v in pairs(Window.gameVersionButton.Box) do
-                print(v)
                 v:Hide()
             end
         end
