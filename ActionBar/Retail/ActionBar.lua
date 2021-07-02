@@ -208,6 +208,8 @@ do
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
     }
 
+    Controller.frames = {}
+
     for k, v in pairs(Frames) do
         local name
         if type(k) == 'number' then
@@ -217,6 +219,7 @@ do
         end
 
         assert(name)
+        Controller.frames[name] = v
         Controller:SetFrameRef(name, v)
         Controller:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
     end
@@ -245,11 +248,19 @@ end
 if hasRep then
     local height = hasExp and 10 or 13
     y = y + height
-    ReputationWatchBarDelegate:SetHeight(height)
+    self:CallMethod('SetFrameHeight', 'ReputationWatchBarDelegate', height)
 end
 
 MainMenuBarArtFrame:SetPoint('BOTTOM', '$parent', 'BOTTOM', 0, y)
 ]])
+
+function Controller:GetFrame(name)
+    return self.frames[name] or _G[name]
+end
+
+function Controller:SetFrameHeight(frameName, height)
+    self:GetFrame(frameName):SetHeight(height)
+end
 
 Controller:SetAttribute('LayoutPetBar', [[
 local hasExp = env.hasExp
