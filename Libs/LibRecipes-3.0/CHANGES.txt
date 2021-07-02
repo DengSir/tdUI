@@ -1,0 +1,10 @@
+tag f956de9e6eff4d68af0b00d06c0b9d0c952c91fd r18-release
+Author:	warmexx <warmexx@wow-neighbours.com>
+Date:	Sun May 23 14:52:05 2021 +0200
+
+commit 4cc80cf4e027f0557f5210563af53e9336c46575
+Author: warmexx <warmexx@wow-neighbours.com>
+Date:   Sun May 23 13:43:09 2021 +0200
+
+    Adds support for all WoW versions
+

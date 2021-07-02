@@ -1,12 +1,12 @@
-## Interface: 11302
+## Interface: 11307
 ## Title: Lib: Recipes
 ## Notes: Library providing mappings between trade skill recipes, spells and created items
 ## Author: Warmexx [Neighbours]
-## Version: r2-release
+## Version: r18-release
 ## LoadOnDemand: 1
-## X-Date: 2019-11-10T10:17:29Z
+## X-Date: 2021-05-23T11:43:09Z
 ## X-Donate: PayPal:warmexx AT wow-neighbours DOT com
-## X-Website: https://www.wowace.com/projects/librecipes-1-0-classic
+## X-Website: https://www.wowace.com/projects/librecipes-3-0
 ## X-Category: Library
 ## X-License: LGPL v2.1
 

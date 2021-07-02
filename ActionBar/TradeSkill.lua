@@ -6,7 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
-local LibRecipes = LibStub('LibRecipes-1.0')
+local LibRecipes = LibStub('LibRecipes-3.0')
 
 local GetActionInfo = GetActionInfo
 local GetItemIcon = GetItemIcon

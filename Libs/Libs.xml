@@ -12,7 +12,7 @@
 
     <Include file="LibClass-2.0\LibClass-2.0.xml"/>
 
-    <Script file="LibRecipes-1.0\LibRecipes-1.0.lua" />
+    <Script file="LibRecipes-3.0\LibRecipes-3.0.lua" />
     <Script file="LibRangeCheck-2.0\LibRangeCheck-2.0.lua" />
     <Script file="LibSharedMedia-3.0\LibSharedMedia-3.0.lua" />
     <Script file="LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua" />
