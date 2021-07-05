@@ -6,6 +6,6 @@
 ---@type ns
 local ns = select(2, ...)
 
-ns.hookscript(TaxiFrame, 'OnShow', function()
+ns.event('TAXIMAP_OPENED', function()
     Dismount()
 end)
