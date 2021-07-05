@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/27/2020, 11:48:52 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -65,6 +65,11 @@ ns.addonlogin('Recount', function()
         Recount.db.profile.Font = nil
         Recount.db.profile.MainWindow.ShowScrollbar = false
         Recount:HideScrollbarElements('Recount_MainWindow_ScrollBar')
+
+        Recount_MainWindow_ScrollBar:ClearAllPoints()
+        Recount_MainWindow_ScrollBar:SetAllPoints(Window.Center)
+        Recount_MainWindow_ScrollBar.SetPoint = nop
+        -- ns.hide(Recount_MainWindow_ScrollBar)
     end
 
     do -- remove options
@@ -74,7 +79,7 @@ ns.addonlogin('Recount', function()
         Recount_ConfigWindow_RowSpacing_Slider:Hide()
 
         local function HideColor(frame, branch, name)
-            for _, frame in ipairs{frame:GetChildren()} do
+            for _, frame in ipairs {frame:GetChildren()} do
                 if frame.Rows then
                     for _, row in pairs(frame.Rows) do
                         if row.Branch == branch and row.Name == name then
@@ -87,7 +92,7 @@ ns.addonlogin('Recount', function()
         end
 
         local function HideChild(frame, key)
-            for _, frame in ipairs{frame:GetChildren()} do
+            for _, frame in ipairs {frame:GetChildren()} do
                 if frame[key] then
                     frame[key]:Hide()
                     break
@@ -102,6 +107,7 @@ ns.addonlogin('Recount', function()
 
         HideChild(Recount_ConfigWindow.ColorOpt, 'MainWindowTitle')
         HideChild(Recount_ConfigWindow.Appearance, 'BarTextColorSwap')
+        HideChild(Recount_ConfigWindow.Window, 'ShowSB')
     end
 
     do
@@ -219,7 +225,7 @@ ns.addonlogin('Recount', function()
         local WIDTH, HEIGHT
         local function UpdateWindowSize()
             local offs = Recount.db.profile.MainWindow.HideTotalBar and 0 or 1
-            local lines = max(min(C.Recount.maxLines, #Window.DispTableSorted + (offs)), 1)
+            local lines = min(C.Recount.maxLines, #Window.DispTableSorted + (offs))
 
             local width = C.frame.width - 15
             local height = (C.bar.height + C.bar.spacing) * lines + 33
@@ -299,7 +305,7 @@ ns.addonlogin('Recount', function()
 
         local function CreateModeDropDown()
             for k, v in pairs(Recount.MainWindowData) do
-                UIDropDownMenu_AddButton{
+                UIDropDownMenu_AddButton {
                     text = v[1],
                     checked = Recount.db.profile.MainWindowMode == k,
                     func = function()
@@ -323,7 +329,7 @@ ns.addonlogin('Recount', function()
         local function CreateFightDropDown()
             local current = Recount.db.profile.CurDataSet
 
-            UIDropDownMenu_AddButton{
+            UIDropDownMenu_AddButton {
                 text = L['Overall Data'],
                 checked = current == 'OverallData',
                 func = function()
@@ -331,7 +337,7 @@ ns.addonlogin('Recount', function()
                 end,
             }
 
-            UIDropDownMenu_AddButton{
+            UIDropDownMenu_AddButton {
                 text = L['Current Fight'],
                 checked = current == 'CurrentFightData' or current == 'LastFightData',
                 func = function()
@@ -340,7 +346,7 @@ ns.addonlogin('Recount', function()
             }
 
             for k, v in pairs(Recount.db2.FoughtWho) do
-                UIDropDownMenu_AddButton{
+                UIDropDownMenu_AddButton {
                     text = L['Fight'] .. ' ' .. k .. ' - ' .. v,
                     checked = current == 'Fight' .. k,
                     func = function()
