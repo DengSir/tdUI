@@ -139,6 +139,10 @@ ns.addon('M6', function()
             if event == 'M6_BUTTON_UPDATE' then
                 local button, _, _, state, _, _, _, _, _, tf, id = ...
 
+                if not button.icon then
+                    return
+                end
+
                 Hook(button)
 
                 local spellId, itemId
