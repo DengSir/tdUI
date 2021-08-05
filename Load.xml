@@ -67,7 +67,7 @@
     <Script file="Watch\Recount.lua" />
     <Script file="Watch\ThreatClassic2.lua" />
     <Script file="Watch\MonkeyQuest.lua" />
-    <Script file="Watch\BoomTime.lua" />
+    <!-- <Script file="Watch\BoomTime.lua" /> -->
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <Script file="UnitFrame\ToToTFrame.lua" />

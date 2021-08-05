@@ -124,7 +124,9 @@ ns.addon('M6', function()
             if button._CheckedTexture then
                 button._CheckedTexture:Hide()
             end
-            button:GetCheckedTexture():SetAlpha(1)
+            if button.GetCheckedTexture then
+                button:GetCheckedTexture():SetAlpha(1)
+            end
 
             hooked[button] = nil
         end

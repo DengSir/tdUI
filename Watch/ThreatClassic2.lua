@@ -99,15 +99,15 @@ ns.addonlogin('ThreatClassic2', function()
 
     do
         local function Show(bar)
-            return bar.backdrop:Show()
+            return (bar.edgeBackdrop or bar.backdrop):Show()
         end
 
         local function Hide(bar)
-            return bar.backdrop:Hide()
+            return (bar.edgeBackdrop or bar.backdrop):Hide()
         end
 
         local function SetupBar(bar)
-            local parent = bar.backdrop
+            local parent = bar.edgeBackdrop or bar.backdrop
             parent:ClearAllPoints()
             parent:SetParent(bar:GetParent())
             parent:SetBackdrop(nil)
@@ -138,7 +138,11 @@ ns.addonlogin('ThreatClassic2', function()
         local function SetupHeader(header)
             header:SetStatusBarTexture('')
 
-            header.backdrop:Hide()
+            local backdrop = header.edgeBackdrop or header.backdrop
+            if backdrop then
+                backdrop:Hide()
+            end
+
             header.text:SetFont(GameFontNormal:GetFont())
             header.text:SetTextColor(1, 0.82, 0)
 
@@ -186,26 +190,32 @@ ns.addonlogin('ThreatClassic2', function()
         fontString:SetTextColor(C.font.color.r, C.font.color.g, C.font.color.b, C.font.color.a)
     end
 
+    local function getBackdrop(bar)
+        return bar.edgeBackdrop or bar.backdrop
+    end
+
     local function UpdateBars()
         for i = 1, 40 do
             local bar = TC2.bars[i]
+            local backdrop = bar.edgeBackdrop or bar.backdrop
 
             if i == 1 then
-                bar.backdrop:SetPoint('TOP', 0, 0)
+                backdrop:SetPoint('TOP', 0, 0)
             else
-                bar.backdrop:SetPoint('TOP', TC2.bars[i - 1].backdrop, 'BOTTOM', 0, -C.bar.spacing)
+                backdrop:SetPoint('TOP', getBackdrop(TC2.bars[i - 1]), 'BOTTOM', 0, -C.bar.spacing)
             end
 
             bar:SetHeight(min(C.bar.height, C.bar.inlineHeight))
             bar:SetStatusBarTexture(LSM:Fetch('statusbar', C.bar.texture))
-            bar.backdrop:SetSize(C.frame.width + 2 - 21, C.bar.height)
             bar.icon:SetSize(C.bar.height, C.bar.height)
+
+            backdrop:SetSize(C.frame.width + 2 - 21, C.bar.height)
 
             UpdateFont(bar.name)
             UpdateFont(bar.perc)
             UpdateFont(bar.val)
 
-            bar.val:SetPoint('RIGHT', bar.backdrop, 'RIGHT', -C.font.size * 3.5, 0)
+            bar.val:SetPoint('RIGHT', backdrop, 'RIGHT', -C.font.size * 3.5, 0)
         end
 
         TC2:UpdateThreatBars()

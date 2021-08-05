@@ -28,6 +28,14 @@ local BLACK_LIST = { --
     -- ['TimeManagerClockButton'] = true,
 }
 
+local NONAME_BUTTONS = {
+    MTSL = function()
+        return MTSLUI_MINIMAP and MTSLUI_MINIMAP.ui_frame
+    end,
+}
+
+local UNKNOWN_BUTTONS = {}
+
 local Button = {}
 local EditButton = ns.class('Button')
 
@@ -172,7 +180,7 @@ end
 function Collect:Collect()
     local found
     for _, child in ipairs({Minimap:GetChildren()}) do
-        if not self.buttonEnv[child] and self:IsCollectable(child) then
+        if self:CheckButton(child) then
             self:GotButton(child)
             found = true
         end
@@ -184,11 +192,34 @@ function Collect:Collect()
     end
 end
 
+function Collect:CheckButton(button)
+    if self.buttonEnv[button] then
+        return
+    end
+    if UNKNOWN_BUTTONS[button] then
+        return
+    end
+
+    if self:IsCollectable(button) then
+        return true
+    end
+
+    UNKNOWN_BUTTONS[button] = true
+end
+
 function Collect:IsCollectable(button)
     if button == self.ToggleButton then
         return false
     end
     local name = button:GetName()
+    if not name then
+        for k, v in pairs(NONAME_BUTTONS) do
+            if v() == button then
+                button.__tdname = k
+                return true
+            end
+        end
+    end
     if not name or BLACK_LIST[name] then
         return false
     end
@@ -210,15 +241,19 @@ function Collect:IsCollectable(button)
     return true
 end
 
+function Collect:GetButtonKey(button)
+    return button.__tdname or button:GetName()
+end
+
 ---@param button Button
 function Collect:IsIgnored(button)
-    return ns.profile.minimap.buttons.ignores[button:GetName()]
+    return ns.profile.minimap.buttons.ignores[self:GetButtonKey(button)]
 end
 
 ---@param button Button
 ---@param flag boolean
 function Collect:SetIgnored(button, flag)
-    ns.profile.minimap.buttons.ignores[button:GetName()] = flag or nil
+    ns.profile.minimap.buttons.ignores[self:GetButtonKey(button)] = flag or nil
 end
 
 function Collect:InitButton(button)
@@ -339,7 +374,8 @@ function Collect:RestoreButton(button)
 end
 
 local function comp(a, b)
-    return a:GetName() < b:GetName()
+    -- return a:GetName() < b:GetName()
+    return Collect:GetButtonKey(a) < Collect:GetButtonKey(b)
 end
 
 function Collect:Update()
