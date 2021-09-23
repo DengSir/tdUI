@@ -279,8 +279,8 @@ ns.addonlogin('MonkeyQuest', function()
 
     local function Init()
         -- if not C._tdui then
-            C._tdui = true
-            Reset()
+        C._tdui = true
+        Reset()
         -- end
     end
 
@@ -320,5 +320,81 @@ ns.addonlogin('MonkeyQuest', function()
         Init()
         Apply()
         UpdateShown()
+    end)
+
+    ns.addon('Questie', function()
+        local QuestieDB = QuestieLoader:ImportModule('QuestieDB')
+        local QuestieReputation = QuestieLoader:ImportModule('QuestieReputation')
+
+        -- local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:14:14:2:0|t'
+        local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:10|t'
+
+        local function FormatReputationReward(value, factionName)
+            if value > 0 then
+                return format('|cff00ff80+%d %s|r', value, factionName)
+            else
+                return format('|cffff0000%d %s|r', value, factionName)
+            end
+        end
+
+        ns.securehook('MonkeyQuestButton_OnEnter', function(button)
+            local index = button.m_iQuestIndex
+            if not index then
+                return
+            end
+
+            local _, _, _, isHeader, _, _, _, questId = GetQuestLogTitle(index)
+            if isHeader or not questId then
+                return
+            end
+
+            local reputationReward = QuestieDB.QueryQuestSingle(questId, 'reputationReward')
+            if reputationReward and next(reputationReward) then
+                local rewardTable = {}
+                local factionId, factionName
+                local rewardValue
+                local aldorPenalty, scryersPenalty
+                local faction = select(2, UnitFactionGroup('player'))
+                local playerIsHuman = select(3, UnitRace('player')) == 1
+                local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, {935, 8999}))
+
+                for _, rewardPair in pairs(reputationReward) do
+                    factionId = rewardPair[1]
+
+                    if factionId == 935 and playerIsHonoredWithShaTar and (scryersPenalty or aldorPenalty) then
+                        break
+                    end
+
+                    factionName = select(1, GetFactionInfoByID(factionId))
+                    if factionName then
+                        rewardValue = rewardPair[2]
+
+                        if playerIsHuman and rewardValue > 0 then
+                            -- Humans get 10% more reputation
+                            rewardValue = math.floor(rewardValue * 1.1)
+                        end
+
+                        if factionId == 932 then -- Aldor
+                            scryersPenalty = -math.floor(rewardValue * 1.1)
+                        elseif factionId == 934 then -- Scryers
+                            aldorPenalty = -math.floor(rewardValue * 1.1)
+                        end
+
+                        rewardTable[#rewardTable + 1] = FormatReputationReward(rewardValue, factionName)
+                    end
+                end
+
+                if aldorPenalty then
+                    factionName = select(1, GetFactionInfoByID(932))
+                    rewardTable[#rewardTable + 1] = FormatReputationReward(aldorPenalty, factionName)
+                elseif scryersPenalty then
+                    factionName = select(1, GetFactionInfoByID(934))
+                    rewardTable[#rewardTable + 1] = FormatReputationReward(scryersPenalty, factionName)
+                end
+
+                GameTooltip:AddLine(table.concat(rewardTable, ' / '), 1, 1, 1)
+                GameTooltip:AddTexture([[Interface\AddOns\Questie\Icons\reputation]]);
+            end
+        end)
     end)
 end)
