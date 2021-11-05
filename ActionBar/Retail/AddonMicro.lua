@@ -14,7 +14,7 @@ ns.addon('AtlasLootClassic', function()
         keybinding = 'ATLASLOOT_TOGGLE',
         template = 'EJ',
         frame = _G['AtlasLoot_GUI-Frame'],
-        after = 'WorldMapMicroButton',
+        after = 'LFGMicroButton',
         onClick = function()
             return SlashCommands:Run('')
         end,
@@ -28,10 +28,10 @@ ns.addon('MeetingHorn', function()
     ns.CreateMicroButton {
         text = L.ADDON_NAME or 'MeetingHorn',
         keybinding = 'MEETINGHORN_TOGGLE',
-        icon = [[Interface\LFGFrame\BattleNetworking0]],
+        icon = [[Interface\AddOns\MeetingHorn\Media\Logo]],
         -- template = 'LFG',
         frame = Addon.MainPanel,
-        after = 'WorldMapMicroButton',
+        after = 'LFGMicroButton',
         onClick = function()
             return Addon:Toggle()
         end,

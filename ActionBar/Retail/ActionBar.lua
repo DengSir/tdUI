@@ -227,6 +227,27 @@ end
 
 Controller:Execute([[env = newtable()]])
 
+local function SetupButtons(key, formatter)
+    Controller:Execute(format([[env['%s'] = newtable()]], key))
+
+    local i = 1
+    while true do
+        local name = format(formatter, i)
+        local obj = _G[name]
+        if obj then
+            Controller:SetFrameRef('tempRef', obj)
+            Controller:Execute(format([[env['%s'][%d] = self:GetFrameRef('tempRef')]], key, i))
+        else
+            break
+        end
+
+        i = i + 1
+    end
+end
+
+SetupButtons('stances', 'StanceButton%d')
+SetupButtons('petButtons', 'PetActionButton%d')
+
 Controller:SetAttribute('LayoutMainMenuBar', format([[
 local width = env.hasBottomRight and %d or %d
 
@@ -262,21 +283,49 @@ function Controller:SetFrameHeight(frameName, height)
     self:GetFrame(frameName):SetHeight(height)
 end
 
-Controller:SetAttribute('LayoutPetBar', [[
-local hasExp = env.hasExp
-local hasRep = env.hasRep
-
-local y = 9
-if hasRep and hasExp then
-    y = y + 2
-elseif hasRep or hasExp then
-    y = y + 4
-else
-    y = y - 4
+Controller:SetAttribute('CalcWidth', [[
+local key, size, spacing = ...
+local width = 0
+for i, button in ipairs(env[key]) do
+    if button:IsShown() then
+        width = width + size + spacing
+    end
 end
 
-PetActionButton1:ClearAllPoints()
-PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
+if width > 0 then
+    width = width - spacing
+end
+return width
+]])
+
+Controller:SetAttribute('LayoutPetBar', [[
+if env.hasStanceBar and (env.hasBottomLeft or not env.hasBottomRight) then
+    local totalWidth = 498 ----- (36 + 6) * 12 - 6
+    if env.hasBottomRight then
+        totalWidth = totalWidth + 291 ----- 45 + (36 + 6) * 6 - 6
+    end
+
+    local stanceWidth = self:RunAttribute('CalcWidth', 'stances', 30, 7)
+    local petWidth = self:RunAttribute('CalcWidth', 'petButtons', 30, 8)
+
+    PetActionButton1:ClearAllPoints()
+    PetActionButton1:SetPoint('LEFT', StanceButton1, 'LEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), 0)
+else
+    local hasExp = env.hasExp
+    local hasRep = env.hasRep
+
+    local y = 9
+    if hasRep and hasExp then
+        y = y + 2
+    elseif hasRep or hasExp then
+        y = y + 4
+    else
+        y = y - 4
+    end
+
+    PetActionButton1:ClearAllPoints()
+    PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
+end
 ]])
 
 Controller:SetAttribute('LayoutStanceBar', [[
@@ -300,6 +349,7 @@ Controller:SetAttribute('OnEnvValueChanged', [[
 local key = ...
 if key == 'hasBottomRight' then
     self:RunAttribute('LayoutMainMenuBar')
+    self:RunAttribute('LayoutPetBar')
 elseif key == 'hasExp' or key == 'hasRep' then
     self:RunAttribute('LayoutWatchBars')
     self:RunAttribute('LayoutPetBar')
@@ -307,7 +357,7 @@ elseif key == 'hasExp' or key == 'hasRep' then
 elseif key == 'hasBottomLeft' then
     self:RunAttribute('LayoutStanceBar')
     self:RunAttribute('LayoutPetBar')
-elseif key == 'hasPetBar' then
+elseif key == 'hasPetBar' or key == 'hasStanceBar' then
     self:RunAttribute('LayoutPetBar')
 end
 ]])
@@ -336,3 +386,4 @@ SetupShowHide(MainMenuExpBar, 'hasExp')
 SetupShowHide(ReputationWatchBar, 'hasRep')
 SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
 SetupShowHide(PetActionBarFrame, 'hasPetBar')
+SetupShowHide(StanceBarFrame, 'hasStanceBar')

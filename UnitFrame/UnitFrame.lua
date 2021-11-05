@@ -226,8 +226,9 @@ end
 
 ns.securehook('TargetFrame_OnUpdate', function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed;
-    if (self.elapsed > 0.5) then
-        self.elapsed = 0;
+    if self.elapsed > 0.5 then
+        self.elapsed = 0
+
         local unit = self.unit
         local status = UnitThreatSituation('player', unit)
 
@@ -245,5 +246,5 @@ PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Ta
 TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
 
 -- @bcc@
-TargetFrame:SetAttribute('type1', 'focus')
+TargetFrame:SetAttribute('alt-type1', 'focus')
 -- @end-bcc@
