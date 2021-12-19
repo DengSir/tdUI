@@ -28,7 +28,7 @@ ns.addon('M6', function()
     end
 
     ns.hook(SlashCmdList, 'M6', function(orig, arg)
-        if arg == 'vers' then
+        if arg and arg:trim() ~= '' then
             return orig(arg)
         end
         Toggle()
@@ -139,7 +139,7 @@ ns.addon('M6', function()
 
         M6.PainterEvents.RawActionBookUpdates = function(event, ...)
             if event == 'M6_BUTTON_UPDATE' then
-                local button, _, _, state, _, _, _, _, _, tf, id = ...
+                local button, _, _, state, _, _, count, _, _, tf, id = ...
 
                 if not button.icon then
                     return
