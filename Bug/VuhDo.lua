@@ -25,6 +25,18 @@ ns.addon('VuhDo', function()
         return frame
     end)
 
+    local function hacker(orig, m, n, ...)
+        local f = orig(m, n, ...)
+        local b = VUHDO_getBarIconFrame(m, n)
+        if b then
+            b:SetMouseClickEnabled(false)
+        end
+        return f
+    end
+
+    ns.hook('VUHDO_getOrCreateHotIcon', hacker)
+    ns.hook('VUHDO_getOrCreateCuDeButton', hacker)
+
     local DropDownList1 = DropDownList1
 
     ns.securehook('ToggleDropDownMenu', function(level, _, dropdown)
@@ -32,7 +44,14 @@ ns.addon('VuhDo', function()
             DropDownList1:IsVisible() then
 
             DropDownList1:ClearAllPoints()
-            DropDownList1:SetPoint('TOPLEFT', dropdown.openedFor, 'BOTTOMLEFT')
+
+            print(dropdown.openedFor:GetBottom(), DropDownList1:GetHeight())
+
+            if dropdown.openedFor:GetBottom() - DropDownList1:GetHeight() < 0 then
+                DropDownList1:SetPoint('BOTTOMLEFT', dropdown.openedFor, 'TOPLEFT')
+            else
+                DropDownList1:SetPoint('TOPLEFT', dropdown.openedFor, 'BOTTOMLEFT')
+            end
         end
     end)
 end)

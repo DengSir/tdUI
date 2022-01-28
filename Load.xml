@@ -59,7 +59,7 @@
     <Script file="Map\NovaWorldBuffs.lua" />
 
     <Script file="Tooltip\TinyTooltip.lua" />
-    <Script file="Tooltip\Item.lua" />
+    <!-- <Script file="Tooltip\Item.lua" /> -->
     <Script file="Tooltip\Bonus.lua" build="classic" />
     <Script file="Tooltip\SpellRank.lua" />
 
@@ -81,4 +81,6 @@
 
     <Script file="Bug\ItemRack.lua" />
     <Script file="Bug\VuhDo.lua" />
+    <Script file="Bug\PVPTeam.lua" />
+    <Script file="Bug\Elephant.lua" />
 </Ui>

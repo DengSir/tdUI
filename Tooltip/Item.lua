@@ -17,6 +17,12 @@ local CURRENTLY_EQUIPPED = CURRENTLY_EQUIPPED
 
 local INVALID_EQUIP_LOC = {[''] = true, ['INVTYPE_BAG'] = true, ['INVTYPE_AMMO'] = true}
 
+local function parseItemId(item)
+    return tonumber(item:match('item:(%d+)'))
+end
+
+local OnItemReady
+
 ---@param tip GameTooltip
 local function OnTooltipItem(tip, item)
     if not item then
@@ -24,7 +30,12 @@ local function OnTooltipItem(tip, item)
     end
 
     local name, _, rarity, level, _, _, _, _, equipLoc, icon = GetItemInfo(item)
+    -- print(name, icon, rarity, item, level)
     if not name then
+        local itemId = parseItemId(item)
+        if itemId then
+            return ns.itemready(itemId, OnItemReady, tip, itemId)
+        end
         return
     end
 
@@ -46,8 +57,18 @@ local function OnTooltipItem(tip, item)
     tip:Show()
 end
 
-local function OnTooltipSetItem(tip, ...)
+function OnItemReady(tip, itemId)
+    -- print(tip, itemId)
     local _, item = tip:GetItem()
+    if parseItemId(item) ~= itemId then
+        -- print('OnItemReady')
+        OnTooltipItem(tip, item)
+    end
+end
+
+local function OnTooltipSetItem(tip)
+    local _, item = tip:GetItem()
+    -- print(item)
     if item then
         OnTooltipItem(tip, item)
     end
