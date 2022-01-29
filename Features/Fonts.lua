@@ -51,6 +51,6 @@ local function SetupTooltip(tip)
     end
 end
 
-for _, tip in ipairs({GameTooltip, ItemRefTooltip, WorldMapTooltip}) do
-    SetupTooltip(tip)
-end
+-- for _, tip in ipairs({GameTooltip, ItemRefTooltip, WorldMapTooltip}) do
+--     SetupTooltip(tip)
+-- end
