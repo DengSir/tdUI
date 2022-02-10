@@ -22,34 +22,34 @@ if GetLocale() == 'zhCN' then
     CombatTextFontOutline:SetFont([[Fonts\ARKai_C.TTF]], 24)
 end
 
-local function OnTooltipSetItem(tip)
-    tip:GetFontStringLeft(2):SetFontObject(tip:GetFontStringLeft(1):GetText() == CURRENTLY_EQUIPPED and
-                                               'GameTooltipHeaderText' or 'GameTooltipText')
-end
+-- local function OnTooltipSetItem(tip)
+--     tip:GetFontStringLeft(2):SetFontObject(tip:GetFontStringLeft(1):GetText() == CURRENTLY_EQUIPPED and
+--                                                'GameTooltipHeaderText' or 'GameTooltipText')
+-- end
 
-local function SetupTooltip(tip)
-    tip:GetFontStringLeft(1):SetFontObject('GameTooltipHeaderText')
-    tip:GetFontStringRight(1):SetFontObject('GameTooltipHeaderText')
+-- local function SetupTooltip(tip)
+--     tip:GetFontStringLeft(1):SetFontObject('GameTooltipHeaderText')
+--     tip:GetFontStringRight(1):SetFontObject('GameTooltipHeaderText')
 
-    if tip.shoppingTooltips then
-        for i, shopping in pairs(tip.shoppingTooltips) do
-            SetupTooltip(shopping)
+--     if tip.shoppingTooltips then
+--         for i, shopping in pairs(tip.shoppingTooltips) do
+--             SetupTooltip(shopping)
 
-            shopping:HookScript('OnTooltipSetItem', OnTooltipSetItem)
+--             shopping:HookScript('OnTooltipSetItem', OnTooltipSetItem)
 
-            shopping:GetFontStringLeft(2):SetFontObject('GameTooltipHeaderText')
-            shopping:GetFontStringRight(2):SetFontObject('GameTooltipHeaderText')
+--             shopping:GetFontStringLeft(2):SetFontObject('GameTooltipHeaderText')
+--             shopping:GetFontStringRight(2):SetFontObject('GameTooltipHeaderText')
 
-            local i = 3
-            while shopping:GetFontStringLeft(i) do
-                shopping:GetFontStringLeft(i):SetFontObject('GameTooltipText')
-                shopping:GetFontStringRight(i):SetFontObject('GameTooltipText')
+--             local i = 3
+--             while shopping:GetFontStringLeft(i) do
+--                 shopping:GetFontStringLeft(i):SetFontObject('GameTooltipText')
+--                 shopping:GetFontStringRight(i):SetFontObject('GameTooltipText')
 
-                i = i + 1
-            end
-        end
-    end
-end
+--                 i = i + 1
+--             end
+--         end
+--     end
+-- end
 
 -- for _, tip in ipairs({GameTooltip, ItemRefTooltip, WorldMapTooltip}) do
 --     SetupTooltip(tip)

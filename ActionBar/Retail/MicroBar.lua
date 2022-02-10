@@ -91,6 +91,9 @@ MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
+HelpOpenWebTicketButton:ClearAllPoints()
+HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, -8)
+
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
         MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.0625, -17.34375)
