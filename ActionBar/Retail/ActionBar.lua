@@ -166,7 +166,7 @@ end
 local showGrid = false
 local UpdateGrid = ns.pend(function()
     for _, button in ipairs(NO_GRID_BUTTONS) do
-        button:SetAlpha((showGrid or HasAction(button.action)) and 1 or 0)
+        button:SetAlpha((ns.profile.actionbar.button.macroName or showGrid or HasAction(button.action)) and 1 or 0)
     end
 end)
 

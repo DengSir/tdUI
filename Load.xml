@@ -7,7 +7,7 @@
     <Script file="Lib\Api.lua" />
     <Script file="Lib\DropDown.lua" />
     <Script file="Lib\ComboBox.lua" />
-    <Script file="Lib\GameTooltip.lua" />
+    <!-- <Script file="Lib\GameTooltip.lua" /> -->
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
@@ -56,7 +56,7 @@
     <Script file="Map\Minimap.lua" />
     <Script file="Map\Coords.lua" />
     <Script file="Map\ButtonCollect.lua" />
-    <Script file="Map\NovaWorldBuffs.lua" />
+    <!-- <Script file="Map\NovaWorldBuffs.lua" /> -->
 
     <Script file="Tooltip\TinyTooltip.lua" />
     <!-- <Script file="Tooltip\Item.lua" /> -->
