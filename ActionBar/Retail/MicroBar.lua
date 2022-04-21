@@ -127,6 +127,11 @@ ns.securehook(MainMenuBarDownload, 'Hide', function()
     MainMenuBarPerformanceBar:Show()
 end)
 
+ns.securehook('SetLookingForGroupUIAvailable', function()
+    WorldMapMicroButton:Show()
+    MiniMapWorldMapButton:Hide()
+end)
+
 Bar.BgKeyring:SetParent(KeyRingButton)
 
 local UpdatePosition = ns.pend(function()

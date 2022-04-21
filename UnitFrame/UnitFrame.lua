@@ -103,7 +103,7 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
     frame.threatIndicator:SetSize(256, 128)
     frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
     frame.threatIndicator:Hide()
-    frame.threatIndicator:SetAlpha(0.8)
+    -- frame.threatIndicator:SetAlpha(0.8)
 
     MoveUp(frame.name, 16)
     MoveUp(frame.deadText, 8)
@@ -247,4 +247,6 @@ TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
 
 -- @bcc@
 TargetFrame:SetAttribute('alt-type1', 'focus')
+FocusFrame:SetAttribute('alt-type1', 'macro')
+FocusFrame:SetAttribute('alt-macrotext1', '/clearfocus')
 -- @end-bcc@

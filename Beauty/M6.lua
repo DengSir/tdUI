@@ -170,6 +170,7 @@ ns.addon('M6', function()
                 end
 
             elseif event == 'M6_BUTTON_RELEASE' then
+                local button = ...
                 Unhook(button)
             end
         end

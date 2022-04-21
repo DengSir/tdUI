@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/9/2020, 1:02:09 PM
+--
 local next = next
 local type = type
 local assert = assert
@@ -16,7 +17,7 @@ local IsLoggedIn = IsLoggedIn
 local After = C_Timer.After
 local NewTicker = C_Timer.NewTicker
 
----@type ns
+---@class ns
 local ADDON, ns = ...
 
 local LibClass = LibStub('LibClass-2.0')

@@ -229,7 +229,7 @@ ns.addonlogin('MonkeyQuest', function()
             m_bShowNumQuests = true,
             m_bShowQuestLevel = true,
             m_bShowQuestTextTooltip = false,
-            m_bShowTooltipObjectives = true,
+            m_bShowTooltipObjectives = false,
             m_bShowZoneHighlight = false,
             m_bWorkComplete = false,
             m_iAlpha = 0,
@@ -325,6 +325,24 @@ ns.addonlogin('MonkeyQuest', function()
     ns.addon('Questie', function()
         local QuestieDB = QuestieLoader:ImportModule('QuestieDB')
         local QuestieReputation = QuestieLoader:ImportModule('QuestieReputation')
+        local QuestieHash = QuestieLoader:ImportModule('QuestieHash')
+
+        if QuestieHash.CompareQuestHashes then
+            setfenv(QuestieHash.CompareQuestHashes, setmetatable({
+                ExpandQuestHeader = function(id)
+                    if id ~= 0 then
+                        return ExpandQuestHeader(id)
+                    end
+
+                    for i = 1, GetNumQuestLogEntries() do
+                        local isHeader, isCollapsed = select(4, GetQuestLogTitle(i))
+                        if isHeader and isCollapsed then
+                            return ExpandQuestHeader(id)
+                        end
+                    end
+                end,
+            }, {__index = _G}))
+        end
 
         -- local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:14:14:2:0|t'
         local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:10|t'

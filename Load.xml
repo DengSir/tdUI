@@ -26,7 +26,7 @@
     <Script file="Features\FollowAlways.lua" />
     <Script file="Features\AuctionPlus.lua" />
     <Script file="Features\Fishing.lua" />
-    <!-- <Script file="Features\BuyItems.lua" /> -->
+    <!-- <Script file="Features\LoseBuff.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
@@ -78,9 +78,11 @@
     <Include file="UnitFrame\ToToTFrame.xml" />
     <Script file="UnitFrame\Range.lua" />
     <Script file="UnitFrame\Visible.lua" />
+    <Script file="UnitFrame\Threat.lua" />
 
     <Script file="Bug\ItemRack.lua" />
     <Script file="Bug\VuhDo.lua" />
     <Script file="Bug\PVPTeam.lua" />
     <Script file="Bug\Elephant.lua" />
+    <Script file="Bug\MailEdit.lua" />
 </Ui>
