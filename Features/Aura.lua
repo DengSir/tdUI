@@ -11,7 +11,7 @@ local ceil = math.ceil
 
 ns.securehook('AuraButton_UpdateDuration', function(button, timeLeft)
     timeLeft = ceil(timeLeft)
-    if timeLeft > 60 and timeLeft < 300 then
+    if timeLeft > 60 and timeLeft < 600 then
         button.duration:SetText(format('%d:%02d', timeLeft / 60, ceil(timeLeft % 60)))
     end
     if timeLeft > 3600 and timeLeft < 7200 then

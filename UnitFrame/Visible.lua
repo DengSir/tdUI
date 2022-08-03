@@ -40,7 +40,9 @@ local function NeedShown()
     end
 
     local powerType = UnitPowerType('player')
-    return UnitPower('player', powerType) < UnitPowerMax('player', powerType)
+    if powerType == 0 then
+        return UnitPower('player', powerType) < UnitPowerMax('player', powerType)
+    end
 end
 
 local function CheckShown()

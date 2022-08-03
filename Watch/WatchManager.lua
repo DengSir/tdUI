@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/27/2020, 11:47:42 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -20,6 +19,7 @@ local function UpdateFrames()
     return WatchManager:Refresh()
 end
 
+---@param frame Frame
 function WatchManager:Register(frame, order, options)
     local env = options or {}
 
@@ -37,6 +37,10 @@ function WatchManager:Register(frame, order, options)
         bg:SetPoint('TOPLEFT', -(self.env[frame].marginLeft or 0), self.env[frame].marginTop or 0)
         bg:SetPoint('BOTTOMRIGHT', self.env[frame].marginRight or 0, -(self.env[frame].marginBottom or 0))
         bg:SetColorTexture(color, color, color, 0.3)
+    end
+
+    if frame:IsUserPlaced() then
+        frame:SetUserPlaced(false)
     end
 
     frame:HookScript('OnShow', UpdateFrames)

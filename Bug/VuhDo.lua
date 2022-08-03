@@ -45,8 +45,6 @@ ns.addon('VuhDo', function()
 
             DropDownList1:ClearAllPoints()
 
-            print(dropdown.openedFor:GetBottom(), DropDownList1:GetHeight())
-
             if dropdown.openedFor:GetBottom() - DropDownList1:GetHeight() < 0 then
                 DropDownList1:SetPoint('BOTTOMLEFT', dropdown.openedFor, 'TOPLEFT')
             else

@@ -18,6 +18,6 @@ ns.addon('NovaWorldBuffs', function()
 
     local NWB = NWB or LibStub('AceAddon-3.0'):GetAddon('NovaWorldBuffs')
 
-    NWB:setMmColor(nil, 1, 0.82, 0)
-    NWB.options.args.mmColor.disabled = true
+    -- NWB:setMmColor(nil, 1, 0.82, 0)
+    -- NWB.options.args.mmColor.disabled = true
 end)

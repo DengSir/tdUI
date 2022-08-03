@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/8/2020, 2:09:59 PM
 --
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 ns.IS_CLASSIC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
@@ -169,4 +169,26 @@ function ns.teq(a, b)
         end
     end
     return true
+end
+
+local SOLO_UNITS = {'player'}
+local PARTY_UNITS = {'player'}
+local RAID_UNITS = {}
+
+for i = 1, 4 do
+    tinsert(PARTY_UNITS, 'party' .. i)
+end
+
+for i = 1, 40 do
+    tinsert(RAID_UNITS, 'raid' .. i)
+end
+
+function ns.IterateGroup()
+    if IsInRaid(1) then
+        return ipairs(RAID_UNITS)
+    elseif IsInGroup(1) then
+        return ipairs(PARTY_UNITS)
+    else
+        return ipairs(SOLO_UNITS)
+    end
 end
