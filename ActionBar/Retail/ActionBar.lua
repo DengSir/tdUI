@@ -381,7 +381,7 @@ local function SetupShowHide(frame, key)
     local onHide = format([[owner:Run(UpdateEnvValue, '%s', false)]], key)
     Core:WrapScript(handle, 'OnShow', onShow)
     Core:WrapScript(handle, 'OnHide', onHide)
-    handle:Execute(handle:IsVisible() and onShow or onHide)
+    Core:Execute(handle:IsVisible() and onShow or onHide)
     return handle
 end
 
