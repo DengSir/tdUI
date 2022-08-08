@@ -227,10 +227,10 @@ do
 end
 
 Core:Execute(format([[
-    env = newtable()
+    state = newtable()
 
     LayoutMainMenuBar = [==[
-        local width = env.hasBottomRight and %d or %d
+        local width = state.hasBottomRight and %d or %d
 
         MainMenuBar:SetWidth(width)
         MainMenuExpBar:SetWidth(width)
@@ -240,8 +240,8 @@ Core:Execute(format([[
 Core:Execute([=[
     LayoutWatchBars = [==[
         local y = 0
-        local hasExp = env.hasExp
-        local hasRep = env.hasRep
+        local hasExp = state.hasExp
+        local hasRep = state.hasRep
 
         if hasExp then
             local height = hasRep and 10 or 13
@@ -259,9 +259,9 @@ Core:Execute([=[
     ]==]
 
     LayoutPetBar = [==[
-        if env.hasStanceBar and (env.hasBottomLeft or not env.hasBottomRight) then
+        if state.hasStanceBar and (state.hasBottomLeft or not state.hasBottomRight) then
             local totalWidth = 498 ----- (36 + 6) * 12 - 6
-            if env.hasBottomRight then
+            if state.hasBottomRight then
                 totalWidth = totalWidth + 291 ----- 45 + (36 + 6) * 6 - 6
             end
 
@@ -271,8 +271,8 @@ Core:Execute([=[
             PetActionButton1:ClearAllPoints()
             PetActionButton1:SetPoint('LEFT', StanceButton1, 'LEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), 0)
         else
-            local hasExp = env.hasExp
-            local hasRep = env.hasRep
+            local hasExp = state.hasExp
+            local hasRep = state.hasRep
 
             local y = 9
             if hasRep and hasExp then
@@ -290,12 +290,12 @@ Core:Execute([=[
 
     LayoutStanceBar = [==[
         StanceButton1:ClearAllPoints()
-        StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, env.hasBottomLeft and 54 or 11)
+        StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, state.hasBottomLeft and 54 or 11)
     ]==]
 
     UpdateHeight = [==[
-        local hasExp = env.hasExp
-        local hasRep = env.hasRep
+        local hasExp = state.hasExp
+        local hasRep = state.hasRep
         local height = 47
         if hasExp and hasRep then
             height = height + 20
@@ -308,7 +308,7 @@ Core:Execute([=[
     CalcWidth = [==[
         local key, size, spacing = ...
         local width = 0
-        for i, button in ipairs(env[key]) do
+        for i, button in ipairs(state[key]) do
             if button:IsShown() then
                 width = width + size + spacing
             end
@@ -339,15 +339,15 @@ Core:Execute([=[
 
     UpdateEnvValue = [==[
         local key, value = ...
-        if env[key] ~= value then
-            env[key] = value
+        if state[key] ~= value then
+            state[key] = value
             self:Run(OnEnvValueChanged, key)
         end
     ]==]
 ]=])
 
 local function SetupButtons(key, formatter)
-    Core:Execute(format([[env['%s'] = newtable()]], key))
+    Core:Execute(format([[state['%s'] = newtable()]], key))
 
     local i = 1
     while true do
@@ -355,7 +355,7 @@ local function SetupButtons(key, formatter)
         local obj = _G[name]
         if obj then
             Core:SetFrameRef('tempRef', obj)
-            Core:Execute(format([[env['%s'][%d] = self:GetFrameRef('tempRef')]], key, i))
+            Core:Execute(format([[state['%s'][%d] = self:GetFrameRef('tempRef')]], key, i))
         else
             break
         end
