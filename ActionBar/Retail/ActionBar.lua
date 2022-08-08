@@ -28,7 +28,7 @@ local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
 
 local NO_GRID_BUTTONS = ns.GetFrames('MultiBarBottomRightButton%d', 6)
 
-local core = CreateFrame('Frame', nil, nil, 'SecureHandlerBaseTemplate')
+local Core = CreateFrame('Frame', nil, nil, 'SecureHandlerBaseTemplate')
 
 local Hider = CreateFrame('Frame')
 Hider:Hide()
@@ -209,7 +209,7 @@ do
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
     }
 
-    core.frames = {}
+    Core.frames = {}
 
     for k, v in pairs(Frames) do
         local name
@@ -220,15 +220,14 @@ do
         end
 
         assert(name)
-        core.frames[name] = v
-        core:SetFrameRef(name, v)
-        core:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
+        Core.frames[name] = v
+        Core:SetFrameRef(name, v)
+        Core:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
     end
 end
 
-core:Execute(format([[
+Core:Execute(format([[
     env = newtable()
-    core = self
 
     LayoutMainMenuBar = [==[
         local width = env.hasBottomRight and %d or %d
@@ -238,7 +237,7 @@ core:Execute(format([[
     ]==]
 ]], LARGE_WIDTH, SMALL_WIDTH))
 
-core:Execute([=[
+Core:Execute([=[
     LayoutWatchBars = [==[
         local y = 0
         local hasExp = env.hasExp
@@ -348,15 +347,15 @@ core:Execute([=[
 ]=])
 
 local function SetupButtons(key, formatter)
-    core:Execute(format([[env['%s'] = newtable()]], key))
+    Core:Execute(format([[env['%s'] = newtable()]], key))
 
     local i = 1
     while true do
         local name = format(formatter, i)
         local obj = _G[name]
         if obj then
-            core:SetFrameRef('tempRef', obj)
-            core:Execute(format([[env['%s'][%d] = self:GetFrameRef('tempRef')]], key, i))
+            Core:SetFrameRef('tempRef', obj)
+            Core:Execute(format([[env['%s'][%d] = self:GetFrameRef('tempRef')]], key, i))
         else
             break
         end
@@ -368,20 +367,21 @@ end
 SetupButtons('stances', 'StanceButton%d')
 SetupButtons('petButtons', 'PetActionButton%d')
 
-function core:GetFrame(name)
+function Core:GetFrame(name)
     return self.frames[name] or _G[name]
 end
 
-function core:SetFrameHeight(frameName, height)
+function Core:SetFrameHeight(frameName, height)
     self:GetFrame(frameName):SetHeight(height)
 end
 
 local function SetupShowHide(frame, key)
     local handle = CreateFrame('Frame', nil, frame, 'SecureHandlerBaseTemplate')
-    handle:Hide()
-    core:WrapScript(handle, 'OnShow', format([[core:Run(UpdateEnvValue, '%s', true)]], key))
-    core:WrapScript(handle, 'OnHide', format([[core:Run(UpdateEnvValue, '%s', false)]], key))
-    handle:Show()
+    local onShow = format([[owner:Run(UpdateEnvValue, '%s', true)]], key)
+    local onHide = format([[owner:Run(UpdateEnvValue, '%s', false)]], key)
+    Core:WrapScript(handle, 'OnShow', onShow)
+    Core:WrapScript(handle, 'OnHide', onHide)
+    handle:Execute(handle:IsVisible() and onShow or onHide)
     return handle
 end
 

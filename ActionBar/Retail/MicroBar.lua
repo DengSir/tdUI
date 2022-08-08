@@ -81,6 +81,11 @@ for _, button in pairs(BAGSLOTS) do
     button:SetParent(Bar)
 end
 
+HelpOpenWebTicketButton:ClearAllPoints()
+HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, -8)
+
+-- @build<3@
+
 MainMenuBarBackpackButton:SetParent(Bar)
 
 MainMenuBarPerformanceBar:ClearAllPoints()
@@ -90,9 +95,6 @@ MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
 MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
-
-HelpOpenWebTicketButton:ClearAllPoints()
-HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, -8)
 
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
@@ -122,6 +124,7 @@ ns.securehook('MicroButton_OnEnter', function(self)
         end
     end
 end)
+-- @end-build<3@
 
 ns.securehook(MainMenuBarDownload, 'Show', function()
     MainMenuBarPerformanceBar:Hide()
@@ -131,7 +134,9 @@ ns.securehook(MainMenuBarDownload, 'Hide', function()
 end)
 
 ns.securehook('SetLookingForGroupUIAvailable', function()
-    WorldMapMicroButton:Show()
+    if WorldMapMicroButton then
+        WorldMapMicroButton:Show()
+    end
     MiniMapWorldMapButton:Hide()
 end)
 
@@ -196,7 +201,12 @@ local LayoutMicroBar = ns.pend(function()
             prev = button
         end
     end
+    -- @build<3@
     Bar:SetWidth(26 * count + 12)
+    -- @end-build<3@
+    -- @build>3@
+    Bar:SetWidth(26 * count + 2)
+    -- @end-build>3@
 end)
 
 ns.config('actionbar.micro.position', UpdatePosition)
@@ -299,7 +309,7 @@ function MicroButton:Style()
     region(self:GetHighlightTexture())
 
     point(self.Flash)
-    point(self.icon)
+    point(self.icon or self.texture)
 end
 
 function MicroButton:OnMouseDown()

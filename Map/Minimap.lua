@@ -7,7 +7,9 @@ local ns = select(2, ...)
 
 MinimapZoomIn:Hide()
 MinimapZoomOut:Hide()
+-- @build<3@
 MinimapToggleButton:Hide()
+-- @end-build<3@
 MiniMapWorldMapButton:Hide()
 -- MinimapBorderTop:Hide()
 GameTimeFrame:Hide()
