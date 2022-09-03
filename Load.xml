@@ -78,7 +78,7 @@
     <Include file="UnitFrame\ToToTFrame.xml" />
     <Script file="UnitFrame\Range.lua" />
     <Script file="UnitFrame\Visible.lua" />
-    <Script file="UnitFrame\Threat.lua" />
+    <!-- <Script file="UnitFrame\Threat.lua" /> -->
 
     <Script file="Bug\ItemRack.lua" />
     <Script file="Bug\VuhDo.lua" />

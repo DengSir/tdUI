@@ -98,12 +98,14 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
+    -- @build<2@
     frame.threatIndicator = frame:CreateTexture(nil, 'BACKGROUND')
     frame.threatIndicator:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Flash]])
     frame.threatIndicator:SetSize(256, 128)
     frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
     frame.threatIndicator:Hide()
     -- frame.threatIndicator:SetAlpha(0.8)
+    -- @end-build<2@
 
     MoveUp(frame.name, 16)
     MoveUp(frame.deadText, 8)
@@ -212,6 +214,7 @@ ns.securehook('TargetofTarget_CheckDead', function(self)
     end
 end)
 
+-- @build<3@
 local function GetThreatStatusColor(status)
     if status == 0 then
         return 0.69, 0.69, 0.69
@@ -240,6 +243,7 @@ ns.securehook('TargetFrame_OnUpdate', function(self, elapsed)
         end
     end
 end)
+-- @end-build<3@
 
 PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Player-Status]])
 PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])

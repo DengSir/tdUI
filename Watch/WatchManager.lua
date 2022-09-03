@@ -8,8 +8,16 @@ local ns = select(2, ...)
 local WatchManager = CreateFrame('Frame', nil, UIParent)
 ns.WatchManager = WatchManager
 
+--@build>3@
+local relativeTo = WatchFrame
+--@end-build>3@
+--@build<3@
+local relativeTo = QuestWatchFrame
+--@end-build<3@
+
+
 WatchManager:SetSize(1, 1)
-WatchManager:SetPoint('TOPRIGHT', QuestWatchFrame, 'TOPRIGHT')
+WatchManager:SetPoint('TOPRIGHT', relativeTo, 'TOPRIGHT')
 
 WatchManager.frames = {}
 WatchManager.env = {}
