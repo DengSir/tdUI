@@ -140,6 +140,7 @@ end)
 
 InitButtons('Character%sSlot', 'player')
 
+-- @build<3@
 local function PaperDollFrame_SetArmorPenetration(statFrame)
     getglobal(statFrame:GetName() .. 'Label'):SetText(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT .. ':')
     local text = getglobal(statFrame:GetName() .. 'StatText')
@@ -201,6 +202,8 @@ ns.securehook('UpdatePaperdollStats', function(prefix, index)
     end
 
 end)
+
+-- @end-build<3@
 
 -- for i, v in ipairs {PaperDollFrame:GetRegions()} do
 --     if v:GetObjectType() == 'Texture' then

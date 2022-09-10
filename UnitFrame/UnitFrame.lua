@@ -249,8 +249,8 @@ PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-P
 PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
 TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
 
--- @bcc@
+-- @build>2@
 TargetFrame:SetAttribute('alt-type1', 'focus')
 FocusFrame:SetAttribute('alt-type1', 'macro')
 FocusFrame:SetAttribute('alt-macrotext1', '/clearfocus')
--- @end-bcc@
+-- @end-build>2@

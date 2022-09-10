@@ -85,4 +85,5 @@
     <Script file="Bug\PVPTeam.lua" />
     <Script file="Bug\Elephant.lua" />
     <Script file="Bug\MailEdit.lua" />
+    <Script file="Bug\InspectUI.lua" />
 </Ui>

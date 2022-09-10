@@ -84,16 +84,14 @@ end
 HelpOpenWebTicketButton:ClearAllPoints()
 HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, -8)
 
--- @build<3@
-
 MainMenuBarBackpackButton:SetParent(Bar)
 
-MainMenuBarPerformanceBar:ClearAllPoints()
-MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
-MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
-MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
-MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
-MainMenuBarPerformanceBar:SetAlpha(0.6)
+-- MainMenuBarPerformanceBar:ClearAllPoints()
+-- MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
+-- MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
+-- MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
+-- MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
+-- MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
 local function UpdatePerformanceBarPushed(self)
@@ -109,6 +107,7 @@ end
 ns.securehook(MainMenuMicroButton, 'SetButtonState', UpdatePerformanceBarPushed)
 ns.hookscript(MainMenuMicroButton, 'OnMouseDown', UpdatePerformanceBarPushed)
 ns.hookscript(MainMenuMicroButton, 'OnMouseUp', UpdatePerformanceBarPushed)
+-- @build<3@
 ns.securehook('MicroButton_OnEnter', function(self)
     if not GameTooltip:IsOwned(self) then
         return
@@ -126,12 +125,42 @@ ns.securehook('MicroButton_OnEnter', function(self)
 end)
 -- @end-build<3@
 
-ns.securehook(MainMenuBarDownload, 'Show', function()
-    MainMenuBarPerformanceBar:Hide()
-end)
-ns.securehook(MainMenuBarDownload, 'Hide', function()
-    MainMenuBarPerformanceBar:Show()
-end)
+-- @build>3@
+function PVPMicroButton:OnMouseDown()
+    self.texture:SetPoint('TOP', 5, -14)
+    self.texture:SetAlpha(0.6)
+end
+
+function PVPMicroButton:OnMouseUp()
+    if self:GetButtonState() == 'PUSHED' then
+        return
+    end
+    self.texture:SetPoint('TOP', 6, -12)
+    self.texture:SetAlpha(1)
+end
+
+function PVPMicroButton:OnButtonStateChanged(state)
+    print(state)
+    if state and state:upper() == 'PUSHED' then
+        self:OnMouseDown()
+    else
+        self:OnMouseUp()
+    end
+end
+
+ns.securehook(PVPMicroButton, 'SetButtonState', PVPMicroButton.OnButtonStateChanged)
+PVPMicroButton:HookScript('OnMouseDown', PVPMicroButton.OnMouseDown)
+PVPMicroButton:HookScript('OnMouseUp', PVPMicroButton.OnMouseUp)
+-- @end-build>3@
+
+if MainMenuBarDownload then
+    ns.securehook(MainMenuBarDownload, 'Show', function()
+        MainMenuBarPerformanceBar:Hide()
+    end)
+    ns.securehook(MainMenuBarDownload, 'Hide', function()
+        MainMenuBarPerformanceBar:Show()
+    end)
+end
 
 ns.securehook('SetLookingForGroupUIAvailable', function()
     if WorldMapMicroButton then

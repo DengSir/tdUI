@@ -197,7 +197,7 @@ ns.addonlogin('ThreatClassic2', function()
     local function UpdateBars()
         for i = 1, 40 do
             local bar = TC2.bars[i]
-            local backdrop = bar.edgeBackdrop or bar.backdrop
+            local backdrop = getBackdrop(bar)
 
             if i == 1 then
                 backdrop:SetPoint('TOP', 0, 0)
