@@ -23,10 +23,10 @@
     <Script file="Features\TradeBlock.lua" />
     <Script file="Features\ItemRackBar.lua" />
     <Script file="Features\Flyable.lua" />
-    <Script file="Features\FollowAlways.lua" />
+    <!-- <Script file="Features\FollowAlways.lua" /> -->
     <Script file="Features\AuctionPlus.lua" />
     <Script file="Features\Fishing.lua" />
-    <Script file="Features\LoseBuff.lua" />
+    <!-- <Script file="Features\LoseBuff.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />

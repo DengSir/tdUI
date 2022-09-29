@@ -366,6 +366,10 @@ ns.addonlogin('MonkeyQuest', function()
                 return
             end
 
+            if not QuestieDB.QueryQuestSingle then
+                return
+            end
+
             local reputationReward = QuestieDB.QueryQuestSingle(questId, 'reputationReward')
             if reputationReward and next(reputationReward) then
                 local rewardTable = {}

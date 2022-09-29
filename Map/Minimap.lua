@@ -12,7 +12,7 @@ MinimapToggleButton:Hide()
 -- @end-build<3@
 MiniMapWorldMapButton:Hide()
 -- MinimapBorderTop:Hide()
-GameTimeFrame:Hide()
+-- GameTimeFrame:Hide()
 
 MinimapCluster:SetPoint('TOPRIGHT', 0, -10)
 

@@ -266,7 +266,8 @@ Core:Execute([=[
             end
 
             local stanceWidth = self:Run(CalcWidth, 'stances', 30, 7)
-            local petWidth = self:Run(CalcWidth, 'petButtons', 30, 8)
+            -- local petWidth = self:Run(CalcWidth, 'petButtons', 30, 8)
+            local petWidth = 372
 
             PetActionButton1:ClearAllPoints()
             PetActionButton1:SetPoint('LEFT', StanceButton1, 'LEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), 0)

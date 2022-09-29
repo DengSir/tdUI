@@ -17,8 +17,9 @@ local IsLoggedIn = IsLoggedIn
 local After = C_Timer.After
 local NewTicker = C_Timer.NewTicker
 
+local ADDON = ...
 ---@class ns
-local ADDON, ns = ...
+local ns = select(2, ...)
 
 local LibClass = LibStub('LibClass-2.0')
 
@@ -164,6 +165,10 @@ function ns.login(func)
         return ns.spawn(func)
     end
     return ns.onceeventspawn('PLAYER_LOGIN', func)
+end
+
+function ns.logout(func)
+    ns.event('PLAYER_LOGOUT', func)
 end
 
 local function addon(addon, func)
@@ -417,4 +422,16 @@ function ns.itemready(itemId, func, ...)
         return func(p())
     end)
     events:RegisterEvent('GET_ITEM_INFO_RECEIVED')
+end
+
+function ns.cleantable(t)
+    for k, v in pairs(t) do
+        if type(v) == 'table' then
+            ns.cleantable(v)
+
+            if not next(v) then
+                t[k] = nil
+            end
+        end
+    end
 end

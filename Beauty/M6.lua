@@ -65,6 +65,10 @@ ns.addon('M6', function()
         }, {__index = _G}))
     end)
 
+    ns.logout(function()
+        ns.cleantable(M6DB.profiles)
+    end)
+
     ns.addon('tullaRange', function()
         local tullaRange = tullaRange
 
