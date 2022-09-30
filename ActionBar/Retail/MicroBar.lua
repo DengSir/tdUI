@@ -215,21 +215,54 @@ local UpdatePosition = ns.pend(function()
 end)
 
 local LayoutMicroBar = ns.pend(function()
+    local inOverride = false
+    -- @build>3@
+    inOverride = ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_OVERRIDE
+    -- @end-build>3@
     local prev
     local count = 0
-    for _, button in ipairs(MICRO_BUTTONS) do
-        if button:IsShown() then
-            button:ClearAllPoints()
-            if prev then
-                button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
+
+    if inOverride then
+        local buttons = {}
+        for _, button in ipairs(MICRO_BUTTONS) do
+            if button.hideInOverrideBar then
+                button:Hide()
             else
-                button:SetPoint('BOTTOMLEFT', Bar, 5, 3)
+                button:Show()
+                button:SetParent(OverrideActionBar)
+
+                if count == 0 then
+                elseif count % 6 == 0 then
+                    button:ClearAllPoints()
+                    button:SetPoint('TOPLEFT', buttons[count - 5], 'BOTTOMLEFT', 0, 0)
+                else
+                    button:ClearAllPoints()
+                    button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
+                end
+
+                tinsert(buttons, button)
+                count = count + 1
+                prev = button
             end
 
-            count = count + 1
-            prev = button
+        end
+    else
+        for _, button in ipairs(MICRO_BUTTONS) do
+            if button:IsShown() then
+                button:SetParent(Bar)
+                button:ClearAllPoints()
+                if prev then
+                    button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
+                else
+                    button:SetPoint('BOTTOMLEFT', Bar, 5, 3)
+                end
+
+                count = count + 1
+                prev = button
+            end
         end
     end
+
     -- @build<3@
     Bar:SetWidth(26 * count + 12)
     -- @end-build<3@
@@ -241,6 +274,9 @@ end)
 ns.config('actionbar.micro.position', UpdatePosition)
 ns.load(UpdatePosition)
 ns.load(LayoutMicroBar)
+-- @build>3@
+ns.securehook('MoveMicroButtons', LayoutMicroBar)
+-- @end-build>3@
 
 ---- MicroButton
 
@@ -270,6 +306,9 @@ function MicroButton:Constructor(_, opts)
         self:SetScript('OnMouseUp', self.OnMouseUp)
         self:OnMouseUp()
     end
+
+    self.hideInOverrideBar = opts.hideInOverrideBar
+    self.addon = true
 
     self:Style()
 

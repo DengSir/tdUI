@@ -13,6 +13,42 @@ local function MoveUp(widget, delta)
     widget:SetPoint(p, r, rp, x, y + delta)
 end
 
+local function InitLabelPoints(label, delta)
+    if label then
+        label.smallPoints = {label:GetPoint(1)}
+        label.largePoints = {label:GetPoint(1)}
+        label.largePoints[5] = label.largePoints[5] + (delta or 8)
+    end
+end
+
+local function LabelToSmall(label)
+    if label and label.smallPoints then
+        label:ClearAllPoints()
+        label:SetPoint(unpack(label.smallPoints))
+    end
+end
+
+local function LabelToLarge(label)
+    if label and label.largePoints then
+        label:ClearAllPoints()
+        label:SetPoint(unpack(label.largePoints))
+    end
+end
+
+local function BarToSmall(bar)
+    bar:SetHeight(12)
+    LabelToSmall(bar.LeftText)
+    LabelToSmall(bar.RightText)
+    LabelToSmall(bar.TextString)
+end
+
+local function BarToLarge(bar)
+    bar:SetHeight(32)
+    LabelToLarge(bar.LeftText)
+    LabelToLarge(bar.RightText)
+    LabelToLarge(bar.TextString)
+end
+
 ---- TargetFrame
 do
     local function CreateText(parent, ...)
@@ -34,17 +70,24 @@ do
         TargetFrame.manabar.RightText = CreateText(TargetFrame.textureFrame, 'RIGHT', -110, -8)
     end
 
-    PlayerName:Hide()
-    PlayerName.Show = nop
+    -- PlayerName:Hide()
+    -- PlayerName.Show = nop
+
+    InitLabelPoints(PlayerFrame.healthbar.LeftText)
+    InitLabelPoints(PlayerFrame.healthbar.RightText)
+
+    LabelToLarge(PlayerFrame.healthbar.LeftText)
+    LabelToLarge(PlayerFrame.healthbar.RightText)
 
     PlayerFrame.healthbar:EnableMouse(false)
     PlayerFrame.manabar:EnableMouse(false)
 
-    MoveUp(PlayerFrame.healthbar.LeftText, 8)
-    MoveUp(PlayerFrame.healthbar.RightText, 8)
+    -- MoveUp(PlayerFrame.healthbar.LeftText, 8)
+    -- MoveUp(PlayerFrame.healthbar.RightText, 8)
 
     ns.securehook('LocalizeFrames', function()
-        MoveUp(PlayerFrame.healthbar.TextString, 8)
+        -- MoveUp(PlayerFrame.healthbar.TextString, 8)
+        LabelToLarge(PlayerFrame.healthbar.TextString)
     end)
 end
 
@@ -104,17 +147,23 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
     frame.threatIndicator:SetSize(256, 128)
     frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
     frame.threatIndicator:Hide()
+    ns.hookscript(frame, 'OnHide', FrameOnHide)
     -- frame.threatIndicator:SetAlpha(0.8)
     -- @end-build<2@
 
-    MoveUp(frame.name, 16)
-    MoveUp(frame.deadText, 8)
-    MoveUp(frame.healthbar.TextString, 8)
-    MoveUp(frame.healthbar.LeftText, 8)
-    MoveUp(frame.healthbar.RightText, 8)
+    InitLabelPoints(frame.name, 16)
+    InitLabelPoints(frame.deadText)
+    InitLabelPoints(frame.healthbar.TextString)
+    InitLabelPoints(frame.healthbar.LeftText)
+    InitLabelPoints(frame.healthbar.RightText)
+
+    LabelToLarge(frame.name)
+    LabelToLarge(frame.deadText)
+    LabelToLarge(frame.healthbar.TextString)
+    LabelToLarge(frame.healthbar.LeftText)
+    LabelToLarge(frame.healthbar.RightText)
 
     ns.securehook(frame.healthbar, 'SetMinMaxValues', CheckHealthBar)
-    ns.hookscript(frame, 'OnHide', FrameOnHide)
 
     InitFrameFonts(frame)
 end
@@ -160,9 +209,11 @@ ns.securehook('TargetFrame_CheckClassification', function(self)
     end
 
     if classification == 'minus' then
-        self.healthbar:SetHeight(12)
+        -- self.healthbar:SetHeight(12)
+        BarToSmall(self.healthbar)
     else
-        self.healthbar:SetHeight(31)
+        -- self.healthbar:SetHeight(31)
+        BarToLarge(self.healthbar)
         self.Background:SetHeight(self.Background:GetHeight() + 19)
     end
 end)
@@ -184,14 +235,18 @@ ns.securehook('TargetFrame_CheckFaction', function(self)
 end)
 
 ns.securehook('PlayerFrame_ToPlayerArt', function()
+    PlayerName:SetAlpha(0)
     PlayerFrameHealthBar:SetPoint('TOPLEFT', 106, -22)
-    PlayerFrameHealthBar:SetHeight(31)
+    -- PlayerFrameHealthBar:SetHeight(31)
+    BarToLarge(PlayerFrameHealthBar)
     PlayerFrameHealthBar.lockColor = true
     PlayerFrameHealthBar:SetStatusBarColor(UnitClassColor('player'))
 end)
 
 ns.securehook('PlayerFrame_ToVehicleArt', function()
-    PlayerFrameHealthBar:SetHeight(12)
+    -- PlayerFrameHealthBar:SetHeight(12)
+    PlayerName:SetAlpha(1)
+    BarToSmall(PlayerFrameHealthBar)
     PlayerFrameHealthBar.lockColor = nil
     HealthBar_OnValueChanged(PlayerFrameHealthBar, PlayerFrameHealthBar:GetValue())
 end)

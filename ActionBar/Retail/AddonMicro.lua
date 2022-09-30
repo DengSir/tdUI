@@ -46,5 +46,6 @@ if not WorldMapMicroButton then
         frame = WorldMapFrame,
         after = 'SocialsMicroButton',
         onClick = ToggleWorldMap,
+        hideInOverrideBar = true,
     }
 end
