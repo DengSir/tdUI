@@ -75,6 +75,7 @@ do
 
     InitLabelPoints(PlayerFrame.healthbar.LeftText)
     InitLabelPoints(PlayerFrame.healthbar.RightText)
+    InitLabelPoints(PlayerFrame.healthbar.TextString)
 
     LabelToLarge(PlayerFrame.healthbar.LeftText)
     LabelToLarge(PlayerFrame.healthbar.RightText)
