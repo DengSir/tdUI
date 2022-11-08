@@ -44,6 +44,7 @@
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
+    <Script file="PaperDoll\ItemLevel.lua" />
 
     <Script file="Chat\ChatFrame.lua" />
     <Script file="Chat\Link.lua" />
