@@ -140,7 +140,6 @@ function PVPMicroButton:OnMouseUp()
 end
 
 function PVPMicroButton:OnButtonStateChanged(state)
-    print(state)
     if state and state:upper() == 'PUSHED' then
         self:OnMouseDown()
     else
