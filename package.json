@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "bcc": "wct watch bcc --output \"D:\\Games\\World of Warcraft\\_classic_\\Interface\\Addons\""
+        "lkc": "node D:\\Projects\\wow-curse-tools\\bin\\wct watch lkc --output \"D:\\Games\\World of Warcraft\\_classic_\\Interface\\Addons\""
     },
     "repository": {
         "type": "git",
@@ -20,7 +20,7 @@
         "name": "tdUI",
         "curse_id": 0,
         "builds": {
-            "lkc": "30400"
+            "lkc": "30401"
         }
     }
 }

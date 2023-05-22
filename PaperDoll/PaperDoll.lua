@@ -258,7 +258,7 @@ local function CreateOverlayButton(parent)
     local button = CreateFrame('Button', parent:GetName() .. 'Overlay', parent,
                                'SecureActionButtonTemplate, SecureHandlerDragTemplate')
     button:SetAllPoints(true)
-    button:RegisterForClicks('LeftButtonUp, RightButtonUp')
+    button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
     button:RegisterForDrag('LeftButton')
     button:SetID(parent:GetID())
 

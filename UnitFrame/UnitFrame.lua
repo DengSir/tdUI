@@ -194,7 +194,8 @@ local PlayerLevelText = PlayerLevelText
 local PlayerFrameTexture = PlayerFrameTexture
 
 local function UnitClassColor(unit)
-    return GetClassColor(UnitClassBase(unit))
+    local r, g, b, c = GetClassColor(UnitClassBase(unit))
+    return r, g, b, 1.0
 end
 
 ns.securehook('TargetFrame_CheckClassification', function(self)

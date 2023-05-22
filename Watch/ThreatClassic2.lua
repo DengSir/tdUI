@@ -72,6 +72,7 @@ ns.addonlogin('ThreatClassic2', function()
         TCC.frame.width = 100
         TCC.frame.height = 100
         TCC.bar.count = 1
+        TCC.frame.headerColor = {0, 0, 0, 0}
 
         TC2:UpdateFrame()
     end
@@ -127,9 +128,6 @@ ns.addonlogin('ThreatClassic2', function()
 
             bar.name:SetPoint('LEFT', bar.icon, 'RIGHT')
             bar.perc:SetPoint('RIGHT', parent, 'RIGHT', -2, 0)
-
-            bar.bg:SetVertexColor(0, 0, 0, 0.3)
-            bar.bg.SetVertexColor = nop
 
             bar.Show = Show
             bar.Hide = Hide
