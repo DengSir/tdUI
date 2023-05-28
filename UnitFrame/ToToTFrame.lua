@@ -137,7 +137,8 @@ function tdTargetTargetTargetFrameInit(self)
             RefreshDebuffs(self, 'targettargettarget')
             if (UnitIsPlayer('targettargettarget')) then
                 local _, enClass = UnitClass('targettargettarget')
-                ToToTFrame.details.name:SetTextColor(GetClassColor(enClass))
+                local r, g, b, c = GetClassColor(enClass)
+                ToToTFrame.details.name:SetTextColor(r, g, b)
             else
                 ToToTFrame.details.name:SetTextColor(1, 0.8, 0)
             end
