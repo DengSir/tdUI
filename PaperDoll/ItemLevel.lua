@@ -88,14 +88,7 @@ function ItemLevelFrame:OnShow()
 end
 
 function ItemLevelFrame:Update()
-    local itemLevel = GetItemLevel()
-    if not itemLevel then
-        return C_Timer.After(1, function()
-            return self:Update()
-        end)
-    end
-
-    self.Text:SetFormattedText('iLvl: %.1f', itemLevel)
+    self.Text:SetFormattedText('iLvl: %.1f', (GetAverageItemLevel()))
 end
 
 ItemLevelFrame:OnLoad()

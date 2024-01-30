@@ -26,7 +26,11 @@ ns.addon('tdAuction', function()
 
         for itemId, d in pairs(items) do
             local link = select(2, GetItemInfo(itemId))
-            DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. GetMoneyString(d))
+            if link then
+                DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. GetMoneyString(d))
+            else
+                print('not found item', itemId)
+            end
         end
     end
 
