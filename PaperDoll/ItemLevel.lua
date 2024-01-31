@@ -88,7 +88,7 @@ function ItemLevelFrame:OnShow()
 end
 
 function ItemLevelFrame:Update()
-    self.Text:SetFormattedText('iLvl: %.1f', (GetAverageItemLevel()))
+    self.Text:SetFormattedText('iLvl: %d', (select(2, GetAverageItemLevel())))
 end
 
 ItemLevelFrame:OnLoad()
