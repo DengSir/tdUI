@@ -20,7 +20,8 @@
         "name": "tdUI",
         "curse_id": 0,
         "builds": {
-            "lkc": "30403"
+            "lkc": "30403",
+            "classic": "11501"
         }
     }
 }

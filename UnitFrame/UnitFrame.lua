@@ -142,15 +142,22 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
+    if not frame.threatIndicator then
+        frame.threatIndicator = _G[frame:GetName() .. 'Flash']
+    end
+
     -- @build<2@
-    frame.threatIndicator = frame:CreateTexture(nil, 'BACKGROUND')
-    frame.threatIndicator:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Flash]])
-    frame.threatIndicator:SetSize(256, 128)
-    frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
-    frame.threatIndicator:Hide()
-    ns.hookscript(frame, 'OnHide', FrameOnHide)
+    if not frame.threatIndicator then
+        frame.threatIndicator = frame:CreateTexture(nil, 'ARTWORK')
+        frame.threatIndicator:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Flash]])
+        frame.threatIndicator:SetTexCoord(0, 0.9453125, 0, 0.181640625)
+        frame.threatIndicator:SetSize(242, 93)
+        frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
+        frame.threatIndicator:Hide()
+    end
     -- frame.threatIndicator:SetAlpha(0.8)
     -- @end-build<2@
+    ns.hookscript(frame, 'OnHide', FrameOnHide)
 
     InitLabelPoints(frame.name, 16)
     InitLabelPoints(frame.deadText)

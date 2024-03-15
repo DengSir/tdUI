@@ -179,29 +179,29 @@ local function ArmorPenetrationOnEnter(statFrame)
     GameTooltip:Show()
 end
 
-ns.securehook('UpdatePaperdollStats', function(prefix, index)
-    if index == 'PLAYERSTAT_MELEE_COMBAT' then
+-- ns.securehook('UpdatePaperdollStats', function(prefix, index)
+--     if index == 'PLAYERSTAT_MELEE_COMBAT' then
 
-        local stat1 = _G[prefix .. 1]
-        local stat2 = _G[prefix .. 2]
-        local stat3 = _G[prefix .. 3]
+--         local stat1 = _G[prefix .. 1]
+--         local stat2 = _G[prefix .. 2]
+--         local stat3 = _G[prefix .. 3]
 
-        _G[prefix .. 1 .. 'Label']:SetText()
+--         _G[prefix .. 1 .. 'Label']:SetText()
 
-        PaperDollFrame_SetAttackSpeed(stat1)
-        PaperDollFrame_SetAttackPower(stat2)
-        PaperDollFrame_SetArmorPenetration(stat3)
-        -- PaperDollFrame_SetRating(stat3, CR_HIT_MELEE)
+--         PaperDollFrame_SetAttackSpeed(stat1)
+--         PaperDollFrame_SetAttackPower(stat2)
+--         PaperDollFrame_SetArmorPenetration(stat3)
+--         -- PaperDollFrame_SetRating(stat3, CR_HIT_MELEE)
 
-        -- stat1:SetScript('OnEnter', PaperDollStatTooltip)
-        stat1:SetScript('OnEnter', AttackSpeedOnEnter)
-        stat3:SetScript('OnEnter', ArmorPenetrationOnEnter)
-    else
-        local stat3 = _G[prefix .. 3]
-        stat3:SetScript('OnEnter', PaperDollStatTooltip)
-    end
+--         -- stat1:SetScript('OnEnter', PaperDollStatTooltip)
+--         stat1:SetScript('OnEnter', AttackSpeedOnEnter)
+--         stat3:SetScript('OnEnter', ArmorPenetrationOnEnter)
+--     else
+--         local stat3 = _G[prefix .. 3]
+--         stat3:SetScript('OnEnter', PaperDollStatTooltip)
+--     end
 
-end)
+-- end)
 
 -- @end-build<3@
 
