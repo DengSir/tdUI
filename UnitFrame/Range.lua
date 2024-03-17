@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/5/2019, 1:26:24 PM
 
-local RangeCheck = LibStub('LibRangeCheck-2.0')
+local RangeCheck = LibStub('LibRangeCheck-3.0')
 
 local format = format
 

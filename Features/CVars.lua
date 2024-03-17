@@ -6,7 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
-ns.login(function()
+ns.onceevent('VARIABLES_LOADED', function()
     -- @debug@
     ConsoleExec('SET portal TW')
     SetCVar('profanityFilter', false)
