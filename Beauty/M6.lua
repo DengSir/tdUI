@@ -92,6 +92,19 @@ ns.addon('M6', function()
             end
         end
 
+        local function SetButtonState(button, state)
+            if tullaRange.SetButtonState then
+                tullaRange:SetButtonState(button, state)
+            elseif tullaRange.GetColor then
+                local r, g, b, a, d = tullaRange:GetColor(state)
+                button.icon:SetVertexColor(r, g, b, a)
+                button.icon:SetDesaturated(d)
+
+                r, g, b = tullaRange:GetColor(state == 'oor' and 'oor' or 'normal')
+                button.HotKey:SetVertexColor(r, g, b)
+            end
+        end
+
         local hooked = {}
 
         ---@param button Button
@@ -104,7 +117,7 @@ ns.addon('M6', function()
                 ---@type Texture
                 local checkedTexture = button:GetCheckedTexture()
                 ---@type Texture
-                local texture = button._CheckedTexture or button:CreateTexture(nil, checkedTexture:GetDrawLayer())
+                local texture = button._CheckedTexture or button:CreateTexture(nil, (checkedTexture:GetDrawLayer()))
 
                 texture:Hide()
                 texture:SetAllPoints(checkedTexture)
@@ -129,7 +142,10 @@ ns.addon('M6', function()
                 button._CheckedTexture:Hide()
             end
             if button.GetCheckedTexture then
-                button:GetCheckedTexture():SetAlpha(1)
+                local ct = button:GetCheckedTexture()
+                if ct then
+                    ct:SetAlpha(1)
+                end
             end
 
             hooked[button] = nil
@@ -162,7 +178,7 @@ ns.addon('M6', function()
                 end
 
                 if state then
-                    tullaRange:SetButtonState(button, GetState(state))
+                    SetButtonState(button, GetState(state))
 
                     if button._CheckedTexture and spellId then
                         button._CheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
