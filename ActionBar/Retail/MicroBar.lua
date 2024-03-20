@@ -86,12 +86,12 @@ HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, 
 
 MainMenuBarBackpackButton:SetParent(Bar)
 
--- MainMenuBarPerformanceBar:ClearAllPoints()
--- MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
--- MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
--- MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
--- MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
--- MainMenuBarPerformanceBar:SetAlpha(0.6)
+MainMenuBarPerformanceBar:ClearAllPoints()
+MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
+MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
+MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
+MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
+MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
 local function UpdatePerformanceBarPushed(self)
@@ -121,6 +121,7 @@ ns.securehook('MicroButton_OnEnter', function(self)
         if newbie then
             GameTooltip:AddLine(NEWBIE_TOOLTIP_LATENCY, 1, 0.82, 0, true)
         end
+        GameTooltip:Show()
     end
 end)
 -- @end-build<3@
