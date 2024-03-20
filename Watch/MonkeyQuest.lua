@@ -372,7 +372,7 @@ ns.addonlogin('MonkeyQuest', function()
                 end
 
                 local quest = QuestiePlayer.currentQuestlog[questId]
-                if not quest   then
+                if not quest then
                     return
                 end
 
@@ -495,7 +495,7 @@ ns.addonlogin('MonkeyQuest', function()
 
             local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel)
             if xpReward and xpReward > 0 then
-                local x = QuestieLib:PrintDifficultyColor(level, '+' .. xpReward)
+                local x = QuestieLib:PrintDifficultyColor(level, format('+%s %s', xpReward , XP or ''))
 
                 GameTooltip:AddLine(x, 1, 1, 1)
                 GameTooltip:AddTexture([[Interface\ICONS\XP_ICON]]);
