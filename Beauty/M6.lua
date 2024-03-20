@@ -100,7 +100,7 @@ ns.addon('M6', function()
                 button.icon:SetVertexColor(r, g, b, a)
                 button.icon:SetDesaturated(d)
 
-                r, g, b = tullaRange:GetColor(state == 'oor' and 'oor' or 'normal')
+                r, g, b = tullaRange:GetColor(state == 'oor' and state or 'normal')
                 button.HotKey:SetVertexColor(r, g, b)
             end
         end
