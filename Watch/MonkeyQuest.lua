@@ -64,7 +64,6 @@ ns.addonlogin('MonkeyQuest', function()
         TitleText:SetFontObject('GameFontNormal')
         TitleText:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
         TitleText.SetTextHeight = nop
-
     end
 
     do -- minimize button
@@ -326,6 +325,82 @@ ns.addonlogin('MonkeyQuest', function()
         local QuestieDB = QuestieLoader:ImportModule('QuestieDB')
         local QuestieReputation = QuestieLoader:ImportModule('QuestieReputation')
         local QuestieHash = QuestieLoader:ImportModule('QuestieHash')
+        local QuestieLib = QuestieLoader:ImportModule('QuestieLib')
+        local QuestiePlayer = QuestieLoader:ImportModule('QuestiePlayer')
+        local TrackerUtils = QuestieLoader:ImportModule('TrackerUtils')
+
+        local QuestXP = QuestieLoader:ImportModule('QuestXP')
+
+        local function GetClickedLine(button)
+            local x, y = GetCursorPosition()
+            local scale = UIParent:GetEffectiveScale()
+            x = x / scale
+            y = y / scale
+
+            local index, inside = button.Text:FindCharacterIndexAtCoordinate(x, y)
+            if not inside then
+                return
+            end
+
+            local text = button.Text:GetText()
+            local start = 1
+            local line = 1
+            local prev = 1
+            while true do
+                local i = text:find('\n', start)
+                if not i then
+                    return
+                end
+                if i > index then
+                    return line, text:sub(prev + 1, i - 1):trim()
+                end
+                line = line + 1
+                start = i + 1
+                prev = i
+            end
+        end
+
+        ns.hook('MonkeyQuestButton_OnClick', function(orig, self, button, down)
+            if IsAltKeyDown() and button == 'LeftButton' then
+                if not self.m_iQuestIndex then
+                    return
+                end
+
+                local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex)
+                if isHeader or not questId then
+                    return
+                end
+
+                local quest = QuestiePlayer.currentQuestlog[questId]
+                if not quest   then
+                    return
+                end
+
+                if quest.isComplete or quest.wasComplete then
+                    TrackerUtils:ShowFinisherOnMap(quest)
+                    return
+                end
+
+                if quest.Objectives then
+                    local _, obj = GetClickedLine(self)
+                    if not obj then
+                        return
+                    end
+
+                    for i, v in ipairs(quest.Objectives) do
+                        print(v.Description, obj)
+                        if v.Description:find(obj) or obj:find(v.Description) then
+                            print(v)
+                            TrackerUtils:ShowObjectiveOnMap(v)
+                            break
+                        end
+                    end
+                end
+
+                return
+            end
+            return orig(self, button, down)
+        end)
 
         if QuestieHash.CompareQuestHashes then
             setfenv(QuestieHash.CompareQuestHashes, setmetatable({
@@ -361,7 +436,7 @@ ns.addonlogin('MonkeyQuest', function()
                 return
             end
 
-            local _, _, _, isHeader, _, _, _, questId = GetQuestLogTitle(index)
+            local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(index)
             if isHeader or not questId then
                 return
             end
@@ -416,6 +491,14 @@ ns.addonlogin('MonkeyQuest', function()
 
                 GameTooltip:AddLine(table.concat(rewardTable, ' / '), 1, 1, 1)
                 GameTooltip:AddTexture([[Interface\AddOns\Questie\Icons\reputation]]);
+            end
+
+            local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel)
+            if xpReward and xpReward > 0 then
+                local x = QuestieLib:PrintDifficultyColor(level, '+' .. xpReward)
+
+                GameTooltip:AddLine(x, 1, 1, 1)
+                GameTooltip:AddTexture([[Interface\ICONS\XP_ICON]]);
             end
         end)
     end)

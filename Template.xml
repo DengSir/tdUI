@@ -333,7 +333,7 @@
         </Scripts>
     </Frame>
 
-    <Button name="tdUIWorldMapFeatureTogglesButton" parent="WorldMapFrame">
+    <Button name="tdUIWorldMapFeatureTogglesButton" parent="WorldMapFrame" build="none">
         <Size x="31" y="31"/>
         <Layers>
             <Layer level="BACKGROUND">
