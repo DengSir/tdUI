@@ -198,6 +198,7 @@ ns.addonlogin('MonkeyQuest', function()
         MonkeyQuestFrame:SetWidth(ns.profile.watch.frame.width)
         ScrollFrame:SetWidth(ns.profile.watch.frame.width)
         ScrollChild:SetWidth(ns.profile.watch.frame.width)
+        MonkeyQuest_Resize()
     end
 
     local function Reset()
