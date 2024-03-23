@@ -51,7 +51,7 @@ local SLOTS = {
     [INVSLOT_BACK] = GetSlotItemLevel,
     [INVSLOT_MAINHAND] = GetMainhandItemLevel,
     [INVSLOT_OFFHAND] = GetSlotItemLevel,
-    [INVSLOT_RANGED] = GetRangedItemLevel,
+    [INVSLOT_RANGED] = GetRangedItemLevel
 }
 
 local function GetItemLevel()
@@ -75,7 +75,11 @@ local ItemLevelFrame = CreateFrame('Frame', nil, PaperDollFrame)
 
 function ItemLevelFrame:OnLoad()
     self.Text = self:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
-    self.Text:SetPoint('BOTTOMLEFT', PlayerStatFrameLeftDropDown, 'TOPLEFT', 24, 5)
+    if PlayerStatFrameLeftDropDown then
+        self.Text:SetPoint('BOTTOMLEFT', PlayerStatFrameLeftDropDown, 'TOPLEFT', 24, 5)
+    elseif CharacterAttributesFrame then
+        self.Text:SetPoint('BOTTOMLEFT', CharacterAttributesFrame, 'TOPLEFT', 0, 0)
+    end
 
     self:SetScript('OnShow', self.OnShow)
     self:SetScript('OnHide', self.UnregisterAllEvents)
@@ -88,7 +92,7 @@ function ItemLevelFrame:OnShow()
 end
 
 function ItemLevelFrame:Update()
-    self.Text:SetFormattedText('iLvl: %d', (select(2, GetAverageItemLevel())))
+    self.Text:SetFormattedText('iLvl: %.1f', (select(2, GetAverageItemLevel())))
 end
 
 ItemLevelFrame:OnLoad()
