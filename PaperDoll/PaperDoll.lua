@@ -9,10 +9,14 @@ local _G = _G
 
 local ipairs = ipairs
 local format = string.format
+local select = select
+local tonumber = tonumber
 
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetItemQualityColor = GetItemQualityColor
 local GetInventoryItemDurability = GetInventoryItemDurability
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemInfo = GetItemInfo
 
 local SLOTS = {
     'Back',
@@ -53,6 +57,10 @@ local function InitButton(button, unit)
     button.Durability:ClearAllPoints()
     button.Durability:SetPoint('BOTTOM', 0, 3)
 
+    button.LevelText = button:CreateFontString(nil, 'ARTWORK', 'NumberFontNormalYellow')
+    button.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
+    button.LevelText:Hide()
+
     BUTTONS[button] = unit
 end
 
@@ -83,14 +91,40 @@ local function GetQuality(button)
     return GetInventoryItemQuality(unit, button:GetID())
 end
 
+local function GetItemSlotLevel(unit, index)
+    local level
+    local itemLink = GetInventoryItemLink(unit, index)
+    if itemLink then
+        level = select(4, GetItemInfo(itemLink))
+    end
+    return tonumber(level) or 0
+end
+
+local function GetLevel(button)
+    local unit = BUTTONS[button]
+    if unit == 'inspect' then
+        unit = InspectFrame.unit
+    end
+    return GetItemSlotLevel(unit, button:GetID())
+end
+
 local function UpdateQuality(button)
     local quality = GetQuality(button)
     if quality and quality > 1 then
         local r, g, b = GetItemQualityColor(quality)
         button.IconBorder:SetVertexColor(r, g, b, 0.5)
         button.IconBorder:Show()
+        local level = GetLevel(button)
+        if level > 0 then
+            button.LevelText:SetText(level)
+            button.LevelText:SetTextColor(r, g, b, 1)
+            button.LevelText:Show()
+        else
+            button.LevelText:Hide()
+        end
     else
         button.IconBorder:Hide()
+        button.LevelText:Hide()
     end
 end
 
