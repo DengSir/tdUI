@@ -27,6 +27,7 @@
     <!-- <Script file="Features\AuctionPlus.lua" /> -->
     <Script file="Features\Fishing.lua" />
     <!-- <Script file="Features\LoseBuff.lua" /> -->
+    <Script file="Features\LearnAll.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
