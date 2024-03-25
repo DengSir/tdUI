@@ -30,17 +30,17 @@ local DEFAULT_PROFILE = {
         },
         button = {macroName = false},
     },
-    tooltip = { --
-        item = { --
-            icon = true,
-            rarityBorder = true,
-            itemLevel = true,
-            itemLevelOnlyEquip = false,
-            price = true,
-            auctionPrice = true,
-            decomposePrice = true,
-        },
-    },
+    -- tooltip = { --
+    --     item = { --
+    --         icon = true,
+    --         rarityBorder = true,
+    --         itemLevel = true,
+    --         itemLevelOnlyEquip = false,
+    --         price = true,
+    --         auctionPrice = true,
+    --         decomposePrice = true,
+    --     },
+    -- },
     chat = { --
         shortChannels = {},
     },

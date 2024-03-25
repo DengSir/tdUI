@@ -161,12 +161,12 @@ ns.login(function()
                     maxLines = range(L['Max lines'], 2, 40, 1),
                 },
             },
-            tooltip = treeItem 'Tooltip' {
-                item = inline 'Item' {
-                    icon = toggle('Item icon'),
-                    itemLevelOnlyEquip = toggle('Show item level on equipment only'),
-                },
-            },
+            -- tooltip = treeItem 'Tooltip' {
+            --     item = inline 'Item' {
+            --         icon = toggle('Item icon'),
+            --         itemLevelOnlyEquip = toggle('Show item level on equipment only'),
+            --     },
+            -- },
             chat = treeItem 'Chat' { --
                 shortChannels = inline 'Short channel'(SHORT_CHANNELS),
             },
