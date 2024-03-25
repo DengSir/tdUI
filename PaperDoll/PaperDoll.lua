@@ -57,7 +57,7 @@ local function InitButton(button, unit)
     button.Durability:ClearAllPoints()
     button.Durability:SetPoint('BOTTOM', 0, 3)
 
-    button.LevelText = button:CreateFontString(nil, 'ARTWORK', 'NumberFontNormalYellow')
+    button.LevelText = button:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
     button.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
     button.LevelText:Hide()
 
