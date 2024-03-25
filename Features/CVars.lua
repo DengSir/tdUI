@@ -8,8 +8,10 @@ local ns = select(2, ...)
 
 ns.onceevent('VARIABLES_LOADED', function()
     -- @debug@
-    ConsoleExec('SET portal TW')
-    SetCVar('profanityFilter', false)
+    if GetCurrentRegion() == 5 then
+        ConsoleExec('SET portal TW')
+        SetCVar('profanityFilter', false)
+    end
     -- @end-debug@
 
     SetCVar('alwaysCompareItems', false)

@@ -51,7 +51,7 @@ local SLOTS = {
     [INVSLOT_BACK] = GetSlotItemLevel,
     [INVSLOT_MAINHAND] = GetMainhandItemLevel,
     [INVSLOT_OFFHAND] = GetSlotItemLevel,
-    [INVSLOT_RANGED] = GetRangedItemLevel
+    [INVSLOT_RANGED] = GetRangedItemLevel,
 }
 
 local function GetItemLevel()
@@ -73,12 +73,25 @@ end
 ---@class ItemLevelFrame: Frame
 local ItemLevelFrame = CreateFrame('Frame', nil, PaperDollFrame)
 
+local function FindCharacterStatsClassis()
+    for i, child in ipairs({CharacterFrame:GetChildren()}) do
+        if not child:GetName() and child.leftStatsDropDown and child.rightStatsDropDown then
+            return child.leftStatsDropDown
+        end
+    end
+end
+
 function ItemLevelFrame:OnLoad()
     self.Text = self:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
     if PlayerStatFrameLeftDropDown then
         self.Text:SetPoint('BOTTOMLEFT', PlayerStatFrameLeftDropDown, 'TOPLEFT', 24, 5)
-    elseif CharacterAttributesFrame then
-        self.Text:SetPoint('BOTTOMLEFT', CharacterAttributesFrame, 'TOPLEFT', 0, 0)
+    elseif CharacterAttributesFrame and CharacterAttributesFrame:IsShown() then
+        self.Text:SetPoint('BOTTOMLEFT', CharacterAttributesFrame, 'TOPLEFT', 5, 0)
+    else
+        local frame = FindCharacterStatsClassis()
+        if frame then
+            self.Text:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 24, 5)
+        end
     end
 
     self:SetScript('OnShow', self.OnShow)
