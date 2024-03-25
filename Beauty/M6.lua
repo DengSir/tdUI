@@ -23,7 +23,7 @@ ns.addon('M6', function()
             HideUIPanel(M6UI)
         else
             ShowUIPanel(M6UI)
-            M6UI:ReturnToList(true)
+            -- M6UI:ReturnToList(true)
         end
     end
 

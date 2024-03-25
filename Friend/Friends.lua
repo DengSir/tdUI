@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/2/2019, 3:23:10 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -143,7 +142,8 @@ ns.securehook('FriendsFrame_UpdateFriendButton', function(button)
 
             button.classIcon:SetTexCoord(ns.CropClassCoords(info.classFileName))
             button.classIcon:Show()
-            button.gameIcon:Show()
+            -- button.gameIcon:Show()
+            button.gameIcon:Hide()
 
             button.inviteButton.target = info.name
             button.inviteButton:Show()
@@ -203,13 +203,9 @@ local function InitButton(button)
     inviteButton:SetScript('OnEnter', OnEnter)
     inviteButton:SetScript('OnLeave', GameTooltip_Hide)
 
-    local SIZE = 20
-    local DELTA = 28 - SIZE
-
     local classIcon = button:CreateTexture(nil, 'ARTWORK', nil, 2)
-    classIcon:SetSize(SIZE, SIZE)
-    classIcon:SetPoint('CENTER', button.gameIcon, 'CENTER')
-    classIcon:SetTexture([[Interface\Glues\CharacterCreate\ui-charactercreate-classes]])
+    classIcon:SetAllPoints(button.gameIcon)
+    classIcon:SetTexture([[Interface\WorldStateFrame\ICONS-CLASSES]])
 
     button.classIcon = classIcon
     button.inviteButton = inviteButton
