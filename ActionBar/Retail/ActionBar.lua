@@ -9,7 +9,7 @@ local ipairs = ipairs
 ---@type ns
 local ns = select(2, ...)
 
-local GetAtlasInfo = GetAtlasInfo
+-- local GetAtlasInfo = GetAtlasInfo or C_Texture.GetAtlasInfo
 local GetCVarBool = GetCVarBool
 local GetNetStats = GetNetStats
 local HasAction = HasAction
@@ -23,8 +23,16 @@ local ReputationWatchBar = ReputationWatchBar
 local StanceBarFrame = StanceBarFrame
 local StanceButton1 = StanceButton1
 
-local LARGE_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-large'))
-local SMALL_WIDTH = select(2, GetAtlasInfo('hud-MainMenuBar-small'))
+local function GetAtlasWidth(atlas)
+    if GetAtlasInfo then
+        return select(2, GetAtlasInfo(atlas))
+    else
+        return C_Texture.GetAtlasInfo(atlas).width
+    end
+end
+
+local LARGE_WIDTH = GetAtlasWidth('hud-MainMenuBar-large')
+local SMALL_WIDTH = GetAtlasWidth('hud-MainMenuBar-small')
 
 local NO_GRID_BUTTONS = ns.GetFrames('MultiBarBottomRightButton%d', 6)
 
