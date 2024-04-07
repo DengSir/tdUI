@@ -24,7 +24,7 @@
     <Script file="Features\ItemRackBar.lua" />
     <Script file="Features\Flyable.lua" />
     <!-- <Script file="Features\FollowAlways.lua" /> -->
-    <!-- <Script file="Features\AuctionPlus.lua" /> -->
+    <Script file="Features\AuctionPlus.lua" />
     <Script file="Features\Fishing.lua" />
     <!-- <Script file="Features\LoseBuff.lua" /> -->
     <Script file="Features\LearnAll.lua" />
@@ -74,6 +74,7 @@
     <Script file="Watch\Recount.lua" />
     <Script file="Watch\ThreatClassic2.lua" />
     <Script file="Watch\MonkeyQuest.lua" />
+    <Script file="Watch\Questie.lua" />
     <!-- <Script file="Watch\BoomTime.lua" /> -->
 
     <Script file="UnitFrame\UnitFrame.lua" />

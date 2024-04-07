@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 ns.onceevent('VARIABLES_LOADED', function()
     -- @debug@
-    if GetCurrentRegion() == 5 then
+    if GetCurrentRegion() == 5 or GetLocale() == 'zhCN' then
         ConsoleExec('SET portal TW')
         SetCVar('profanityFilter', false)
     end

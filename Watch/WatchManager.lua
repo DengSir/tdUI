@@ -70,6 +70,7 @@ function WatchManager:Register(frame, order, options)
     end
 
     self:Refresh()
+    return env
 end
 
 function WatchManager:Refresh()
@@ -142,6 +143,8 @@ function WatchManager:SetupMinimizeButton(frame, button)
     button.SetSize = nop
     button.SetWidth = nop
     button.SetHeight = nop
+    button.SetPoint = nop
+    button.ClearAllPoints = nop
 end
 
 ns.config('watch.frame.width', function()
