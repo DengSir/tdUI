@@ -69,7 +69,7 @@ function Collect:InitMinimap()
 
     local obj = LDB:NewDataObject(ADDON, {
         type = 'data source',
-        icon = [[Interface\MacroFrame\MacroFrame-Icon]],
+        icon = C_AddOns.GetAddOnMetadata(ADDON, 'IconTexture'),
         OnEnter = function(button)
             GameTooltip:SetOwner(button, 'ANCHOR_LEFT')
             GameTooltip:SetText('tdUI')

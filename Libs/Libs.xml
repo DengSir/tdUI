@@ -16,4 +16,6 @@
     <Script file="LibRangeCheck-3.0\LibRangeCheck-3.0.lua" />
     <Script file="LibSharedMedia-3.0\LibSharedMedia-3.0.lua" />
     <Script file="LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua" />
+
+    <Script remote="github@DengSir/tdOptions@master" file="tdOptions\Options.lua" />
 </Ui>

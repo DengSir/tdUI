@@ -94,6 +94,28 @@ MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
+MiniMapLFGFrame:ClearAllPoints()
+MiniMapLFGFrame:SetPoint('RIGHT', CharacterMicroButton, 'LEFT', -5, -1)
+ns.hookscript(QueueStatusFrame, 'OnShow', function(self)
+    self:ClearAllPoints()
+    self:SetPoint('BOTTOMLEFT', MiniMapLFGFrame, 'TOPLEFT')
+end)
+MiniMapLFGFrame:SetSize(45, 45)
+MiniMapLFGFrameIcon:SetSize(45, 45)
+-- MiniMapLFGFrameBorder:SetSize(96, 96)
+MiniMapLFGFrameBorder:SetAtlas('groupfinder-eye-single')
+
+if not LFGParentFrame and PVEFrame then
+    local function Update()
+        if PVEFrame:IsShown() then
+            LFGMicroButton:SetButtonState('PUSHED', true)
+        else
+            LFGMicroButton:SetButtonState('NORMAL')
+        end
+    end
+    ns.securehook('UpdateMicroButtons', Update)
+end
+
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
         MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.0625, -17.34375)

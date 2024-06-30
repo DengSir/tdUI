@@ -201,7 +201,7 @@ ns.securehook('MainMenuBarVehicleLeaveButton_Update', function()
     end
 
     local _, relativeTo = button:GetPoint()
-    if relativeTo == StanceBarFrame then
+    if relativeTo == StanceBarFrame or relativeTo == PossessBarFrame then
         button:SetPoint('LEFT', StanceButton1, 'LEFT')
     end
 end)

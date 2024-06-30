@@ -10,6 +10,9 @@ ns.addon('Questie', function()
     local TrackerBaseFrame = QuestieLoader:ImportModule('TrackerBaseFrame')
 
     ns.securehook(QuestieTracker, 'Initialize', function()
+        if not Questie_BaseFrame then
+            return
+        end
         ns.hide(Questie_Sizer)
 
         local env = ns.WatchManager:Register(Questie_BaseFrame, 6, {

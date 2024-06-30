@@ -6,6 +6,7 @@
 local ns = select(2, ...)
 
 local optionFrame
+local tdOptions = LibStub('tdOptions')
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
 local AceConfigDialog = LibStub('AceConfigDialog-3.0')
 local LSM = LibStub('LibSharedMedia-3.0')
@@ -179,18 +180,10 @@ ns.login(function()
         },
     }
 
-    AceConfigRegistry:RegisterOptionsTable('tdUI', options)
-    optionFrame = AceConfigDialog:AddToBlizOptions('tdUI', 'tdUI')
+    tdOptions:Register('tdUI', options)
 end)
 
-local function OpenToCategory(options)
-    InterfaceOptionsFrame_OpenToCategory(options)
-    InterfaceOptionsFrame_OpenToCategory(options)
-    OpenToCategory = InterfaceOptionsFrame_OpenToCategory
-end
 
 function ns.OpenOption()
-    -- OpenToCategory(optionFrame)
-
-    AceConfigDialog:Open('tdUI')
+    tdOptions:Open('tdUI')
 end

@@ -55,7 +55,6 @@
 
     <Script file="Quest\Vendo.lua" />
 
-    <Script file="Map\WorldMap.lua" />
     <Script file="Map\Minimap.lua" />
     <Script file="Map\Coords.lua" />
     <Script file="Map\ButtonCollect.lua" />

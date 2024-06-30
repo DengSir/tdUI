@@ -38,14 +38,14 @@ ns.addon('MeetingHorn', function()
     }
 end)
 
-if not WorldMapMicroButton then
-    ns.CreateMicroButton {
-        text = WORLDMAP_BUTTON,
-        keybinding = 'TOGGLEWORLDMAP',
-        template = 'World',
-        frame = WorldMapFrame,
-        after = 'SocialsMicroButton',
-        onClick = ToggleWorldMap,
-        hideInOverrideBar = true,
-    }
-end
+-- if not WorldMapMicroButton then
+--     ns.CreateMicroButton {
+--         text = WORLDMAP_BUTTON,
+--         keybinding = 'TOGGLEWORLDMAP',
+--         template = 'World',
+--         frame = WorldMapFrame,
+--         after = 'SocialsMicroButton',
+--         onClick = ToggleWorldMap,
+--         hideInOverrideBar = true,
+--     }
+-- end

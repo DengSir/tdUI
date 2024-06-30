@@ -157,7 +157,7 @@ ns.addon('M6', function()
             end
         end)
 
-        M6.PainterEvents.RawActionBookUpdates = function(event, ...)
+        M6:RegisterButtonUpdateListener(function(event, ...)
             if event == 'M6_BUTTON_UPDATE' then
                 local button, _, _, state, _, _, count, _, _, tf, id = ...
 
@@ -193,7 +193,7 @@ ns.addon('M6', function()
                 local button = ...
                 Unhook(button)
             end
-        end
+        end)
 
         -- ActionBarButtonEventsFrame:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
 
