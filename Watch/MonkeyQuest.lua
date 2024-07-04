@@ -126,6 +126,17 @@ ns.addonlogin('MonkeyQuest', function()
                 end
             end
 
+            for i = 1, MonkeyQuest.m_iNumQuestButtons, 1 do
+                local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(i)
+                if isHeader then
+                    if unfold then
+                        ExpandQuestHeader(i);
+                    else
+                        CollapseQuestHeader(i);
+                    end
+                end
+            end
+
             MonkeyQuest_Refresh()
         end)
 
@@ -258,7 +269,7 @@ ns.addonlogin('MonkeyQuest', function()
 
     local function UpdateHeight()
         local visibleHeight = MonkeyQuestFrame:GetTop() - 32 -
-                                  (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
+            (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
         local totalHeight = 0
 
         for _, button in ipairs(QuestButtons) do
@@ -305,12 +316,20 @@ ns.addonlogin('MonkeyQuest', function()
 
     ns.hook('MonkeyQuestButton_OnClick', function(orig, self, button, down)
         if IsShiftKeyDown() and button == 'LeftButton' then
-            local title, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex);
+            local title, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex)
             if not isHeader then
                 local activeWindow = ChatEdit_GetActiveWindow()
                 if activeWindow and activeWindow:HasFocus() then
                     return activeWindow:Insert(format('[%s (%d)]', title, questId))
                 end
+            end
+        end
+        local title, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex)
+        if isHeader then
+            if not MonkeyQuestConfig[MonkeyQuest.m_strPlayer].m_aQuestList[_G["MonkeyQuestHideButton" .. self.id].m_strQuestLogTitleText].m_bChecked then
+                ExpandQuestHeader(self.m_iQuestIndex);
+            else
+                CollapseQuestHeader(self.m_iQuestIndex);
             end
         end
         return orig(self, button, down)
@@ -417,7 +436,7 @@ ns.addonlogin('MonkeyQuest', function()
                         end
                     end
                 end,
-            }, {__index = _G}))
+            }, { __index = _G }))
         end
 
         -- local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:14:14:2:0|t'
@@ -454,7 +473,7 @@ ns.addonlogin('MonkeyQuest', function()
                 local aldorPenalty, scryersPenalty
                 local faction = select(2, UnitFactionGroup('player'))
                 local playerIsHuman = select(3, UnitRace('player')) == 1
-                local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, {935, 8999}))
+                local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, { 935, 8999 }))
 
                 for _, rewardPair in pairs(reputationReward) do
                     factionId = rewardPair[1]
@@ -472,7 +491,7 @@ ns.addonlogin('MonkeyQuest', function()
                             rewardValue = math.floor(rewardValue * 1.1)
                         end
 
-                        if factionId == 932 then -- Aldor
+                        if factionId == 932 then     -- Aldor
                             scryersPenalty = -math.floor(rewardValue * 1.1)
                         elseif factionId == 934 then -- Scryers
                             aldorPenalty = -math.floor(rewardValue * 1.1)
@@ -496,7 +515,7 @@ ns.addonlogin('MonkeyQuest', function()
 
             local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel)
             if xpReward and xpReward > 0 then
-                local x = QuestieLib:PrintDifficultyColor(level, format('+%s %s', xpReward , XP or ''))
+                local x = QuestieLib:PrintDifficultyColor(level, format('+%s %s', xpReward, XP or ''))
 
                 GameTooltip:AddLine(x, 1, 1, 1)
                 GameTooltip:AddTexture([[Interface\ICONS\XP_ICON]]);
