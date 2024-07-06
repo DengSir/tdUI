@@ -200,8 +200,12 @@ ns.addonlogin('MonkeyQuest', function()
     MonkeyQuestButton1.ClearAllPoints = nop
     MonkeyQuestButton1.SetPoint = nop
 
-    for _, button in ipairs(QuestButtons) do
+    for i, button in ipairs(QuestButtons) do
         button:SetParent(ScrollChild)
+        local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(i)
+        if isHeader then
+            ExpandQuestHeader(i)
+        end
     end
 
     local function Apply()
