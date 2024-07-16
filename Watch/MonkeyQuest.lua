@@ -151,6 +151,12 @@ ns.addonlogin('MonkeyQuest', function()
                 FoldButton:Fold()
             else
                 FoldButton:Unfold()
+                for i = 1, GetNumQuestLogEntries() do
+                    local isHeader, isCollapsed = select(4, GetQuestLogTitle(i))
+                    if isHeader and isCollapsed then
+                        ExpandQuestHeader(i)
+                    end
+                end
             end
         end)
     end
@@ -202,10 +208,6 @@ ns.addonlogin('MonkeyQuest', function()
 
     for i, button in ipairs(QuestButtons) do
         button:SetParent(ScrollChild)
-        local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(i)
-        if isHeader then
-            ExpandQuestHeader(i)
-        end
     end
 
     local function Apply()
