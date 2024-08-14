@@ -94,16 +94,15 @@ MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
 
-MiniMapLFGFrame:ClearAllPoints()
-MiniMapLFGFrame:SetPoint('RIGHT', CharacterMicroButton, 'LEFT', -5, -1)
 ns.hookscript(QueueStatusFrame, 'OnShow', function(self)
     self:ClearAllPoints()
     self:SetPoint('BOTTOMLEFT', MiniMapLFGFrame, 'TOPLEFT')
 end)
-MiniMapLFGFrame:SetSize(45, 45)
-MiniMapLFGFrameIcon:SetSize(45, 45)
+
+-- MiniMapLFGFrame:SetSize(45, 45)
+-- MiniMapLFGFrameIcon:SetSize(45, 45)
 -- MiniMapLFGFrameBorder:SetSize(96, 96)
-MiniMapLFGFrameBorder:SetAtlas('groupfinder-eye-single')
+-- MiniMapLFGFrameBorder:SetAtlas('groupfinder-eye-single')
 
 if not LFGParentFrame and PVEFrame then
     local function Update()
@@ -193,6 +192,40 @@ end)
 
 Bar.BgKeyring:SetParent(KeyRingButton)
 
+local LFGButtons = {MiniMapLFGFrame, MiniMapBattlefieldFrame}
+
+MiniMapLFGFrameBorder:SetPoint('TOPLEFT')
+
+local function LayoutLFGButtons()
+    local prev
+    local point, rpoint, xDelta
+    if ns.profile.actionbar.micro.position == 'LEFT' then
+        point = 'BOTTOMLEFT'
+        rpoint = 'BOTTOMRIGHT'
+        xDelta = 5
+    else
+        point = 'BOTTOMRIGHT'
+        rpoint = 'BOTTOMLEFT'
+        xDelta = -5
+    end
+    for _, v in ipairs(LFGButtons) do
+        if v:IsShown() then
+            v:ClearAllPoints()
+            if prev then
+                v:SetPoint(point, prev, rpoint, 0, 0)
+            else
+                v:SetPoint(point, Bar, rpoint, xDelta, 5)
+            end
+            prev = v
+        end
+    end
+end
+
+for _, button in ipairs(LFGButtons) do
+    ns.hookscript(button, 'OnShow', LayoutLFGButtons)
+    ns.hookscript(button, 'OnHide', LayoutLFGButtons)
+end
+
 local UpdatePosition = ns.pend(function()
     local style = ns.profile.actionbar.micro.position
     if style == 'LEFT' then
@@ -234,7 +267,10 @@ local UpdatePosition = ns.pend(function()
     elseif style == 'HIDE' then
         Bar:Hide()
     end
+
+    LayoutLFGButtons()
 end)
+
 
 local LayoutMicroBar = ns.pend(function()
     local inOverride = false

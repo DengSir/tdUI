@@ -9,7 +9,7 @@ local ns = select(2, ...)
 local QUESTS = {83713, 83714}
 local TYPE = 2485
 
-local Frame
+local Overlay
 
 local function Ok()
     for _, id in ipairs(QUESTS) do
@@ -20,30 +20,48 @@ local function Ok()
     return true
 end
 
+local function IsComplete()
+    for _, id in ipairs(QUESTS) do
+        if not C_QuestLog.IsQuestFlaggedCompleted(id) then
+            return false
+        end
+    end
+    return true
+end
+
+local function CreateOverlay()
+    Overlay = CreateFrame('Frame', nil, LFDQueueFrame)
+    Overlay:SetFrameLevel(LFDQueueFrame:GetFrameLevel() + 100)
+    Overlay:SetAllPoints(LFDQueueFrameCooldownFrame)
+    Overlay:EnableMouse(true)
+    Overlay:Show()
+
+    local Background = Overlay:CreateTexture(nil, 'BACKGROUND')
+    Background:SetColorTexture(0, 0, 0, 0.93)
+    Background:SetAllPoints()
+
+    local Text = Overlay:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+    Text:SetPoint('CENTER')
+    Text:SetText('请先接取每日任务')
+end
+
 local function Run()
-    if LFDQueueFrame.type == TYPE and not Ok() then
-        Frame = Frame or CreateFrame('Frame')
-        Frame:SetParent(LFDQueueFrame)
-        Frame:SetFrameLevel(LFDQueueFrame:GetFrameLevel() + 100)
-        Frame:SetPoint('TOPLEFT', LFDQueueFrame, 'TOPLEFT', 3, -148)
-        Frame:SetPoint('BOTTOMRIGHT', LFDQueueFrame, 'BOTTOMRIGHT', -7, 26)
-        Frame:EnableMouse(true)
-        Frame:Show()
-        Frame.Background = Frame.Background or Frame:CreateTexture(nil, 'BACKGROUND')
-        Frame.Background:SetColorTexture(0, 0, 0, 0.95)
-        Frame.Background:SetAllPoints()
-        Frame.Text = Frame.Text or Frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-        Frame.Text:SetPoint('CENTER', Frame, 'CENTER')
-        Frame.Text:SetText('请先接取每日任务')
-    elseif Frame then
-        Frame:Hide()
+    if LFDQueueFrame.type == TYPE and LFDQueueFrame:IsShown() and not LFDQueueFrameCooldownFrame:IsShown() and not Ok() then
+        if not Overlay then
+            CreateOverlay()
+        end
+        Overlay:Show()
+    elseif Overlay then
+        Overlay:Hide()
     end
 end
 
-ns.securehook('LFDQueueFrame_SetType', Run)
 ns.event('UNIT_QUEST_LOG_CHANGED', Run)
-ns.login(function()
-    if not Ok() then
+ns.securehook('LFDQueueFrame_SetType', Run)
+ns.hookscript(LFDQueueFrameCooldownFrame, 'OnShow', Run)
+ns.hookscript(LFDQueueFrameCooldownFrame, 'OnHide', Run)
+ns.hookscript(LFDQueueFrame, 'OnShow', function()
+    if not IsComplete() then
         LFDQueueFrame_SetType(TYPE)
     end
 end)
