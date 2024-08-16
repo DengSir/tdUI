@@ -60,6 +60,7 @@ hide(MainMenuXPBarTexture3)
 
 hide(MainMenuBarMaxLevelBar)
 hide(MainMenuBarPerformanceBarFrameButton)
+hide(MainMenuBarTextureExtender)
 
 hide(ReputationWatchBar.StatusBar.WatchBarTexture0)
 hide(ReputationWatchBar.StatusBar.WatchBarTexture1)

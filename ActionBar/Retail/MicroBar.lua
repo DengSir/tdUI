@@ -194,31 +194,32 @@ Bar.BgKeyring:SetParent(KeyRingButton)
 
 local LFGButtons = {MiniMapLFGFrame, MiniMapBattlefieldFrame}
 
-MiniMapLFGFrameBorder:SetPoint('TOPLEFT')
+-- MiniMapLFGFrameBorder:SetPoint('TOPLEFT')
+-- MiniMapLFGFrame.eye:SetPoint('CENTER', 1, -1)
 
 local function LayoutLFGButtons()
-    local prev
-    local point, rpoint, xDelta
-    if ns.profile.actionbar.micro.position == 'LEFT' then
-        point = 'BOTTOMLEFT'
-        rpoint = 'BOTTOMRIGHT'
-        xDelta = 5
-    else
-        point = 'BOTTOMRIGHT'
-        rpoint = 'BOTTOMLEFT'
-        xDelta = -5
-    end
-    for _, v in ipairs(LFGButtons) do
-        if v:IsShown() then
-            v:ClearAllPoints()
-            if prev then
-                v:SetPoint(point, prev, rpoint, 0, 0)
-            else
-                v:SetPoint(point, Bar, rpoint, xDelta, 5)
-            end
-            prev = v
-        end
-    end
+    -- local prev
+    -- local point, rpoint, xDelta
+    -- if ns.profile.actionbar.micro.position == 'LEFT' then
+    --     point = 'BOTTOMLEFT'
+    --     rpoint = 'BOTTOMRIGHT'
+    --     xDelta = 5
+    -- else
+    --     point = 'BOTTOMRIGHT'
+    --     rpoint = 'BOTTOMLEFT'
+    --     xDelta = -5
+    -- end
+    -- for _, v in ipairs(LFGButtons) do
+    --     if v:IsShown() then
+    --         v:ClearAllPoints()
+    --         if prev then
+    --             v:SetPoint(point, prev, rpoint, 0, 0)
+    --         else
+    --             v:SetPoint(point, Bar, rpoint, xDelta, 5)
+    --         end
+    --         prev = v
+    --     end
+    -- end
 end
 
 for _, button in ipairs(LFGButtons) do
@@ -270,7 +271,6 @@ local UpdatePosition = ns.pend(function()
 
     LayoutLFGButtons()
 end)
-
 
 local LayoutMicroBar = ns.pend(function()
     local inOverride = false
