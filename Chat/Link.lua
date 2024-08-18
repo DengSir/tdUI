@@ -48,3 +48,33 @@ end
 
 ChatFrame_AddMessageEventFilter('CHAT_MSG_BN_WHISPER', FixLinkColor)
 ChatFrame_AddMessageEventFilter('CHAT_MSG_BN_WHISPER_INFORM', FixLinkColor)
+
+local function GetPlayerClass(name)
+    for i = 1, GetNumGuildMembers() do
+        local member, _, _, _, _, _, _, _, _, _, class = GetGuildRosterInfo(i)
+        if Ambiguate(member, 'none') == name then
+            return class
+        end
+    end
+
+    for i = 1, C_FriendList.GetNumFriends() do
+        local info = C_FriendList.GetFriendInfoByIndex(i)
+        if info.name == name then
+            local _, class = GetPlayerInfoByGUID(info.guid)
+            return class
+        end
+    end
+    -- GetFriendInfo
+end
+
+ChatFrame_AddMessageEventFilter('CHAT_MSG_SYSTEM', function(frame, event, msg, ...)
+    local name = msg:match('|Hplayer:([^:|]+)|h%[([^%]]+)%]|h')
+    local class = name and GetPlayerClass(name)
+    if class then
+        local color = RAID_CLASS_COLORS[class]
+        if color then
+            msg = msg:gsub('|h%[([^%]]+)%]|h', format('|h[%s]|h', color:WrapTextInColorCode(name)))
+        end
+    end
+    return false, msg, ...
+end)

@@ -192,39 +192,36 @@ end)
 
 Bar.BgKeyring:SetParent(KeyRingButton)
 
-local LFGButtons = {MiniMapLFGFrame, MiniMapBattlefieldFrame}
-
--- MiniMapLFGFrameBorder:SetPoint('TOPLEFT')
--- MiniMapLFGFrame.eye:SetPoint('CENTER', 1, -1)
+local LFGButtons = { --
+    {button = MiniMapLFGFrame, x = -1, y = 1},
+    {button = MiniMapBattlefieldFrame, x = 0, y = 0},
+}
 
 local function LayoutLFGButtons()
-    -- local prev
-    -- local point, rpoint, xDelta
-    -- if ns.profile.actionbar.micro.position == 'LEFT' then
-    --     point = 'BOTTOMLEFT'
-    --     rpoint = 'BOTTOMRIGHT'
-    --     xDelta = 5
-    -- else
-    --     point = 'BOTTOMRIGHT'
-    --     rpoint = 'BOTTOMLEFT'
-    --     xDelta = -5
-    -- end
-    -- for _, v in ipairs(LFGButtons) do
-    --     if v:IsShown() then
-    --         v:ClearAllPoints()
-    --         if prev then
-    --             v:SetPoint(point, prev, rpoint, 0, 0)
-    --         else
-    --             v:SetPoint(point, Bar, rpoint, xDelta, 5)
-    --         end
-    --         prev = v
-    --     end
-    -- end
+    local p, rp, x
+    if ns.profile.actionbar.micro.position == 'LEFT' then
+        p = 'BOTTOMLEFT'
+        rp = 'BOTTOMRIGHT'
+        x = 1
+    else
+        p = 'BOTTOMRIGHT'
+        rp = 'BOTTOMLEFT'
+        x = -1
+    end
+
+    local index = 0
+    for _, v in ipairs(LFGButtons) do
+        if v.button:IsShown() then
+
+            point(v.button, p, Bar, rp, 35 * index * x + v.x, v.y + 3)
+            index = index + 1
+        end
+    end
 end
 
-for _, button in ipairs(LFGButtons) do
-    ns.hookscript(button, 'OnShow', LayoutLFGButtons)
-    ns.hookscript(button, 'OnHide', LayoutLFGButtons)
+for _, v in ipairs(LFGButtons) do
+    ns.hookscript(v.button, 'OnShow', LayoutLFGButtons)
+    ns.hookscript(v.button, 'OnHide', LayoutLFGButtons)
 end
 
 local UpdatePosition = ns.pend(function()

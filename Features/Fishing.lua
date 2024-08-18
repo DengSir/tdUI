@@ -61,7 +61,10 @@ end)
 
 RegisterStateDriver(Action, 'usable', '[equipped:鱼竿]1;0')
 
-local function CacheCVars()
+local function CacheCVars(key)
+    if key and not CVARS[key] then
+        return
+    end
     if WRITING then
         print('Our writing')
         return
@@ -73,5 +76,7 @@ local function CacheCVars()
     dump(CVARS_CACHE)
 end
 
-ns.login(CacheCVars)
+ns.login(function()
+    CacheCVars()
+end)
 ns.event('CVAR_UPDATE', CacheCVars)
