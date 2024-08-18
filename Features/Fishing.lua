@@ -34,7 +34,7 @@ local function CanFishing()
     if not itemId then
         return
     end
-    local _, itemType, itemSubType = select(6, GetItemInfoInstant(itemId))
+    local itemType, itemSubType = select(6, GetItemInfoInstant(itemId))
     return itemType == 2 and itemSubType == 20
 end
 
