@@ -27,6 +27,8 @@ ns.onceevent('VARIABLES_LOADED', function()
     SetCVar('nameplateOtherTopInset', 0.08)
     SetCVar('nameplatePersonalHideDelaySeconds', 3.0)
     SetCVar('nameplateSelectedScale', 1)
-    
-    SetCVar('cameraDistanceMaxZoomFactor', 4)
+
+    C_Timer.After(1, function()
+        SetCVar('cameraDistanceMaxZoomFactor', 4)
+    end)
 end)
