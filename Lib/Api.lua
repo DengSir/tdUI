@@ -38,7 +38,7 @@ function ns.rgb(r, g, b)
     end
 end
 
-function ns.RePoint(frame, ...)
+function ns.point(frame, ...)
     if frame then
         frame:ClearAllPoints()
         frame:SetPoint(...)
@@ -146,6 +146,10 @@ end
 
 local hider
 function ns.hide(obj)
+    if not obj then
+        print('hide nil object')
+        return
+    end
     if not hider then
         hider = CreateFrame('Frame')
         hider:Hide()

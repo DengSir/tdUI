@@ -34,7 +34,7 @@ local MICRO_MIDDLE_COORDS = {339 / 1024, 577 / 1024, 212 / 256, 255 / 256}
 local BAG_BG_COORDS = {423 / 1024, 607 / 1024, 167 / 256, 212 / 256}
 local KEYRING_BG_COORDS = {423 / 1024, (423 + 24) / 1024, 167 / 256, 212 / 256}
 
-local point = ns.RePoint
+local point = ns.point
 
 local MicroButton = ns.class('Button')
 local Bar = CreateFrame('Frame', 'MicroButtonAndBagsBar', MainMenuBarArtFrame, 'tdUIMicroButtonAndBagsBarTemplate')

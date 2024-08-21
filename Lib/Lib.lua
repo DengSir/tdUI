@@ -435,3 +435,27 @@ function ns.cleantable(t)
         end
     end
 end
+
+do
+    local menu
+    function ns.CallMenu(anchor, menuList)
+        if not menu then
+            menu = CreateFrame('Frame', 'tdUIDropdown', UIParent, 'UIDropDownMenuTemplate')
+        end
+
+        menu.displayMode = 'MENU'
+        menu.initialize = EasyMenu_Initialize
+        CloseDropDownMenus()
+        ToggleDropDownMenu(1, nil, menu, anchor, 0, 0, menuList)
+    end
+
+    function ns.CloseMenu(anchor)
+        if not menu then
+            return
+        end
+        if menu.relativeTo == anchor then
+            CloseDropDownMenus()
+            return true
+        end
+    end
+end

@@ -38,15 +38,8 @@ local NO_GRID_BUTTONS = ns.GetFrames('MultiBarBottomRightButton%d', 6)
 
 local Core = CreateFrame('Frame', nil, nil, 'SecureHandlerBaseTemplate')
 
-local Hider = CreateFrame('Frame')
-Hider:Hide()
-
-local function hide(frame)
-    frame:Hide()
-    frame:SetParent(Hider)
-end
-
-local point = ns.RePoint
+local point = ns.point
+local hide = ns.hide
 
 hide(MainMenuBarTexture0)
 hide(MainMenuBarTexture1)

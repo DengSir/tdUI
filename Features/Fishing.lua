@@ -54,7 +54,7 @@ Action:HookScript('OnAttributeChanged', function(_, key, value)
             SetCVar(k, CVARS_CACHE[k])
         end
     end
-    C_Timer.After(2, function(cb)
+    C_Timer.After(2, function()
         WRITING = false
     end)
 end)

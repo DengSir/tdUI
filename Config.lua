@@ -2,7 +2,8 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/1/2020, 1:49:54 PM
----@type ns
+--
+---@class ns
 local ns = select(2, ...)
 
 ---@class Profile
@@ -30,17 +31,6 @@ local DEFAULT_PROFILE = {
         },
         button = {macroName = false},
     },
-    -- tooltip = { --
-    --     item = { --
-    --         icon = true,
-    --         rarityBorder = true,
-    --         itemLevel = true,
-    --         itemLevelOnlyEquip = false,
-    --         price = true,
-    --         auctionPrice = true,
-    --         decomposePrice = true,
-    --     },
-    -- },
     chat = { --
         shortChannels = {},
     },
@@ -64,4 +54,13 @@ ns.load(function()
 
     ns.profile = ns.db.profile
     ns.global = ns.db.global
+
+    if not TDDB_UI_CHAR then
+        TDDB_UI_CHAR = {}
+    end
+
+    ns.char = TDDB_UI_CHAR
+
+    ns.char.spec = ns.char.spec or {}
+    ns.char.spec.gears = ns.char.spec.gears or {}
 end)

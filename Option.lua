@@ -177,12 +177,35 @@ ns.login(function()
                     totot = fulltoggle('Target Of Target Of Target'),
                 },
             },
+            featurs = {
+                type = 'group',
+                name = '  |cffffffff' .. 'Features' .. '|r',
+                order = orderGen(),
+                get = function(paths)
+                    if paths.type == 'toggle' then
+                        return GetCVarBool(paths[#paths])
+                    elseif paths.type == 'range' then
+                        return tonumber(GetCVar(paths[#paths]))
+                    else
+                        assert(false)
+                    end
+                    -- return GetCVar(paths[#paths])
+                end,
+                set = function(paths, value)
+                    SetCVar(paths[#paths], value)
+                end,
+                args = {
+                    alwaysCompareItems = fulltoggle('Always compare items'),
+                    chatClassColorOverride = fulltoggle('Chat class color override'),
+                    xpBarText = fulltoggle('Show XP bar text'),
+                    cameraDistanceMaxZoomFactor = range('Camera distance max zoom factor', 1, 4, 0.1),
+                },
+            },
         },
     }
 
     tdOptions:Register('tdUI', options)
 end)
-
 
 function ns.OpenOption()
     tdOptions:Open('tdUI')
