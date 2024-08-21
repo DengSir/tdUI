@@ -29,6 +29,7 @@
     <!-- <Script file="Features\LoseBuff.lua" /> -->
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
+    <Script file="Features\TalentGear.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\Count.lua" />
