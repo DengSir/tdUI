@@ -100,7 +100,7 @@ function ItemLevelFrame:OnLoad()
 end
 
 function ItemLevelFrame:OnShow()
-    self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    self:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
     self:Update()
 end
 
