@@ -46,7 +46,7 @@ local function CheckConfig()
     end
 end
 
-ns.event('ACTIONBAR_SHOWGRID', CheckConfig)
+ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
 ns.event('ACTIONBAR_HIDEGRID', CheckConfig)
 ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
 ns.config('actionbar.button.macroName', CheckConfig)
