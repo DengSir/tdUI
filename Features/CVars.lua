@@ -17,6 +17,9 @@ ns.onceevent('VARIABLES_LOADED', function()
     SetCVar('alwaysCompareItems', false)
     SetCVar('chatClassColorOverride', false)
     SetCVar('xpBarText', true)
+
+    SetCVar('SoftTargetInteractArc', 0)
+    SetCVar('SoftTargetInteractRange', 10)
 end)
 
 ns.addon('AdvancedInterfaceOptions', function()
