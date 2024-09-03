@@ -16,7 +16,7 @@ local Minimap = Minimap
 local MinimapBackdrop = MinimapBackdrop
 local GameTooltip = GameTooltip
 
----@type tdUICollectFrame
+---@class tdUICollectFrame
 local Collect = CreateFrame('Frame', nil, UIParent, 'tdUICollectFrameTemplate')
 
 local BLACK_LIST = { --
@@ -25,6 +25,7 @@ local BLACK_LIST = { --
     ['MiniMapTrackingFrame'] = true,
     ['MiniMapBattlefieldFrame'] = true,
     ['MiniMapMailFrame'] = true,
+    ['EKMinimapDungeonIcon'] = true,
     -- ['TimeManagerClockButton'] = true,
 }
 
