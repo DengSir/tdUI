@@ -55,6 +55,7 @@
 
     <Script file="Watch\WatchManager.lua" />
     <Script file="Watch\MonkeyQuest.lua" />
+    <Script file="Watch\Details.lua" />
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <Script file="UnitFrame\ToToTFrame.lua" />
