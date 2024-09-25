@@ -8,15 +8,11 @@ local ns = select(2, ...)
 
 local _G = _G
 local ipairs, pairs = ipairs, pairs
-local hooksecurefunc = hooksecurefunc
-local tIndexOf = tIndexOf
 
 local GameTooltip = GameTooltip
 
 local IsModifiedClick = IsModifiedClick
-local IsShiftKeyDown = IsShiftKeyDown
 
-local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
 local GameTooltip_ShowCompareItem = GameTooltip_ShowCompareItem
 local PanelTemplates_TabResize = PanelTemplates_TabResize
 
@@ -39,15 +35,15 @@ local function UpdateTooltip(self)
     GameTooltip:SetHyperlink(self.currentLink)
     GameTooltip:Show()
 
-    if not self.comparing and IsModifiedClick('COMPAREITEMS') then
-        GameTooltip_ShowCompareItem(GameTooltip)
-        self.comparing = true
-    elseif self.comparing and not IsModifiedClick('COMPAREITEMS') then
-        for _, frame in pairs(GameTooltip.shoppingTooltips) do
-            frame:Hide()
-        end
-        self.comparing = nil
-    end
+    -- if not self.comparing and IsModifiedClick('COMPAREITEMS') then
+    --     GameTooltip_ShowCompareItem(GameTooltip)
+    --     self.comparing = true
+    -- elseif self.comparing and not IsModifiedClick('COMPAREITEMS') then
+    --     for _, frame in pairs(GameTooltip.shoppingTooltips) do
+    --         frame:Hide()
+    --     end
+    --     self.comparing = nil
+    -- end
 end
 
 local function OnHyperlinkEnter(self, link)

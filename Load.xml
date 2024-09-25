@@ -54,10 +54,7 @@
     <Script file="Friend\Guild.lua" />
 
     <Script file="Watch\WatchManager.lua" />
-    <!-- <Script file="Watch\Recount.lua" /> -->
-    <!-- <Script file="Watch\ThreatClassic2.lua" /> -->
     <Script file="Watch\MonkeyQuest.lua" />
-    <!-- <Script file="Watch\Questie.lua" /> -->
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <Script file="UnitFrame\ToToTFrame.lua" />
@@ -70,4 +67,5 @@
     <Script file="Bug\MailEdit.lua" />
     <Script file="Bug\InspectUI.lua" />
     <Script file="Bug\PlayerMenu.lua" />
+    <Script file="Bug\Taint.lua" />
 </Ui>
