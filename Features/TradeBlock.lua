@@ -35,7 +35,6 @@ end
 
 ns.event('TRADE_SHOW', function()
     if GetCVarBool('blockTrades') then
-        print('Blocked')
         return
     end
     local unit = 'npc'

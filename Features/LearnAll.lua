@@ -3,8 +3,6 @@ local ns = select(2, ...)
 
 ns.addon('Blizzard_TrainerUI', function()
     local button = CreateFrame('Button', nil, ClassTrainerFrame, 'UIPanelButtonTemplate')
-    -- button:SetSize(80, 22)
-    -- button:SetPoint('CENTER', ClassTrainerFrame, 'TOPLEFT', 57, -420)
     button:SetAllPoints(ClassTrainerCancelButton)
     button:SetText('全部训练')
     button:Show()
