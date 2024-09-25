@@ -171,9 +171,13 @@ function ns.logout(func)
     ns.event('PLAYER_LOGOUT', func)
 end
 
+local function IsAddonExists(addon)
+    return select(5, GetAddOnInfo(addon)) ~= 'MISSING'
+end
+
 local function addon(addon, func)
     assert(type(func) == 'function')
-    if select(5, GetAddOnInfo(addon)) == 'MISSING' then
+    if not IsAddonExists(addon) then
         return
     end
 
@@ -192,6 +196,12 @@ local function multiaddon(...)
     local func = select(n, ...)
     local addons = {...}
     addons[n] = nil
+
+    for _, v in ipairs(addons) do
+        if not IsAddonExists(v) then
+            return
+        end
+    end
 
     local function wait()
         local one = tremove(addons)

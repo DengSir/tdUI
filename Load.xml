@@ -7,12 +7,9 @@
     <Script file="Lib\Api.lua" />
     <Script file="Lib\DropDown.lua" />
     <Script file="Lib\ComboBox.lua" />
-    <!-- <Script file="Lib\GameTooltip.lua" /> -->
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
-
-    <Script file="CastingBar.lua" />
 
     <Script file="Features\RemoveOptions.lua" />
     <Script file="Features\CVars.lua" />
@@ -20,16 +17,13 @@
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
     <Script file="Features\TradeBlock.lua" />
-    <Script file="Features\ItemRackBar.lua" />
     <Script file="Features\Flyable.lua" />
-    <Script file="Features\Fishing.lua" />
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
     <Script file="Features\TalentGear.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
-    <Script file="ActionBar\TradeSkill.lua" />
 
     <Script file="ActionBar\Retail\ActionBar.lua" />
     <Script file="ActionBar\Retail\MicroBar.lua" />
@@ -42,7 +36,7 @@
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
-    <Script file="PaperDoll\Engraving.lua" />
+    <Script file="PaperDoll\Engraving.lua" build="<2" />
 
     <Script file="Chat\ChatFrame.lua" />
     <Script file="Chat\Link.lua" />
@@ -55,8 +49,6 @@
     <Script file="Map\Coords.lua" />
     <Script file="Map\ButtonCollect.lua" />
 
-    <Script file="Tooltip\Bonus.lua" build="classic" />
-
     <Script file="Friend\Friends.lua" />
     <Script file="Friend\Who.lua" />
     <Script file="Friend\Guild.lua" />
@@ -65,7 +57,7 @@
     <!-- <Script file="Watch\Recount.lua" /> -->
     <!-- <Script file="Watch\ThreatClassic2.lua" /> -->
     <Script file="Watch\MonkeyQuest.lua" />
-    <Script file="Watch\Questie.lua" />
+    <!-- <Script file="Watch\Questie.lua" /> -->
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <Script file="UnitFrame\ToToTFrame.lua" />
@@ -74,7 +66,6 @@
     <Script file="UnitFrame\Visible.lua" />
 
     <Script file="Bug\ItemRack.lua" />
-    <Script file="Bug\PVPTeam.lua" />
     <Script file="Bug\Elephant.lua" />
     <Script file="Bug\MailEdit.lua" />
     <Script file="Bug\InspectUI.lua" />

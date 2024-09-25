@@ -16,14 +16,6 @@ ns.addon('Elephant', function()
 
     local Elephant = LibStub('AceAddon-3.0'):GetAddon('Elephant')
 
-    -- for i, obj in ipairs({ElephantFrame:GetChildren()}) do
-    --     if obj:GetObjectType() == 'Button' and obj:GetName():find('TabButton$') then
-    --         if _G[obj:GetName() .. 'Text'] then
-    --             print(obj)
-    --         end
-    --     end
-    -- end
-
     ns.securehook(Elephant, 'OnEnable', function()
         ElephantFrameGuildTabButton:SetText('会')
         ElephantFrameOfficerTabButton:SetText('官')

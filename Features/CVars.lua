@@ -6,21 +6,14 @@
 ---@type ns
 local ns = select(2, ...)
 
+-- @debug@
 ns.onceevent('VARIABLES_LOADED', function()
-    -- @debug@
     if GetCurrentRegion() == 5 or GetLocale() == 'zhCN' then
         ConsoleExec('SET portal TW')
         SetCVar('profanityFilter', false)
     end
-    -- @end-debug@
-
-    SetCVar('alwaysCompareItems', false)
-    SetCVar('chatClassColorOverride', false)
-    SetCVar('xpBarText', true)
-
-    SetCVar('SoftTargetInteractArc', 0)
-    SetCVar('SoftTargetInteractRange', 10)
 end)
+-- @end-debug@
 
 ns.addon('AdvancedInterfaceOptions', function()
     if AIOSlidercameraDistanceMaxZoomFactor then
