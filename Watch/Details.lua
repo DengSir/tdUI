@@ -33,6 +33,7 @@ ns.addonlogin('Details_TWW', function()
         end
     end)
 
+    instance.baseframe:SetWidth(260)
     instance:ChangeSkin("|cff8080ffThe War Within|r")
     instance:LockInstance(true)
 end)
