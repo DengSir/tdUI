@@ -493,6 +493,13 @@ local function AnchorTip(tip, owner)
     end
 end
 
+local function AnchorFrame(frame, owner)
+    if frame and frame:IsVisible() then
+        frame:ClearAllPoints()
+        frame:SetPoint('TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
+    end
+end
+
 function Button:OnEnter()
     local button = self.__tdbutton or self
     local env = Collect.buttonEnv[button]
@@ -500,6 +507,7 @@ function Button:OnEnter()
         env.OnEnter(self)
         AnchorTip(GameTooltip, self)
         AnchorTip(LibDBIconTooltip, self)
+        AnchorFrame(BG and BG.FBCDFrame, self)
     end
 end
 

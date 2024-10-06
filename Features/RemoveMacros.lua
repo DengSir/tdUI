@@ -8,9 +8,9 @@ local function IsMyMacro(name)
     if name:find('%-Dencer$') then
         return true
     end
-    if name:find('^_M6%+s') then
-        return true
-    end
+    -- if name:find('^_M6%+s') then
+    --     return true
+    -- end
 end
 
 local function CheckMacro(id)
