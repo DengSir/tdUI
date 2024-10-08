@@ -8,7 +8,6 @@ local ns = select(2, ...)
 
 local Action = CreateFrame('Frame', 'tdUIOverrideButton', UIParent, 'SecureHandlerStateTemplate')
 local Donothing = CreateFrame('Button', 'tdUIOverrideDonothing', UIParent, 'SecureHandlerClickTemplate')
--- Donothing:SetAttribute('_onclick', 'print(1)')
 
 Action:Execute [[
     hotkeys = newtable()
@@ -47,8 +46,7 @@ Action:SetAttribute('_onstate-usable', [[
 
 local function IsInUse(key)
     local keys = ns.config('keybindings.vehicle')
-    dump(keys)
-    for k, v in pairs(keys) do
+    for _, v in pairs(keys) do
         if v == key then
             return true
         end
