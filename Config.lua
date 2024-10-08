@@ -41,6 +41,7 @@ local DEFAULT_PROFILE = {
     },
     window = {minimap = {minimapPos = 215.34}},
     unitframe = {frame = {autoHide = true, totot = false}},
+    keybindings = {vehicle = {}},
 }
 
 ---@class Global

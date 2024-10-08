@@ -101,8 +101,12 @@ ns.login(function()
         return {type = 'toggle', name = name, order = orderGen(), width = 'full'}
     end
 
-    local function path(paths)
-        return table.concat(paths, '.')
+    local function path(paths, i, j)
+        return table.concat(paths, '.', i, j)
+    end
+
+    local function keybinding(name)
+        return {type = 'keybinding', name = name, order = orderGen()}
     end
 
     local options = {
@@ -121,6 +125,22 @@ ns.login(function()
                 local color = {}
                 color.r, color.g, color.b, color.a = ...
                 ns.config(path(paths), color)
+            elseif paths.type == 'keybinding' then
+                local value = ...
+                if value:trim() == '' then
+                    value = nil
+                end
+
+                if value then
+                    local keys = ns.config(path(paths, 1, #paths - 1))
+
+                    for k, v in pairs(keys) do
+                        if v == value then
+                            keys[k] = nil
+                        end
+                    end
+                end
+                return ns.config(path(paths), value)
             else
                 local value = ...
                 return ns.config(path(paths), value)
@@ -133,6 +153,16 @@ ns.login(function()
                     {name = 'Left', value = 'LEFT'},
                     {name = 'Right', value = 'RIGHT'},
                     {name = 'Hide', value = 'HIDE'},
+                },
+            },
+            keybindings = treeItem(SETTINGS_KEYBINDINGS_LABEL) {
+                vehicle = inline(BINDING_HEADER_VEHICLE) {
+                    action1 = keybinding('Override 1'),
+                    action2 = keybinding('Override 2'),
+                    action3 = keybinding('Override 3'),
+                    action4 = keybinding('Override 4'),
+                    action5 = keybinding('Override 5'),
+                    action6 = keybinding('Override 6'),
                 },
             },
             watch = treeItem(L['Right watch panel']) {

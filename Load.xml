@@ -29,6 +29,7 @@
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
+    <Script file="ActionBar\OverrideBinding.lua" />
 
     <Script file="ActionBar\Retail\ActionBar.lua" />
     <Script file="ActionBar\Retail\MicroBar.lua" />
