@@ -6,22 +6,22 @@
 ---@type ns
 local ns = select(2, ...)
 
+local MAX_ACTIONS = 6
+
 local Action = CreateFrame('Frame', 'tdUIOverrideButton', UIParent, 'SecureHandlerStateTemplate')
 local Donothing = CreateFrame('Button', 'tdUIOverrideDonothing', UIParent, 'SecureHandlerClickTemplate')
 
+Action:Execute(format([[MAX_ACTIONS = %d]], MAX_ACTIONS))
 Action:Execute [[
-    hotkeys = newtable()
-    state = 0
-
     SetupHotkeys = [=[
-        for i = 1, 6 do
+        for i = 1, MAX_ACTIONS do
             for _, key in ipairs(table.new(GetBindingKey('ACTIONBUTTON' .. i))) do
                 self:SetBindingClick(true, key, 'tdUIOverrideDonothing')
             end
         end
 
-        for i = 1, 6 do
-            local hotkey = hotkeys[i]
+        for i = 1, MAX_ACTIONS do
+            local hotkey = self:GetAttribute('action' .. i)
             if hotkey then
                 self:SetBindingClick(true, hotkey, 'OverrideActionBarButton' .. i)
             end
@@ -31,7 +31,7 @@ Action:Execute [[
     ]=]
 
     Update = [=[
-        if state == 1 then
+        if self:SetAttribute('state-usable') == 1 then
             self:Run(SetupHotkeys)
         else
             self:ClearBindings()
@@ -40,7 +40,6 @@ Action:Execute [[
 ]]
 
 Action:SetAttribute('_onstate-usable', [[
-    state = newstate
     self:Run(Update)
 ]])
 
@@ -68,17 +67,22 @@ function Action:ResolveHotkey(index)
 end
 
 function Action:UpdateConfig()
-    self:Execute([[wipe(hotkeys)]])
+    UnregisterStateDriver(self, 'usable')
 
-    for i = 1, 6 do
-        local hotkey = self:ResolveHotkey(i)
-        print(i, hotkey)
-        if hotkey then
-            self:Execute(format('hotkeys[%d] = %q', i, hotkey))
+    self:SetAttribute('state-usable', nil)
+
+    if next(ns.profile.keybindings.vehicle) then
+        for i = 1, 6 do
+            local hotkey = self:ResolveHotkey(i)
+            if hotkey then
+                self:SetAttribute('action' .. i, hotkey)
+            else
+                self:SetAttribute('action' .. i, nil)
+            end
         end
-    end
 
-    self:Execute([[self:Run(Update)]])
+        RegisterStateDriver(self, 'usable', '[vehicleui][overridebar] 1; 0')
+    end
 end
 
 function Action:Update(index)
@@ -87,11 +91,11 @@ function Action:Update(index)
 end
 
 function Action:OnLoad()
-    local function UpdateConfig()
+    local UpdateConfig = ns.nocombated(function()
         return Action:UpdateConfig()
-    end
+    end)
 
-    for i = 1, 6 do
+    for i = 1, MAX_ACTIONS do
         ns.config('keybindings.vehicle.action' .. i, UpdateConfig)
     end
 
@@ -99,7 +103,6 @@ function Action:OnLoad()
     ns.event('VARIABLES_LOADED', UpdateConfig)
 
     self:UpdateConfig()
-    RegisterStateDriver(self, 'usable', '[vehicleui][overridebar] 1; 0')
 end
 
 ns.load(function()
