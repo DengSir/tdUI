@@ -44,52 +44,64 @@ Action:SetAttribute('_onstate-usable', [[
     self:Run(Update)
 ]])
 
-local function IsInUse(key)
-    local keys = ns.config('keybindings.vehicle')
+function Action:IsHotkeyInUse(hotkey)
+    local keys = ns.profile.keybindings.vehicle
     for _, v in pairs(keys) do
-        if v == key then
+        if v == hotkey then
             return true
         end
     end
 end
 
-local function ResolveKey(index)
-    local key = ns.config('keybindings.vehicle.action' .. index)
+function Action:ResolveHotkey(index)
+    local hotkey = ns.profile.keybindings.vehicle['action' .. index]
     local key1, key2 = GetBindingKey('ACTIONBUTTON' .. index)
-
-    if not key then
-        if key1 and not IsInUse(key1) then
+    if not hotkey then
+        if key1 and not self:IsHotkeyInUse(key1) then
             return key1
         end
-        if key2 and not IsInUse(key2) then
+        if key2 and not self:IsHotkeyInUse(key2) then
             return key2
         end
     end
-    return key
+    return hotkey
 end
 
-local function UpdateConfig()
-    Action:Execute([[wipe(hotkeys)]])
+function Action:UpdateConfig()
+    self:Execute([[wipe(hotkeys)]])
 
     for i = 1, 6 do
-        local key = ResolveKey(i)
-        if key then
-            Action:Execute(format('hotkeys[%d] = %q', i, key))
+        local hotkey = self:ResolveHotkey(i)
+        print(i, hotkey)
+        if hotkey then
+            self:Execute(format('hotkeys[%d] = %q', i, hotkey))
         end
     end
-    Action:Execute([[self:Run(Update)]])
+
+    self:Execute([[self:Run(Update)]])
 end
 
 function Action:Update(index)
     local hotkey = _G['OverrideActionBarButton' .. index].HotKey
-    hotkey:SetText(ResolveKey(index))
+    hotkey:SetText(self:ResolveKey(index))
 end
 
-for i = 1, 6 do
-    ns.config('keybindings.vehicle.action' .. i, UpdateConfig)
+function Action:OnLoad()
+    local function UpdateConfig()
+        return Action:UpdateConfig()
+    end
+
+    for i = 1, 6 do
+        ns.config('keybindings.vehicle.action' .. i, UpdateConfig)
+    end
+
+    ns.event('UPDATE_BINDINGS', UpdateConfig)
+    ns.event('VARIABLES_LOADED', UpdateConfig)
+
+    self:UpdateConfig()
+    RegisterStateDriver(self, 'usable', '[vehicleui][overridebar] 1; 0')
 end
 
 ns.load(function()
-    UpdateConfig()
-    RegisterStateDriver(Action, 'usable', '[vehicleui][overridebar] 1; 0')
+    Action:OnLoad()
 end)
