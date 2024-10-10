@@ -31,7 +31,7 @@ Action:Execute [[
     ]=]
 
     Update = [=[
-        if self:SetAttribute('state-usable') == 1 then
+        if self:GetAttribute('state-usable') == 1 then
             self:Run(SetupHotkeys)
         else
             self:ClearBindings()
@@ -74,6 +74,7 @@ function Action:UpdateConfig()
     if next(ns.profile.keybindings.vehicle) then
         for i = 1, 6 do
             local hotkey = self:ResolveHotkey(i)
+            print(i, hotkey)
             if hotkey then
                 self:SetAttribute('action' .. i, hotkey)
             else
@@ -87,7 +88,7 @@ end
 
 function Action:Update(index)
     local hotkey = _G['OverrideActionBarButton' .. index].HotKey
-    hotkey:SetText(self:ResolveKey(index))
+    hotkey:SetText(self:ResolveHotkey(index))
 end
 
 function Action:OnLoad()
@@ -100,11 +101,11 @@ function Action:OnLoad()
     end
 
     ns.event('UPDATE_BINDINGS', UpdateConfig)
-    ns.event('VARIABLES_LOADED', UpdateConfig)
+    -- ns.event('VARIABLES_LOADED', UpdateConfig)
 
     self:UpdateConfig()
 end
 
-ns.load(function()
+-- ns.load(function()
     Action:OnLoad()
-end)
+-- end)
