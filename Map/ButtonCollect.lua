@@ -543,9 +543,9 @@ end
 
 ---- INIT
 
-ns.load(function()
+-- ns.load(function()
     Collect:OnLoad()
-end)
+-- end)
 
 ns.addon('RecipeRadarClassic', function()
     RecipeRadar_MinimapButton:SetScript('OnLeave', GameTooltip_Hide)

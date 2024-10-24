@@ -158,7 +158,7 @@ end
 ns.config('unitframe.frame.totot', function()
     Toggle(ns.profile.unitframe.frame.totot)
 end)
-ns.load(function()
+-- ns.load(function()
     Toggle(ns.profile.unitframe.frame.totot)
-end)
+-- end)
 
