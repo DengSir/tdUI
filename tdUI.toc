@@ -3,5 +3,6 @@
 ## IconTexture: Interface\Icons\INV_Drink_15
 ## Author: Dencer
 ## Version: @project-version@
+## Dependencies: tdUI-SavedVariables
 
 Load.xml
