@@ -22,6 +22,7 @@ local MultiBarBottomRight = MultiBarBottomRight
 local ReputationWatchBar = ReputationWatchBar
 local StanceBarFrame = StanceBarFrame
 local StanceButton1 = StanceButton1
+local MultiCastActionBarFrame = MultiCastActionBarFrame
 
 local function GetAtlasWidth(atlas)
     if GetAtlasInfo then
@@ -394,3 +395,4 @@ SetupShowHide(ReputationWatchBar, 'hasRep')
 SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
 SetupShowHide(PetActionBarFrame, 'hasPetBar')
 SetupShowHide(StanceBarFrame, 'hasStanceBar')
+SetupShowHide(MultiCastActionBarFrame, 'hasTotemBar')
