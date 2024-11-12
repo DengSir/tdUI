@@ -101,11 +101,10 @@ function Action:OnLoad()
     end
 
     ns.event('UPDATE_BINDINGS', UpdateConfig)
-    -- ns.event('VARIABLES_LOADED', UpdateConfig)
 
     self:UpdateConfig()
 end
 
--- ns.load(function()
+ns.load(function()
     Action:OnLoad()
--- end)
+end)

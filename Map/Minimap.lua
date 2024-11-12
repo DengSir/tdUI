@@ -64,3 +64,10 @@ ns.addon('Blizzard_TimeManager', function()
     TimeManagerClockButton:SetPoint('CENTER', Minimap, 'BOTTOM', 0, -8)
     TimeManagerClockButton:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 end)
+
+-- if MiniMapInstanceDifficulty then
+--     print(MiniMapInstanceDifficulty)
+--     MiniMapInstanceDifficulty:ClearAllPoints()
+--     MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 'TOP', 0, 18)
+--     MiniMapInstanceDifficulty:SetScale(0.8)
+-- end

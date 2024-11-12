@@ -22,7 +22,6 @@ local MultiBarBottomRight = MultiBarBottomRight
 local ReputationWatchBar = ReputationWatchBar
 local StanceBarFrame = StanceBarFrame
 local StanceButton1 = StanceButton1
-local MultiCastActionBarFrame = MultiCastActionBarFrame
 
 local function GetAtlasWidth(atlas)
     if GetAtlasInfo then
@@ -209,6 +208,7 @@ do
         MainMenuExpBar,
         PetActionButton1,
         StanceButton1,
+        MultiCastActionBarFrame,
         ReputationWatchBarDelegate = ReputationWatchBarDelegate,
     }
 
@@ -262,18 +262,18 @@ Core:Execute([=[
     ]==]
 
     LayoutPetBar = [==[
-        if state.hasStanceBar and (state.hasBottomLeft or not state.hasBottomRight) then
+        if (state.hasStanceBar or state.hasMultiCastBar) and (state.hasBottomLeft or not state.hasBottomRight) then
             local totalWidth = 498 ----- (36 + 6) * 12 - 6
             if state.hasBottomRight then
                 totalWidth = totalWidth + 291 ----- 45 + (36 + 6) * 6 - 6
             end
 
-            local stanceWidth = self:Run(CalcWidth, 'stances', 30, 7)
+            local stanceWidth = max(self:Run(CalcWidth, 'stances', 30, 7), MultiCastActionBarFrame:GetWidth())
             -- local petWidth = self:Run(CalcWidth, 'petButtons', 30, 8)
             local petWidth = 372
 
             PetActionButton1:ClearAllPoints()
-            PetActionButton1:SetPoint('LEFT', StanceButton1, 'LEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), 0)
+            PetActionButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), state.hasBottomLeft and 54 or 11)
         else
             local hasExp = state.hasExp
             local hasRep = state.hasRep
@@ -295,6 +295,11 @@ Core:Execute([=[
     LayoutStanceBar = [==[
         StanceButton1:ClearAllPoints()
         StanceButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, state.hasBottomLeft and 54 or 11)
+    ]==]
+
+    LayoutMultiCastBar = [==[
+        MultiCastActionBarFrame:ClearAllPoints()
+        MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 22, state.hasBottomLeft and 54 or 11)
     ]==]
 
     UpdateHeight = [==[
@@ -335,8 +340,9 @@ Core:Execute([=[
             self:Run(UpdateHeight)
         elseif key == 'hasBottomLeft' then
             self:Run(LayoutStanceBar)
+            self:Run(LayoutMultiCastBar)
             self:Run(LayoutPetBar)
-        elseif key == 'hasPetBar' or key == 'hasStanceBar' then
+        elseif key == 'hasPetBar' or key == 'hasStanceBar' or key == 'hasMultiCastBar' then
             self:Run(LayoutPetBar)
         end
     ]==]
@@ -395,4 +401,4 @@ SetupShowHide(ReputationWatchBar, 'hasRep')
 SetupShowHide(MultiBarBottomLeft, 'hasBottomLeft')
 SetupShowHide(PetActionBarFrame, 'hasPetBar')
 SetupShowHide(StanceBarFrame, 'hasStanceBar')
-SetupShowHide(MultiCastActionBarFrame, 'hasTotemBar')
+SetupShowHide(MultiCastActionBarFrame, 'hasMultiCastBar')
