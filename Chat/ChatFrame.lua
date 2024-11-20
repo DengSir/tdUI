@@ -105,7 +105,7 @@ end)
 local function BiggerChatFrame(frame)
     frame = frame or ChatFrame1
     if frame == ChatFrame1 and not frame:IsUserPlaced() then
-        ChatFrame1:SetHeight(200)
+        ChatFrame1:SetHeight(207)
     end
 end
 
@@ -113,3 +113,10 @@ ns.securehook('RedockChatWindows', BiggerChatFrame)
 ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
 ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
 ns.login(BiggerChatFrame)
+ns.login(function()
+    TextToSpeechButtonFrame:EnableMouse(false)
+end)
+
+ns.after(5, function()
+    SetChatColorNameByClass('GUILD_ACHIEVEMENT', true)
+end)

@@ -96,12 +96,16 @@ ns.addon('M6', function()
             if tullaRange.SetButtonState then
                 tullaRange:SetButtonState(button, state)
             elseif tullaRange.GetColor then
-                local r, g, b, a, d = tullaRange:GetColor(state)
-                button.icon:SetVertexColor(r, g, b, a)
-                button.icon:SetDesaturated(d)
+                if button.icon then
+                    local r, g, b, a, d = tullaRange:GetColor(state)
+                    button.icon:SetVertexColor(r, g, b, a)
+                    button.icon:SetDesaturated(d)
+                end
 
-                r, g, b = tullaRange:GetColor(state == 'oor' and state or 'normal')
-                button.HotKey:SetVertexColor(r, g, b)
+                if button.HotKey then
+                    local r, g, b = tullaRange:GetColor(state == 'oor' and state or 'normal')
+                    button.HotKey:SetVertexColor(r, g, b)
+                end
             end
         end
 
