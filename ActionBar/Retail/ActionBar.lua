@@ -262,6 +262,7 @@ Core:Execute([=[
     ]==]
 
     LayoutPetBar = [==[
+        local x, y
         if (state.hasStanceBar or state.hasMultiCastBar) and (state.hasBottomLeft or not state.hasBottomRight) then
             local totalWidth = 498 ----- (36 + 6) * 12 - 6
             if state.hasBottomRight then
@@ -272,24 +273,19 @@ Core:Execute([=[
             -- local petWidth = self:Run(CalcWidth, 'petButtons', 30, 8)
             local petWidth = 372
 
-            PetActionButton1:ClearAllPoints()
-            PetActionButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', max(totalWidth - petWidth - 66, stanceWidth + 38), state.hasBottomLeft and 54 or 11)
+            x = max(totalWidth - petWidth - 33, stanceWidth + 38)
         else
-            local hasExp = state.hasExp
-            local hasRep = state.hasRep
-
-            local y = 9
-            if hasRep and hasExp then
-                y = y + 2
-            elseif hasRep or hasExp then
-                y = y + 4
-            else
-                y = y - 4
-            end
-
-            PetActionButton1:ClearAllPoints()
-            PetActionButton1:SetPoint('BOTTOMLEFT', '$parent', 'BOTTOMLEFT', 36, y)
+            x = (state.hasStanceBar or state.hasMultiCastBar) and 66 or 33
         end
+
+        if state.hasBottomLeft or ((state.hasStanceBar or state.hasMultiCastBar) and state.hasBottomRight) then
+            y = 54
+        else
+            y = 11
+        end
+
+        PetActionButton1:ClearAllPoints()
+        PetActionButton1:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', x, y)
     ]==]
 
     LayoutStanceBar = [==[
@@ -299,7 +295,7 @@ Core:Execute([=[
 
     LayoutMultiCastBar = [==[
         MultiCastActionBarFrame:ClearAllPoints()
-        MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 22, state.hasBottomLeft and 54 or 11)
+        MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, state.hasBottomLeft and 54 or 11)
     ]==]
 
     UpdateHeight = [==[
