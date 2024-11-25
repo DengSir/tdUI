@@ -119,4 +119,5 @@ end)
 
 ns.after(5, function()
     SetChatColorNameByClass('GUILD_ACHIEVEMENT', true)
+    SetChatColorNameByClass('ACHIEVEMENT', true)
 end)
