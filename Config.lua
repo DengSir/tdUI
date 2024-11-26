@@ -47,21 +47,19 @@ local DEFAULT_PROFILE = {
 ---@class Global
 local DEFAULT_GLOBAL = {auction = {prices = {}}}
 
--- ns.load(function()
-    ns.db = LibStub('AceDB-3.0'):New('TDDB_UI', { --
-        profile = DEFAULT_PROFILE,
-        global = DEFAULT_GLOBAL,
-    }, true)
+ns.db = LibStub('AceDB-3.0'):New('TDDB_UI', { --
+    profile = DEFAULT_PROFILE,
+    global = DEFAULT_GLOBAL,
+}, true)
 
-    ns.profile = ns.db.profile
-    ns.global = ns.db.global
+ns.profile = ns.db.profile
+ns.global = ns.db.global
 
-    if not TDDB_UI_CHAR then
-        TDDB_UI_CHAR = {}
-    end
+if not TDDB_UI_CHAR then
+    TDDB_UI_CHAR = {}
+end
 
-    ns.char = TDDB_UI_CHAR
+ns.char = TDDB_UI_CHAR
 
-    ns.char.spec = ns.char.spec or {}
-    ns.char.spec.gears = ns.char.spec.gears or {}
--- end)
+ns.char.spec = ns.char.spec or {}
+ns.char.spec.gears = ns.char.spec.gears or {}

@@ -7,7 +7,8 @@
 local ns = select(2, ...)
 
 local QUESTS = {83713, 83714}
-local TYPE = 2485
+local TYPES = {2447, 2470, 2485}
+local TYPES_MAP = tInvert(TYPES)
 
 local Overlay
 
@@ -46,7 +47,8 @@ local function CreateOverlay()
 end
 
 local function Run()
-    if LFDQueueFrame.type == TYPE and LFDQueueFrame:IsShown() and not LFDQueueFrameCooldownFrame:IsShown() and not Ok() then
+    if TYPES_MAP[LFDQueueFrame.type] and LFDQueueFrame:IsShown() and not LFDQueueFrameCooldownFrame:IsShown() and
+        not Ok() then
         if not Overlay then
             CreateOverlay()
         end
@@ -56,12 +58,34 @@ local function Run()
     end
 end
 
+local usable = {}
+local function Resolve()
+    wipe(usable)
+
+    for i = 1, GetNumRandomDungeons() do
+        local id = GetLFGRandomDungeonInfo(i)
+        local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
+        if isAvailableForPlayer and not hideIfNotJoinable then
+            usable[id] = true
+        end
+    end
+
+    for _, id in ipairs(TYPES) do
+        if usable[id] then
+            return id
+        end
+    end
+end
+
 ns.event('UNIT_QUEST_LOG_CHANGED', Run)
 ns.securehook('LFDQueueFrame_SetType', Run)
 ns.hookscript(LFDQueueFrameCooldownFrame, 'OnShow', Run)
 ns.hookscript(LFDQueueFrameCooldownFrame, 'OnHide', Run)
 ns.hookscript(LFDQueueFrame, 'OnShow', function()
     if not IsComplete() then
-        LFDQueueFrame_SetType(TYPE)
+        local id = Resolve()
+        if id then
+            LFDQueueFrame_SetType(id)
+        end
     end
 end)

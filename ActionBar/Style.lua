@@ -22,6 +22,10 @@ for _, button in ipairs(buttons) do
     InitActionButton(button)
 end
 
+for i = 1, NUM_PET_ACTION_SLOTS do
+    InitActionButton(_G['PetActionButton' .. i])
+end
+
 local function ShowGrid()
     for _, button in pairs(buttons) do
         if button.Name then

@@ -54,7 +54,7 @@ function Collect:OnLoad()
 
     -- self:OnLeaveMinimap()
 
-    ns.timer(3, function()
+    ns.after(3, function()
         return self:Collect()
     end)
 
@@ -543,10 +543,9 @@ end
 
 ---- INIT
 
--- ns.load(function()
-    Collect:OnLoad()
--- end)
+Collect:OnLoad()
 
 ns.addon('RecipeRadarClassic', function()
     RecipeRadar_MinimapButton:SetScript('OnLeave', GameTooltip_Hide)
 end)
+

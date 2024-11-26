@@ -105,6 +105,4 @@ function Action:OnLoad()
     self:UpdateConfig()
 end
 
-ns.load(function()
-    Action:OnLoad()
-end)
+Action:OnLoad()

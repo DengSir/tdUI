@@ -15,5 +15,5 @@
     <Script file="LibRangeCheck-3.0\LibRangeCheck-3.0.lua" />
     <Script file="LibSharedMedia-3.0\LibSharedMedia-3.0.lua" />
 
-    <Script remote="github@DengSir/tdOptions@master" file="tdOptions\Options.lua" />
+    <Script file="tdOptions\Options.lua" />
 </Ui>

@@ -270,7 +270,6 @@ Core:Execute([=[
             end
 
             local stanceWidth = max(self:Run(CalcWidth, 'stances', 30, 7), MultiCastActionBarFrame:GetWidth())
-            -- local petWidth = self:Run(CalcWidth, 'petButtons', 30, 8)
             local petWidth = 372
 
             x = max(totalWidth - petWidth - 33, stanceWidth + 38)
@@ -371,7 +370,6 @@ local function SetupButtons(key, formatter)
 end
 
 SetupButtons('stances', 'StanceButton%d')
-SetupButtons('petButtons', 'PetActionButton%d')
 
 function Core:GetFrame(name)
     return self.frames[name] or _G[name]
