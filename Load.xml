@@ -79,4 +79,5 @@
     <Script file="Bug\InspectUI.lua" />
     <Script file="Bug\PlayerMenu.lua" />
     <Script file="Bug\Taint.lua" />
+    <Script file="Bug\Cell.lua" />
 </Ui>
