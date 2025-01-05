@@ -39,6 +39,7 @@
     <Script file="Beauty\Blizzard.lua" />
     <Script file="Beauty\AtlasLoot.lua" />
     <Script file="Beauty\M6.lua" />
+    <Script file="Beauty\Macro.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
@@ -79,5 +80,5 @@
     <Script file="Bug\InspectUI.lua" />
     <Script file="Bug\PlayerMenu.lua" />
     <Script file="Bug\Taint.lua" />
-    <Script file="Bug\Cell.lua" />
+    <!-- <Script file="Bug\Cell.lua" /> -->
 </Ui>
