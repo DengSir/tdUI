@@ -2,6 +2,9 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/5/2019, 1:26:24 PM
+--
+---@type ns
+local ns = select(2, ...)
 
 local RangeCheck = LibStub('LibRangeCheck-3.0')
 
@@ -13,9 +16,11 @@ local UnitIsUnit = UnitIsUnit
 local GetRaidTargetIndex = GetRaidTargetIndex
 local UnitClassification = UnitClassification
 
-local Range = CreateFrame('Frame', nil, TargetFrame)
+local Range = ns.class('Frame')
 
-function Range:Load()
+function Range:Constructor(parent, event)
+    self.parent = parent
+    self.event = event
     self.elapsed = 0
     self.text = self:CreateFontString(nil, 'BORDER')
     self.text:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
@@ -25,12 +30,12 @@ function Range:Load()
     self:SetScript('OnShow', self.Update)
     self:SetScript('OnHide', self.Update)
 
-    self:RegisterEvent('PLAYER_TARGET_CHANGED')
     self:RegisterEvent('RAID_TARGET_UPDATE')
+    self:RegisterEvent(self.event)
 end
 
 function Range:Update()
-    local min, max = RangeCheck:GetRange(TargetFrame.unit)
+    local min, max = RangeCheck:GetRange(self.parent.unit)
     if not max then
         self.text:SetText('')
     else
@@ -68,8 +73,8 @@ function Range:UpdatePosition()
 end
 
 function Range:OnEvent(event)
-    if event == 'PLAYER_TARGET_CHANGED' then
-        if UnitIsUnit('player', TargetFrame.unit) then
+    if event == self.event then
+        if UnitIsUnit('player', self.parent.unit) then
             self:Hide()
         else
             self:Show()
@@ -80,4 +85,5 @@ function Range:OnEvent(event)
     end
 end
 
-Range:Load()
+Range:New(TargetFrame, 'PLAYER_TARGET_CHANGED')
+Range:New(FocusFrame, 'PLAYER_FOCUS_CHANGED')
