@@ -9,9 +9,20 @@ local ns = select(2, ...)
 ns.addon('Blizzard_MacroUI', function()
     ---@type Frame
     local MacroFrame = MacroFrame
-    MacroFrame:HookScript('OnShow', function(self)
-        self:UnregisterEvent('UPDATE_MACROS')
+
+    -- 修复选择时会保存一下，导致跳转到最上面的问题
+    MacroFrameText:HookScript('OnTextChanged', function(_, userInput)
+        if not userInput then
+            MacroFrame.textChanged = nil
+        end
     end)
+
+    -- 取消
+    -- MacroCancelButton:HookScript('PreClick', function(self)
+    --     MacroFrame.textChanged = nil
+
+    --     print(MacroFrame:GetSelectedIndex())
+    -- end)
 
     MacroFrame:SetWidth(MacroFrame:GetWidth() * 2)
 
