@@ -6,55 +6,71 @@
 ---@type ns
 local ns = select(2, ...)
 
-local QUESTS = {83713, 83714}
 local TYPES = {2447, 2470, 2485}
-local TYPES_MAP = tInvert(TYPES)
+local QUESTS = { --
+    [2447] = {83717, 87379},
+    [2470] = {83717, 87379},
+    [2485] = {83713, 83714},
+}
 
-local Overlay
-
-local function Ok()
-    for _, id in ipairs(QUESTS) do
-        if not (C_QuestLog.IsQuestFlaggedCompleted(id) or C_QuestLog.IsOnQuest(id)) then
+local function Ok(id)
+    for _, quest in ipairs(QUESTS[id]) do
+        if not (C_QuestLog.IsQuestFlaggedCompleted(quest) or C_QuestLog.IsOnQuest(quest)) then
             return false
         end
     end
     return true
 end
 
-local function IsComplete()
-    for _, id in ipairs(QUESTS) do
-        if not C_QuestLog.IsQuestFlaggedCompleted(id) then
+local function IsComplete(id)
+    for _, quest in ipairs(QUESTS[id]) do
+        if not C_QuestLog.IsQuestFlaggedCompleted(quest) then
             return false
         end
     end
     return true
 end
 
-local function CreateOverlay()
-    Overlay = CreateFrame('Frame', nil, LFDQueueFrame)
-    Overlay:SetFrameLevel(LFDQueueFrame:GetFrameLevel() + 100)
-    Overlay:SetAllPoints(LFDQueueFrameCooldownFrame)
-    Overlay:EnableMouse(true)
-    Overlay:Show()
+local Overlaies = {}
 
-    local Background = Overlay:CreateTexture(nil, 'BACKGROUND')
+local function GetOverlay(parent)
+    return Overlaies[parent]
+end
+
+local function CreateOverlay(parent)
+    local overlay = CreateFrame('Frame', nil, parent)
+    overlay:SetFrameLevel(parent:GetFrameLevel() + 100)
+    overlay:EnableMouse(true)
+    overlay:Show()
+
+    if parent == LFDQueueFrame then
+        overlay:SetAllPoints(LFDQueueFrameCooldownFrame)
+    else
+        overlay:SetPoint('TOPLEFT', 10, -10)
+        overlay:SetPoint('BOTTOMRIGHT', -10, 10)
+    end
+
+    local Background = overlay:CreateTexture(nil, 'BACKGROUND')
     Background:SetColorTexture(0, 0, 0, 0.93)
     Background:SetAllPoints()
 
-    local Text = Overlay:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+    local Text = overlay:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
     Text:SetPoint('CENTER')
     Text:SetText('请先接取每日任务')
+
+    Overlaies[parent] = overlay
+    return overlay
 end
 
-local function Run()
-    if TYPES_MAP[LFDQueueFrame.type] and LFDQueueFrame:IsShown() and not LFDQueueFrameCooldownFrame:IsShown() and
-        not Ok() then
-        if not Overlay then
-            CreateOverlay()
+local function ToggleOverlay(parent, shown)
+    if shown then
+        local overlay = GetOverlay(parent) or CreateOverlay(parent)
+        overlay:Show()
+    else
+        local overlay = GetOverlay(parent)
+        if overlay then
+            overlay:Hide()
         end
-        Overlay:Show()
-    elseif Overlay then
-        Overlay:Hide()
     end
 end
 
@@ -77,15 +93,31 @@ local function Resolve()
     end
 end
 
-ns.event('UNIT_QUEST_LOG_CHANGED', Run)
-ns.securehook('LFDQueueFrame_SetType', Run)
-ns.hookscript(LFDQueueFrameCooldownFrame, 'OnShow', Run)
-ns.hookscript(LFDQueueFrameCooldownFrame, 'OnHide', Run)
+local function ForQueueFrame()
+    local parent = LFDQueueFrame
+    local id = Resolve()
+    ToggleOverlay(parent, id and parent:IsShown() and not LFDQueueFrameCooldownFrame:IsShown() and not Ok(id))
+end
+
+local function ForReadyDialog()
+    local parent = LFGDungeonReadyDialog
+    local id = Resolve()
+    ToggleOverlay(parent, id and parent:IsShown() and not Ok(id))
+end
+
+ns.event('UNIT_QUEST_LOG_CHANGED', function()
+    ForQueueFrame()
+    ForReadyDialog()
+end)
+
+ns.securehook('LFDQueueFrame_SetType', ForQueueFrame)
+ns.hookscript(LFDQueueFrameCooldownFrame, 'OnShow', ForQueueFrame)
+ns.hookscript(LFDQueueFrameCooldownFrame, 'OnHide', ForQueueFrame)
+ns.hookscript(LFGDungeonReadyDialog, 'OnShow', ForReadyDialog)
+
 ns.hookscript(LFDQueueFrame, 'OnShow', function()
-    if not IsComplete() then
-        local id = Resolve()
-        if id then
-            LFDQueueFrame_SetType(id)
-        end
+    local id = Resolve()
+    if id and not IsComplete(id) then
+        LFDQueueFrame_SetType(id)
     end
 end)

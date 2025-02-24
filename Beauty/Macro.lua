@@ -9,10 +9,13 @@ local ns = select(2, ...)
 ns.addon('Blizzard_MacroUI', function()
     ---@type Frame
     local MacroFrame = MacroFrame
+    local anyInput = -1
 
     -- 修复选择时会保存一下，导致跳转到最上面的问题
     MacroFrameText:HookScript('OnTextChanged', function(_, userInput)
-        if not userInput then
+        if userInput then
+            anyInput = MacroFrame:GetSelectedIndex()
+        elseif anyInput ~= MacroFrame:GetSelectedIndex() then
             MacroFrame.textChanged = nil
         end
     end)

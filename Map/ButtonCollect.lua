@@ -2,7 +2,8 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 7/21/2020, 12:56:07 PM
----@type ns
+--
+---@type string, ns
 local ADDON, ns = ...
 
 local pairs, ipairs = pairs, ipairs
@@ -473,6 +474,10 @@ function Collect:GetEditButton(button)
     return edit
 end
 
+function Collect:IsCollected(button)
+    return self.buttonEnv[button] and self.buttonEnv[button].collected
+end
+
 ---- Button
 
 Button.ClearAllPoints = nop
@@ -493,7 +498,7 @@ local function AnchorTip(tip, owner)
     end
 end
 
-local function AnchorFrame(frame, owner)
+local function AnchorFrame(frame)
     if frame and frame:IsVisible() then
         frame:ClearAllPoints()
         frame:SetPoint('TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
@@ -507,7 +512,6 @@ function Button:OnEnter()
         env.OnEnter(self)
         AnchorTip(GameTooltip, self)
         AnchorTip(LibDBIconTooltip, self)
-        AnchorFrame(BG and BG.FBCDFrame, self)
     end
 end
 
@@ -549,3 +553,16 @@ ns.addon('RecipeRadarClassic', function()
     RecipeRadar_MinimapButton:SetScript('OnLeave', GameTooltip_Hide)
 end)
 
+ns.addon('BiaoGe', function()
+    ---@type Frame
+    local BG = BG
+    if not BG then
+        return
+    end
+
+    ns.securehook(BG, 'SetFBCD', function(anchor, pos)
+        if pos == 'minimap' and Collect:IsCollected(anchor) then
+            AnchorFrame(BG.FBCDFrame)
+        end
+    end)
+end)

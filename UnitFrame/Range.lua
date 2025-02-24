@@ -10,8 +10,6 @@ local RangeCheck = LibStub('LibRangeCheck-3.0')
 
 local format = format
 
-local TargetFrame = TargetFrame
-
 local UnitIsUnit = UnitIsUnit
 local GetRaidTargetIndex = GetRaidTargetIndex
 local UnitClassification = UnitClassification
@@ -62,13 +60,13 @@ function Range:OnUpdate(elapsed)
 end
 
 function Range:UpdatePosition()
-    local unit = TargetFrame.unit
+    local unit = self.parent.unit
     if GetRaidTargetIndex(unit) then
-        self.text:SetPoint('BOTTOM', TargetFrame.portrait, 'TOP', 2, 7)
+        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 2, 7)
     elseif UnitClassification(unit) == 'normal' then
-        self.text:SetPoint('BOTTOM', TargetFrame.portrait, 'TOP', 0, 0)
+        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 0, 0)
     else
-        self.text:SetPoint('BOTTOM', TargetFrame.portrait, 'TOP', 0, 5)
+        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 0, 5)
     end
 end
 
