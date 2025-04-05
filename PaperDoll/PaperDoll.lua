@@ -47,19 +47,21 @@ local function IsOurButton(button)
 end
 
 local function InitButton(button, unit)
-    button.IconBorder:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
-    button.IconBorder:SetBlendMode('ADD')
-    button.IconBorder:ClearAllPoints()
-    button.IconBorder:SetPoint('CENTER')
-    button.IconBorder:SetSize(67, 67)
+    -- button.IconBorder:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
+    -- button.IconBorder:SetBlendMode('ADD')
+    -- button.IconBorder:ClearAllPoints()
+    -- button.IconBorder:SetPoint('CENTER')
+    -- button.IconBorder:SetSize(67, 67)
 
     button.Durability = _G[button:GetName() .. 'Stock']
-    button.Durability:ClearAllPoints()
-    button.Durability:SetPoint('BOTTOM', 0, 3)
+    -- button.Durability:ClearAllPoints()
+    -- button.Durability:SetPoint('BOTTOM', 0, 3)
 
-    button.LevelText = button:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
-    button.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
-    button.LevelText:Hide()
+    button.Count = button.Count or _G[button:GetName() .. 'Count']
+
+    -- button.LevelText = button:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
+    -- button.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
+    -- button.LevelText:Hide()
 
     BUTTONS[button] = unit
 end
@@ -112,19 +114,20 @@ local function UpdateQuality(button)
     local quality = GetQuality(button)
     if quality and quality > 1 then
         local r, g, b = GetItemQualityColor(quality)
-        button.IconBorder:SetVertexColor(r, g, b, 0.5)
+        button.IconBorder:SetVertexColor(r, g, b)
         button.IconBorder:Show()
         local level = GetLevel(button)
         if level > 0 then
-            button.LevelText:SetText(level)
-            button.LevelText:SetTextColor(r, g, b, 1)
-            button.LevelText:Show()
+            local color = ns.CUSTOM_ITEM_QUALITY_COLORS[quality]
+            button.Count:SetText(level)
+            button.Count:SetTextColor(color.r, color.g, color.b, 1)
+            button.Count:Show()
         else
-            button.LevelText:Hide()
+            button.Count:Hide()
         end
     else
         button.IconBorder:Hide()
-        button.LevelText:Hide()
+        button.Count:Hide()
     end
 end
 

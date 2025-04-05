@@ -104,16 +104,24 @@ end)
 -- MiniMapLFGFrameBorder:SetSize(96, 96)
 -- MiniMapLFGFrameBorder:SetAtlas('groupfinder-eye-single')
 
-if not LFGParentFrame and PVEFrame then
-    local function Update()
-        if PVEFrame:IsShown() then
-            LFGMicroButton:SetButtonState('PUSHED', true)
-        else
-            LFGMicroButton:SetButtonState('NORMAL')
-        end
+ns.securehook('UpdateMicroButtons', function()
+    if CollectionsJournal and CollectionsJournal:IsShown() then
+        CollectionsMicroButton:SetButtonState('PUSHED', true)
+    else
+        CollectionsMicroButton:SetButtonState('NORMAL')
     end
-    ns.securehook('UpdateMicroButtons', Update)
-end
+end)
+
+-- if not LFGParentFrame and PVEFrame then
+--     local function Update()
+--         if PVEFrame:IsShown() then
+--             LFGMicroButton:SetButtonState('PUSHED', true)
+--         else
+--             LFGMicroButton:SetButtonState('NORMAL')
+--         end
+--     end
+--     ns.securehook('UpdateMicroButtons', Update)
+-- end
 
 local function UpdatePerformanceBarPushed(self)
     if self:GetButtonState() == 'PUSHED' then
@@ -280,26 +288,27 @@ local LayoutMicroBar = ns.pend(function()
     if inOverride then
         local buttons = {}
         for _, button in ipairs(MICRO_BUTTONS) do
-            if button.hideInOverrideBar then
-                button:Hide()
-            else
-                button:Show()
-                button:SetParent(OverrideActionBar)
-
-                if count == 0 then
-                elseif count % 6 == 0 then
-                    button:ClearAllPoints()
-                    button:SetPoint('TOPLEFT', buttons[count - 5], 'BOTTOMLEFT', 0, 0)
+            if button:IsShown() then
+                if button.hideInOverrideBar then
+                    button:Hide()
                 else
-                    button:ClearAllPoints()
-                    button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
+                    button:Show()
+                    button:SetParent(OverrideActionBar)
+
+                    if count == 0 then
+                    elseif count % 6 == 0 then
+                        button:ClearAllPoints()
+                        button:SetPoint('TOPLEFT', buttons[count - 5], 'BOTTOMLEFT', 0, 0)
+                    else
+                        button:ClearAllPoints()
+                        button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
+                    end
+
+                    tinsert(buttons, button)
+                    count = count + 1
+                    prev = button
                 end
-
-                tinsert(buttons, button)
-                count = count + 1
-                prev = button
             end
-
         end
     else
         for _, button in ipairs(MICRO_BUTTONS) do

@@ -217,3 +217,6 @@ for i, button in ipairs(FriendsFrameFriendsScrollFrame.buttons) do
 end
 
 ns.securehook('FriendsFrameTooltip_Show', FriendsFrameTooltip_Show)
+ns.hookscript(GuildFrame, 'OnShow', function()
+    ButtonFrameTemplate_ShowButtonBar(FriendsFrame)
+end)

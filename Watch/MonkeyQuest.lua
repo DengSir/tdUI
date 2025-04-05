@@ -414,9 +414,7 @@ ns.addonlogin('MonkeyQuest', function()
                     end
 
                     for i, v in ipairs(quest.Objectives) do
-                        print(v.Description, obj)
                         if v.Description:find(obj) or obj:find(v.Description) then
-                            print(v)
                             TrackerUtils:ShowObjectiveOnMap(v)
                             break
                         end

@@ -6,12 +6,11 @@
     <Script file="Lib\Lib.lua" />
     <Script file="Lib\Api.lua" />
     <Script file="Lib\DropDown.lua" />
-    <Script file="Lib\ComboBox.lua" />
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
 
-    <Script file="Features\RemoveOptions.lua" />
+    <!-- <Script file="Features\RemoveOptions.lua" /> -->
     <Script file="Features\RemoveMacros.lua" />
     <Script file="Features\CVars.lua" />
     <!-- <Script file="Features\Port.lua" /> -->
@@ -25,7 +24,7 @@
     <!-- <Script file="Features\Fishing.lua" /> -->
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
-    <Script file="Features\TalentGear.lua" />
+    <!-- <Script file="Features\TalentGear.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -80,5 +79,6 @@
     <Script file="Bug\InspectUI.lua" />
     <Script file="Bug\PlayerMenu.lua" />
     <Script file="Bug\Taint.lua" />
-    <!-- <Script file="Bug\Cell.lua" /> -->
+    <Script file="Bug\Blizzard.lua" />
+    <Script file="Bug\Details.lua" />
 </Ui>

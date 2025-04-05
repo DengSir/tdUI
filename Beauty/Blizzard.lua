@@ -2,6 +2,9 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/23/2020, 2:14:31 PM
+--
+---@type ns
+local ns = select(2, ...)
 
 local function Button(button)
     button:SetNormalFontObject('GameFontNormal')
@@ -20,5 +23,6 @@ Button(GuildMemberGroupInviteButton)
 Button(RaidFrameConvertToRaidButton)
 Button(RaidFrameRaidInfoButton)
 
--- CharacterNameText:SetFontObject('GameFontNormal')
--- CharacterNameText:SetTextColor(1, 0.82, 0)
+ns.addon('Blizzard_RaidUI', function()
+    Button(RaidFrameReadyCheckButton)
+end)

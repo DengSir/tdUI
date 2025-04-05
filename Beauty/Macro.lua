@@ -12,13 +12,13 @@ ns.addon('Blizzard_MacroUI', function()
     local anyInput = -1
 
     -- 修复选择时会保存一下，导致跳转到最上面的问题
-    MacroFrameText:HookScript('OnTextChanged', function(_, userInput)
-        if userInput then
-            anyInput = MacroFrame:GetSelectedIndex()
-        elseif anyInput ~= MacroFrame:GetSelectedIndex() then
-            MacroFrame.textChanged = nil
-        end
-    end)
+    -- MacroFrameText:HookScript('OnTextChanged', function(_, userInput)
+    --     if userInput then
+    --         anyInput = MacroFrame:GetSelectedIndex()
+    --     elseif anyInput ~= MacroFrame:GetSelectedIndex() then
+    --         MacroFrame.textChanged = nil
+    --     end
+    -- end)
 
     -- 取消
     -- MacroCancelButton:HookScript('PreClick', function(self)

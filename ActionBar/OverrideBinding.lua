@@ -74,7 +74,6 @@ function Action:UpdateConfig()
     if next(ns.profile.keybindings.vehicle) then
         for i = 1, 6 do
             local hotkey = self:ResolveHotkey(i)
-            print(i, hotkey)
             if hotkey then
                 self:SetAttribute('action' .. i, hotkey)
             else

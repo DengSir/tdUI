@@ -72,7 +72,7 @@ local function InitChatFrame(self)
     self.UpdateTooltip = UpdateTooltip
     self.editBox:SetAltArrowKeyMode(false)
 
-    ns.securehook(_G[self:GetName() .. 'TabDropDown'], 'initialize', OnDropDown)
+    -- ns.securehook(_G[self:GetName() .. 'TabDropDown'], 'initialize', OnDropDown)
 end
 
 for _, name in ipairs(CHAT_FRAMES) do

@@ -16,9 +16,10 @@ local UnitClassification = UnitClassification
 
 local Range = ns.class('Frame')
 
-function Range:Constructor(parent, event)
+function Range:Constructor(parent, event, isNameplate)
     self.parent = parent
     self.event = event
+    self.isNameplate = isNameplate
     self.elapsed = 0
     self.text = self:CreateFontString(nil, 'BORDER')
     self.text:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
@@ -29,11 +30,27 @@ function Range:Constructor(parent, event)
     self:SetScript('OnHide', self.Update)
 
     self:RegisterEvent('RAID_TARGET_UPDATE')
-    self:RegisterEvent(self.event)
+    if event then
+        self:RegisterEvent(event)
+    end
+end
+
+function Range:GetUnit()
+    if self.isNameplate then
+        if self.parent.UnitFrame then
+            return self.parent.UnitFrame.unit
+        end
+    else
+        return self.parent.unit
+    end
 end
 
 function Range:Update()
-    local min, max = RangeCheck:GetRange(self.parent.unit)
+    local unit = self:GetUnit()
+    if not unit then
+        return
+    end
+    local min, max = RangeCheck:GetRange(unit)
     if not max then
         self.text:SetText('')
     else
@@ -60,13 +77,18 @@ function Range:OnUpdate(elapsed)
 end
 
 function Range:UpdatePosition()
-    local unit = self.parent.unit
-    if GetRaidTargetIndex(unit) then
-        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 2, 7)
-    elseif UnitClassification(unit) == 'normal' then
-        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 0, 0)
+    if self.isNameplate then
+        self.text:SetPoint('RIGHT', self.parent, 'LEFT', -2, 0)
     else
-        self.text:SetPoint('BOTTOM', self.parent.portrait, 'TOP', 0, 5)
+        local unit = self:GetUnit()
+        local relativeTo = self.parent.portrait
+        if GetRaidTargetIndex(unit) then
+            self.text:SetPoint('BOTTOM', relativeTo, 'TOP', 2, 7)
+        elseif UnitClassification(unit) == 'normal' then
+            self.text:SetPoint('BOTTOM', relativeTo, 'TOP', 0, 0)
+        else
+            self.text:SetPoint('BOTTOM', relativeTo, 'TOP', 0, 5)
+        end
     end
 end
 
@@ -85,3 +107,22 @@ end
 
 Range:New(TargetFrame, 'PLAYER_TARGET_CHANGED')
 Range:New(FocusFrame, 'PLAYER_FOCUS_CHANGED')
+
+local frames = {}
+local function Alloc(unitFrame)
+    local f = frames[unitFrame]
+    if not f then
+        f = Range:New(unitFrame, nil, true)
+        frames[unitFrame] = f
+    end
+    return f
+end
+
+ns.securehook(NamePlateDriverFrame, 'OnNamePlateAdded', function(_, unit)
+    local frame = C_NamePlate.GetNamePlateForUnit(unit)
+    if frame and frame.UnitFrame then
+        local f = Alloc(frame)
+        f:Show()
+        f:UpdatePosition()
+    end
+end)

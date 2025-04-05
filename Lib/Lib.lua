@@ -20,6 +20,7 @@ local NewTicker = C_Timer.NewTicker
 local ADDON = ...
 ---@class ns
 local ns = select(2, ...)
+_G.tdUI = ns
 
 local LibClass = LibStub('LibClass-2.0')
 
