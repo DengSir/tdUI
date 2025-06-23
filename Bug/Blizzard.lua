@@ -11,8 +11,12 @@ if SettingsTooltip then
     SettingsTooltip:SetFrameStrata('TOOLTIP')
 end
 
-QuestMapFrame:UnregisterEvent('CVAR_UPDATE')
-
-C_Timer.After(1, function()
-    QuestMapFrame:RegisterEvent('CVAR_UPDATE')
+QuestMapFrame:HookScript('OnShow', function(self)
+    self:RegisterEvent('CVAR_UPDATE')
 end)
+
+QuestMapFrame:HookScript('OnHide', function(self)
+    self:UnregisterEvent('CVAR_UPDATE')
+end)
+
+QuestMapFrame:UnregisterEvent('CVAR_UPDATE')
