@@ -24,6 +24,7 @@
     <!-- <Script file="Features\Fishing.lua" /> -->
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
+    <Script file="Features\TriggerICD.lua" />
     <!-- <Script file="Features\TalentGear.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
