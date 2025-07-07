@@ -60,6 +60,3 @@ if not TDDB_UI_CHAR then
 end
 
 ns.char = TDDB_UI_CHAR
-
-ns.char.spec = ns.char.spec or {}
-ns.char.spec.gears = ns.char.spec.gears or {}

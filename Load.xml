@@ -5,7 +5,6 @@
 
     <Script file="Lib\Lib.lua" />
     <Script file="Lib\Api.lua" />
-    <Script file="Lib\DropDown.lua" />
 
     <Script file="Config.lua" />
     <Script file="Option.lua" />
@@ -13,19 +12,15 @@
     <!-- <Script file="Features\RemoveOptions.lua" /> -->
     <Script file="Features\RemoveMacros.lua" />
     <Script file="Features\CVars.lua" />
-    <!-- <Script file="Features\Port.lua" /> -->
     <Script file="Features\Aura.lua" />
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
     <Script file="Features\TradeBlock.lua" />
-    <!-- <Script file="Features\ItemRackBar.lua" /> -->
     <Script file="Features\Flyable.lua" />
-    <!-- <Script file="Features\AuctionPlus.lua" /> -->
     <!-- <Script file="Features\Fishing.lua" /> -->
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
     <Script file="Features\TriggerICD.lua" />
-    <!-- <Script file="Features\TalentGear.lua" /> -->
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -43,7 +38,6 @@
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
-    <!-- <Script file="PaperDoll\ItemLevel.lua" /> -->
     <Script file="PaperDoll\Engraving.lua" build="<2" />
 
     <Script file="Chat\ChatFrame.lua" />
@@ -57,7 +51,6 @@
     <Script file="Map\Coords.lua" />
     <Script file="Map\ButtonCollect.lua" />
 
-    <!-- <Script file="Tooltip\TinyTooltip.lua" /> -->
     <Script file="Friend\Friends.lua" />
     <Script file="Friend\Who.lua" />
     <Script file="Friend\Guild.lua" />
@@ -74,11 +67,8 @@
     <Script file="UnitFrame\Range.lua" />
     <Script file="UnitFrame\Visible.lua" />
 
-    <Script file="Bug\ItemRack.lua" />
     <Script file="Bug\Elephant.lua" />
     <Script file="Bug\MailEdit.lua" />
-    <Script file="Bug\InspectUI.lua" />
-    <Script file="Bug\PlayerMenu.lua" />
     <Script file="Bug\Taint.lua" />
     <Script file="Bug\Blizzard.lua" />
     <Script file="Bug\Details.lua" />
