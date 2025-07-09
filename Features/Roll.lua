@@ -112,11 +112,12 @@ local function GetRollTypeButton(frame, rollType)
 end
 
 local function GetRollPlayerCount(rollId, rollType)
-    if not rolls[rollId] then
+    local roll = rolls[rollId]
+    if not roll then
         return 0
     end
     local count = 0
-    for _, playerRollType in pairs(rolls[rollId]) do
+    for _, playerRollType in pairs(roll) do
         if playerRollType == rollType then
             count = count + 1
         end
