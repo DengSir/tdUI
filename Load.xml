@@ -13,6 +13,7 @@
     <Script file="Features\RemoveMacros.lua" />
     <Script file="Features\CVars.lua" />
     <Script file="Features\Aura.lua" />
+    <Script file="Features\Roll.lua" />
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
     <Script file="Features\TradeBlock.lua" />
