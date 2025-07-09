@@ -58,3 +58,14 @@ ns.event('BAG_UPDATE_DELAYED', function()
         end
     end
 end)
+
+local function slash(arg)
+    local slot = tonumber(arg)
+    if not slot or slot < 1 or slot > 19 then
+        print('Usage: /triggericd <slot>')
+        return
+    end
+    TriggerICD(slot)
+end
+
+RegisterNewSlashCommand(slash, 'triggericd', 'ticd')

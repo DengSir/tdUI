@@ -26,3 +26,6 @@ Button(RaidFrameRaidInfoButton)
 ns.addon('Blizzard_RaidUI', function()
     Button(RaidFrameReadyCheckButton)
 end)
+
+UIPARENT_MANAGED_FRAME_POSITIONS['FramerateLabel'] = nil
+ns.point(FramerateLabel, 'TOP', UIParent, 'TOP', 0, -10)
