@@ -17,11 +17,12 @@ local buttonKeys = {
 }
 
 local function ButtonOnEnter(self)
+    local rollId = self:GetParent().rollID
     local rollType = self:GetID()
-    local _, _, numPlayers = C_LootHistory.GetItem(self.rollID)
+    local _, _, numPlayers = C_LootHistory.GetItem(rollId)
 
     for i = 1, numPlayers do
-        local name, class, playerRollType = C_LootHistory.GetPlayerInfo(self.rollID, i)
+        local name, class, playerRollType = C_LootHistory.GetPlayerInfo(rollId, i)
         if playerRollType == rollType then
             local color = RAID_CLASS_COLORS[class or 'PRIEST']
             GameTooltip:AddLine(name, color.r, color.g, color.b)
@@ -32,10 +33,13 @@ local function ButtonOnEnter(self)
 end
 
 local function ButtonOnClick(self)
+    local rollId = self:GetParent().rollID
+    local rollType = self:GetID()
+
     if IsShiftKeyDown() or IsControlKeyDown() then
-        ConfirmLootRoll(self:GetParent().rollID, self:GetID())
+        ConfirmLootRoll(rollId, rollType)
     else
-        RollOnLoot(self:GetParent().rollID, self:GetID())
+        RollOnLoot(rollId, rollType)
     end
 end
 
@@ -71,7 +75,7 @@ end
 
 local function FindFrame(rollId)
     for _, frame in ipairs(frames) do
-        if frame:IsVisible() and frame.rollId == rollId then
+        if frame:IsVisible() and frame.rollID == rollId then
             return frame
         end
     end
@@ -90,9 +94,9 @@ local function GetRollTypeButton(frame, rollType)
     return button
 end
 
-local function UpdateRoll(itemIdx, rollType)
-    local rollId, _, numPlayers, isDone = C_LootHistory.GetItem(itemIdx)
-    if isDone or not numPlayers then
+local function UpdateRoll(rollId, rollType)
+    local id, _, numPlayers, isDone = C_LootHistory.GetItem(rollId)
+    if not id or isDone or not numPlayers then
         return
     end
 
@@ -108,7 +112,7 @@ local function UpdateRoll(itemIdx, rollType)
 
     local count = 0
     for i = 1, numPlayers do
-        local _, _, playerRollType = C_LootHistory.GetPlayerInfo(itemIdx, i)
+        local _, _, playerRollType = C_LootHistory.GetPlayerInfo(rollId, i)
         if rollType == playerRollType then
             count = count + 1
         end
@@ -117,7 +121,7 @@ local function UpdateRoll(itemIdx, rollType)
     button:SetText(count)
 end
 
-ns.event('LOOT_HISTORY_ROLL_CHANGED', function(itemIdx, playerIdx)
-    local _, _, rollType = C_LootHistory.GetPlayerInfo(itemIdx, playerIdx)
-    UpdateRoll(itemIdx, rollType)
+ns.event('LOOT_HISTORY_ROLL_CHANGED', function(rollId, playerIdx)
+    local _, _, rollType = C_LootHistory.GetPlayerInfo(rollId, playerIdx)
+    UpdateRoll(rollId, rollType)
 end)
