@@ -9,6 +9,7 @@ local ns = select(2, ...)
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local frames = {}
+local rolls = {}
 local buttonKeys = {
     -- [0] = 'PassButton',
     [1] = 'NeedButton',
@@ -16,16 +17,27 @@ local buttonKeys = {
     -- [3] = 'DisenchantButton',
 }
 
+local function AddRollPlayer(rollId, rollType, name, class)
+    local playerName = format('|c%s%s|r', RAID_CLASS_COLORS[class or 'PRIEST'].colorStr, name)
+    rolls[rollId] = rolls[rollId] or {}
+    rolls[rollId][playerName] = rollType
+end
+
+local function ClearRoll(rollId)
+    rolls[rollId] = nil
+end
+
 local function ButtonOnEnter(self)
     local rollId = self:GetParent().rollID
     local rollType = self:GetID()
-    local _, _, numPlayers = C_LootHistory.GetItem(rollId)
+    local roll = rolls[rollId]
+    if not roll then
+        return
+    end
 
-    for i = 1, numPlayers do
-        local name, class, playerRollType = C_LootHistory.GetPlayerInfo(rollId, i)
-        if playerRollType == rollType then
-            local color = RAID_CLASS_COLORS[class or 'PRIEST']
-            GameTooltip:AddLine(name, color.r, color.g, color.b)
+    for playerName, playerRollType in pairs(roll) do
+        if rollType == playerRollType then
+            GameTooltip:AddLine(playerName)
         end
     end
 
@@ -49,6 +61,10 @@ local function FrameOnShow(frame)
     end
 end
 
+local function FrameOnHide(frame)
+    ClearRoll(frame.rollID)
+end
+
 local function SetupFrame(frame)
     if not frame then
         return
@@ -64,7 +80,8 @@ local function SetupFrame(frame)
         end
     end
 
-    frame:SetScript('OnShow', FrameOnShow)
+    frame:HookScript('OnShow', FrameOnShow)
+    frame:HookScript('OnHide', FrameOnHide)
 
     tinsert(frames, frame)
 end
@@ -75,7 +92,7 @@ end
 
 local function FindFrame(rollId)
     for _, frame in ipairs(frames) do
-        if frame:IsVisible() and frame.rollID == rollId then
+        if frame.rollID == rollId then
             return frame
         end
     end
@@ -94,12 +111,20 @@ local function GetRollTypeButton(frame, rollType)
     return button
 end
 
-local function UpdateRoll(rollId, rollType)
-    local id, _, numPlayers, isDone = C_LootHistory.GetItem(rollId)
-    if not id or isDone or not numPlayers then
-        return
+local function GetRollPlayerCount(rollId, rollType)
+    if not rolls[rollId] then
+        return 0
     end
+    local count = 0
+    for _, playerRollType in pairs(rolls[rollId]) do
+        if playerRollType == rollType then
+            count = count + 1
+        end
+    end
+    return count
+end
 
+local function UpdateRoll(rollId, rollType)
     local frame = FindFrame(rollId)
     if not frame then
         return
@@ -110,18 +135,18 @@ local function UpdateRoll(rollId, rollType)
         return
     end
 
-    local count = 0
-    for i = 1, numPlayers do
-        local _, _, playerRollType = C_LootHistory.GetPlayerInfo(rollId, i)
-        if rollType == playerRollType then
-            count = count + 1
-        end
-    end
-
-    button:SetText(count)
+    button:SetText(GetRollPlayerCount(rollId, rollType))
 end
 
-ns.event('LOOT_HISTORY_ROLL_CHANGED', function(rollId, playerIdx)
-    local _, _, rollType = C_LootHistory.GetPlayerInfo(rollId, playerIdx)
-    UpdateRoll(rollId, rollType)
+ns.event('LOOT_HISTORY_ROLL_CHANGED', function(itemIdx, playerIdx)
+    local roleId, _, _, isDone = C_LootHistory.GetItem(itemIdx)
+    if isDone then
+        ClearRoll(roleId)
+        return
+    end
+
+    local name, class, rollType = C_LootHistory.GetPlayerInfo(itemIdx, playerIdx)
+
+    AddRollPlayer(roleId, rollType, name, class)
+    UpdateRoll(roleId, rollType)
 end)
