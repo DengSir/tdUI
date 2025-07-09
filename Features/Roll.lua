@@ -17,8 +17,6 @@ local buttonKeys = {
 }
 
 local function ButtonOnEnter(self)
-    GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-
     local rollType = self:GetID()
     local _, _, numPlayers = C_LootHistory.GetItem(self.rollID)
 
