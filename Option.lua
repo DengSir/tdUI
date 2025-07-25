@@ -116,6 +116,9 @@ ns.login(function()
             if paths.type == 'color' then
                 local color = ns.config(path(paths))
                 return color.r, color.g, color.b, color.a
+            elseif paths.type == 'keybinding' then
+                local hotkey = ns.config(path(paths))
+                return GetBindingText(hotkey)
             else
                 return ns.config(path(paths))
             end
@@ -157,12 +160,17 @@ ns.login(function()
             },
             keybindings = treeItem(SETTINGS_KEYBINDINGS_LABEL) {
                 vehicle = inline(BINDING_HEADER_VEHICLE) {
-                    action1 = keybinding('Override 1'),
-                    action2 = keybinding('Override 2'),
-                    action3 = keybinding('Override 3'),
-                    action4 = keybinding('Override 4'),
-                    action5 = keybinding('Override 5'),
-                    action6 = keybinding('Override 6'),
+                    ACTIONBUTTON1 = keybinding(BINDING_NAME_ACTIONBUTTON1),
+                    ACTIONBUTTON2 = keybinding(BINDING_NAME_ACTIONBUTTON2),
+                    ACTIONBUTTON3 = keybinding(BINDING_NAME_ACTIONBUTTON3),
+                    ACTIONBUTTON4 = keybinding(BINDING_NAME_ACTIONBUTTON4),
+                    ACTIONBUTTON5 = keybinding(BINDING_NAME_ACTIONBUTTON5),
+                    ACTIONBUTTON6 = keybinding(BINDING_NAME_ACTIONBUTTON6),
+                    VEHICLEEXIT = keybinding(BINDING_NAME_VEHICLEEXIT),
+                    VEHICLEAIMINCREMENT = keybinding(BINDING_NAME_VEHICLEAIMINCREMENT),
+                    VEHICLEAIMDECREMENT = keybinding(BINDING_NAME_VEHICLEAIMDECREMENT),
+                    VEHICLEPREVSEAT = keybinding(BINDING_NAME_VEHICLEPREVSEAT),
+                    VEHICLENEXTSEAT = keybinding(BINDING_NAME_VEHICLENEXTSEAT),
                 },
             },
             watch = treeItem(L['Right watch panel']) {

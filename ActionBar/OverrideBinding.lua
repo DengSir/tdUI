@@ -11,22 +11,50 @@ local MAX_ACTIONS = 6
 local Action = CreateFrame('Frame', 'tdUIOverrideButton', UIParent, 'SecureHandlerStateTemplate')
 local Donothing = CreateFrame('Button', 'tdUIOverrideDonothing', UIParent, 'SecureHandlerClickTemplate')
 
-Action:Execute(format([[MAX_ACTIONS = %d]], MAX_ACTIONS))
+local ACTIONS = { --
+    'ACTIONBUTTON1',
+    'ACTIONBUTTON2',
+    'ACTIONBUTTON3',
+    'ACTIONBUTTON4',
+    'ACTIONBUTTON5',
+    'ACTIONBUTTON6',
+    'VEHICLEEXIT',
+    'VEHICLEAIMINCREMENT',
+    'VEHICLEAIMDECREMENT',
+    'VEHICLEPREVSEAT',
+    'VEHICLENEXTSEAT',
+}
+
+local ACTIONS_UI = {
+    ACTIONBUTTON1 = 'OverrideActionBarButton1',
+    ACTIONBUTTON2 = 'OverrideActionBarButton2',
+    ACTIONBUTTON3 = 'OverrideActionBarButton3',
+    ACTIONBUTTON4 = 'OverrideActionBarButton4',
+    ACTIONBUTTON5 = 'OverrideActionBarButton5',
+    ACTIONBUTTON6 = 'OverrideActionBarButton6',
+}
+
+Action:Execute([[ACTIONS = newtable()]])
+for _, binding in ipairs(ACTIONS) do
+    Action:Execute(format([[tinsert(ACTIONS, '%s')]], binding))
+end
+
 Action:Execute [[
     SetupHotkeys = [=[
-        for i = 1, MAX_ACTIONS do
-            for _, key in ipairs(table.new(GetBindingKey('ACTIONBUTTON' .. i))) do
-                self:SetBindingClick(true, key, 'tdUIOverrideDonothing')
+        for _, binding in ipairs(ACTIONS) do
+            for _, hotkey in ipairs(table.new(GetBindingKey(binding))) do
+                self:SetBindingClick(true, hotkey, 'tdUIOverrideDonothing')
             end
         end
 
-        for i = 1, MAX_ACTIONS do
-            local hotkey = self:GetAttribute('action' .. i)
+        for _, binding in ipairs(ACTIONS) do
+            local hotkey = self:GetAttribute(binding)
+            print(binding, hotkey)
             if hotkey then
-                self:SetBindingClick(true, hotkey, 'OverrideActionBarButton' .. i)
+                self:SetBinding(true, hotkey, binding)
             end
 
-            self:CallMethod('Update', i)
+            self:CallMethod('Update', binding)
         end
     ]=]
 
@@ -52,9 +80,9 @@ function Action:IsHotkeyInUse(hotkey)
     end
 end
 
-function Action:ResolveHotkey(index)
-    local hotkey = ns.profile.keybindings.vehicle['action' .. index]
-    local key1, key2 = GetBindingKey('ACTIONBUTTON' .. index)
+function Action:ResolveHotkey(binding)
+    local hotkey = ns.profile.keybindings.vehicle[binding]
+    local key1, key2 = GetBindingKey(binding)
     if not hotkey then
         if key1 and not self:IsHotkeyInUse(key1) then
             return key1
@@ -63,7 +91,12 @@ function Action:ResolveHotkey(index)
             return key2
         end
     end
-    return hotkey
+    if hotkey then
+        return hotkey
+    end
+    if binding:sub(1, 12) == 'ACTIONBUTTON' then
+         self:ResolveHotkey('action' .. binding:sub(13))
+    end
 end
 
 function Action:UpdateConfig()
@@ -71,23 +104,25 @@ function Action:UpdateConfig()
 
     self:SetAttribute('state-usable', nil)
 
-    if next(ns.profile.keybindings.vehicle) then
-        for i = 1, 6 do
-            local hotkey = self:ResolveHotkey(i)
-            if hotkey then
-                self:SetAttribute('action' .. i, hotkey)
-            else
-                self:SetAttribute('action' .. i, nil)
-            end
+    for _, binding in ipairs(ACTIONS) do
+        local hotkey = self:ResolveHotkey(binding)
+        if hotkey then
+            self:SetAttribute(binding, hotkey)
+        else
+            self:SetAttribute(binding, nil)
         end
-
-        RegisterStateDriver(self, 'usable', '[vehicleui][overridebar] 1; 0')
     end
+
+    RegisterStateDriver(self, 'usable', '[vehicleui] 1; 0')
 end
 
-function Action:Update(index)
-    local hotkey = _G['OverrideActionBarButton' .. index].HotKey
-    hotkey:SetText(self:ResolveHotkey(index))
+function Action:Update(binding)
+    local ui = ACTIONS_UI[binding]
+    local button = _G[ui]
+    local hotkey = button and button.HotKey
+    if hotkey then
+        hotkey:SetText(self:ResolveHotkey(binding))
+    end
 end
 
 function Action:OnLoad()
@@ -95,8 +130,8 @@ function Action:OnLoad()
         return Action:UpdateConfig()
     end)
 
-    for i = 1, MAX_ACTIONS do
-        ns.config('keybindings.vehicle.action' .. i, UpdateConfig)
+    for _, binding in ipairs(ACTIONS) do
+        ns.config('keybindings.vehicle.' .. binding, UpdateConfig)
     end
 
     ns.event('UPDATE_BINDINGS', UpdateConfig)
