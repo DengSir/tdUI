@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/16/2020, 12:53:56 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -24,7 +24,7 @@ local function JoinChannel(name)
 end
 
 if not GetChannelId('大脚世界频道') then
-    ns.onceeventdelay('CHANNEL_UI_UPDATE', 5, function()
+    ns.onceevent('CHANNEL_UI_UPDATE', ns.delayed(5, function()
         JoinChannel('大脚世界频道')
-    end)
+    end))
 end

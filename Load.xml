@@ -73,4 +73,5 @@
     <Script file="Bug\Taint.lua" />
     <Script file="Bug\Blizzard.lua" />
     <Script file="Bug\Details.lua" />
+    <Script file="Bug\EditBox.lua" />
 </Ui>

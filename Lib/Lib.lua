@@ -8,14 +8,15 @@ local type = type
 local assert = assert
 local ipairs = ipairs
 local select = select
-local unpack = unpack
 local tinsert, tconcat = table.insert, table.concat
 
-local IsAddOnLoaded = IsAddOnLoaded
-local GetAddOnInfo = GetAddOnInfo
+local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetAddOnInfo = C_AddOns and C_AddOns.GetAddOnInfo or GetAddOnInfo
 local IsLoggedIn = IsLoggedIn
 local After = C_Timer.After
 local NewTicker = C_Timer.NewTicker
+local SafePack = SafePack
+local SafeUnpack = SafeUnpack
 
 local ADDON = ...
 ---@class ns
@@ -51,33 +52,6 @@ local function call(t, k, ...)
     end
     for i, v in ipairs(t[k]) do
         v(...)
-    end
-end
-
-local function pack(...)
-    local n = select('#', ...)
-    if n == 0 then
-        return nop
-    elseif n == 1 then
-        local arg1 = ...
-        return function()
-            return arg1
-        end
-    elseif n == 2 then
-        local arg1, arg2 = ...
-        return function()
-            return arg1, arg2
-        end
-    elseif n == 3 then
-        local arg1, arg2, arg3 = ...
-        return function()
-            return arg1, arg2, arg3
-        end
-    else
-        local args = {...}
-        return function()
-            return unpack(args, 1, n)
-        end
     end
 end
 
@@ -119,7 +93,6 @@ events:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
-ns.pack = pack
 ns.after = After
 ns.timer = NewTicker
 ns.oncetimer = C_Timer.NewTimer
@@ -142,14 +115,6 @@ function ns.onceevent(event, func)
     register(event)
 end
 
-function ns.onceeventdelay(event, n, func)
-    return ns.onceevent(event, ns.delayed(n, func))
-end
-
-function ns.onceeventspawn(event, func)
-    return ns.onceeventdelay(event, 0, func)
-end
-
 function ns.event(event, func)
     assert(type(func) == 'function')
 
@@ -165,7 +130,7 @@ function ns.login(func)
     if IsLoggedIn() then
         return ns.spawn(func)
     end
-    return ns.onceeventspawn('PLAYER_LOGIN', func)
+    return ns.onceevent('PLAYER_LOGIN', ns.spawned(func))
 end
 
 function ns.logout(func)
@@ -231,19 +196,19 @@ function ns.load(func)
 end
 
 function ns.addonlogin(...)
-    local p = pack(...)
+    local p = SafePack(...)
 
     return ns.login(function()
-        return ns.addon(p())
+        return ns.addon(SafeUnpack(p))
     end)
 end
 
 function ns.delayed(n, func)
     return function(...)
-        local p = pack(...)
+        local p = SafePack(...)
 
         return After(n, function()
-            return func(p())
+            return func(SafeUnpack(p))
         end)
     end
 end
@@ -262,9 +227,9 @@ function ns.nocombat(func, ...)
     if not InCombatLockdown() then
         func(...)
     else
-        local p = ns.pack(...)
+        local p = SafePack(...)
         ns.onceevent('PLAYER_REGEN_ENABLED', function()
-            return func(p())
+            return func(SafeUnpack(p))
         end)
     end
 end
@@ -428,9 +393,9 @@ function ns.itemready(itemId, func, ...)
         return func(...)
     end
 
-    local p = ns.pack(...)
+    local p = SafePack(...)
     append(itemReadyCallbacks, itemId, function()
-        return func(p())
+        return func(SafeUnpack(p))
     end)
     events:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 end
