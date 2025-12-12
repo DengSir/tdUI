@@ -22,6 +22,7 @@
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
     <Script file="Features\TriggerICD.lua" />
+    <Script file="Features\ChatBlock.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
