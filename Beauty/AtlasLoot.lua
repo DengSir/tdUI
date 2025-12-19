@@ -5,21 +5,21 @@
 ---@type ns
 local ns = select(2, ...)
 
-ns.addon('AtlasLootClassic_Options', function()
-    local options = AtlasLoot.Options.config
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'bgColor')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'title')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleBgColor')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleFontColor')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleSize')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'font')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'content')
-    ns.RemoveAceConfig(options, 'windows', 'main', 'contentBottomBar')
+-- ns.addon('AtlasLootClassic_Options', function()
+--     local options = AtlasLoot.Options.config
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'bgColor')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'title')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleBgColor')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleFontColor')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'titleSize')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'main', 'font')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'content')
+--     ns.RemoveAceConfig(options, 'windows', 'main', 'contentBottomBar')
 
-    AtlasLoot.Options:NotifyChange()
-end)
+--     AtlasLoot.Options:NotifyChange()
+-- end)
 
-ns.addon('AtlasLootClassic', function()
+local function ApplyAtlasLoot()
     local Window = _G['AtlasLoot_GUI-Frame']
     Window:SetBackdrop(nil)
     Window:SetWidth(Window:GetWidth() - 160)
@@ -45,8 +45,8 @@ ns.addon('AtlasLootClassic', function()
     Window.titleFrame.text:SetTextColor(1, 1, 1, 1)
     Window.titleFrame.text.SetTextColor = nop
 
-    Window.contentFrame.map.overlay:Hide()
-    Window.contentFrame.map.overlay.Show = nop
+    -- Window.contentFrame.map.overlay:Hide()
+    -- Window.contentFrame.map.overlay.Show = nop
 
     local function SkinDropdown(dropdown)
         local frame = dropdown.frame
@@ -135,6 +135,10 @@ ns.addon('AtlasLootClassic', function()
     Window:SetAttribute('UIPanelLayout-area', true and 'left')
     Window:SetAttribute('UIPanelLayout-pushable', true and 6)
 
+    Window.titleFrame.text:SetText('AtlasLoot')
+
+    local AtlasLoot = _G.AtlasLoot or _G.AtlasLootMY
+
     ns.override(AtlasLoot.GUI, 'Toggle', function()
         if Window:IsShown() then
             HideUIPanel(Window)
@@ -142,4 +146,7 @@ ns.addon('AtlasLootClassic', function()
             ShowUIPanel(Window)
         end
     end)
-end)
+end
+
+ns.addon('AtlasLootClassic', ApplyAtlasLoot)
+ns.addon('AtlasLootMY', ApplyAtlasLoot)

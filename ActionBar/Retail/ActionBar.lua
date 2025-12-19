@@ -215,17 +215,19 @@ do
     Core.frames = {}
 
     for k, v in pairs(Frames) do
-        local name
-        if type(k) == 'number' then
-            name = v:GetName()
-        else
-            name = k
-        end
+        if v then
+            local name
+            if type(k) == 'number' then
+                name = v:GetName()
+            else
+                name = k
+            end
 
-        assert(name)
-        Core.frames[name] = v
-        Core:SetFrameRef(name, v)
-        Core:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
+            assert(name)
+            Core.frames[name] = v
+            Core:SetFrameRef(name, v)
+            Core:Execute(format([[%s = self:GetFrameRef('%s')]], name, name))
+        end
     end
 end
 
@@ -269,7 +271,7 @@ Core:Execute([=[
                 totalWidth = totalWidth + 291 ----- 45 + (36 + 6) * 6 - 6
             end
 
-            local stanceWidth = max(self:Run(CalcWidth, 'stances', 30, 7), MultiCastActionBarFrame:GetWidth())
+            local stanceWidth = max(self:Run(CalcWidth, 'stances', 30, 7), MultiCastActionBarFrame and MultiCastActionBarFrame:GetWidth() or 0)
             local petWidth = 372
 
             x = max(totalWidth - petWidth - 33, stanceWidth + 38)
@@ -293,8 +295,10 @@ Core:Execute([=[
     ]==]
 
     LayoutMultiCastBar = [==[
-        MultiCastActionBarFrame:ClearAllPoints()
-        MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, state.hasBottomLeft and 54 or 11)
+        if MultiCastActionBarFrame then
+            MultiCastActionBarFrame:ClearAllPoints()
+            MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPLEFT', 33, state.hasBottomLeft and 54 or 11)
+        end
     ]==]
 
     UpdateHeight = [==[
@@ -380,6 +384,9 @@ function Core:SetFrameHeight(frameName, height)
 end
 
 local function SetupShowHide(frame, key)
+    if not frame then
+        return
+    end
     local handle = CreateFrame('Frame', nil, frame, 'SecureHandlerBaseTemplate')
     local onShow = format([[owner:Run(UpdateEnvValue, '%s', true)]], key)
     local onHide = format([[owner:Run(UpdateEnvValue, '%s', false)]], key)

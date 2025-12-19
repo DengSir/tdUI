@@ -20,8 +20,9 @@
     "name": "tdUI",
     "curse_id": 0,
     "builds": {
-      "Vanilla": "11505",
-      "Wrath": "30403"
+      "Vanilla": "11508",
+      "Wrath": "38000",
+      "Mists": "50502"
     },
     "addons": {
       "tdUI-SavedVariables": "SavedVariables"

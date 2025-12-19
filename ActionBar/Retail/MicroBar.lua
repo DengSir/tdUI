@@ -104,6 +104,7 @@ end)
 -- MiniMapLFGFrameBorder:SetSize(96, 96)
 -- MiniMapLFGFrameBorder:SetAtlas('groupfinder-eye-single')
 
+-- @build>=3@
 ns.securehook('UpdateMicroButtons', function()
     if CollectionsJournal and CollectionsJournal:IsShown() then
         CollectionsMicroButton:SetButtonState('PUSHED', true)
@@ -111,6 +112,7 @@ ns.securehook('UpdateMicroButtons', function()
         CollectionsMicroButton:SetButtonState('NORMAL')
     end
 end)
+-- @end-build>=3@
 
 -- if not LFGParentFrame and PVEFrame then
 --     local function Update()
@@ -195,7 +197,7 @@ ns.securehook('SetLookingForGroupUIAvailable', function()
     if WorldMapMicroButton then
         WorldMapMicroButton:Show()
     end
-    MiniMapWorldMapButton:Hide()
+    -- MiniMapWorldMapButton:Hide()
 end)
 
 Bar.BgKeyring:SetParent(KeyRingButton)
@@ -204,6 +206,12 @@ local LFGButtons = { --
     {button = MiniMapLFGFrame, x = -1, y = 1},
     {button = MiniMapBattlefieldFrame, x = 0, y = 0},
 }
+
+for i, v in ipairs_reverse(LFGButtons) do
+    if not v.button then
+        tremove(LFGButtons, i)
+    end
+end
 
 local function LayoutLFGButtons()
     local p, rp, x

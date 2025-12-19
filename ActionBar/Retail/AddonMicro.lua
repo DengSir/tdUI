@@ -5,12 +5,13 @@
 ---@type ns
 local ns = select(2, ...)
 
-ns.addon('AtlasLootClassic', function()
+local function AtlasLootMicro()
+    local AtlasLoot = _G.AtlasLoot or _G.AtlasLootMY
     local L = AtlasLoot.Locales
     local SlashCommands = AtlasLoot.SlashCommands
 
     ns.CreateMicroButton {
-        text = L['AtlasLoot'] or 'AtlasLoot',
+        text = 'AtlasLoot',
         keybinding = 'ATLASLOOT_TOGGLE',
         template = 'EJ',
         frame = _G['AtlasLoot_GUI-Frame'],
@@ -19,7 +20,10 @@ ns.addon('AtlasLootClassic', function()
             return SlashCommands:Run('')
         end,
     }
-end)
+end
+
+ns.addon('AtlasLootClassic', AtlasLootMicro)
+ns.addon('AtlasLootMY', AtlasLootMicro)
 
 ns.addon('MeetingHorn', function()
     local Addon = LibStub('AceAddon-3.0'):GetAddon('MeetingHorn')

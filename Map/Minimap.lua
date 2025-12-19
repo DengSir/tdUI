@@ -10,7 +10,9 @@ MinimapZoomOut:Hide()
 -- @build<3@
 MinimapToggleButton:Hide()
 -- @end-build<3@
+-- @build=1@
 MiniMapWorldMapButton:Hide()
+-- @end-build=1@
 -- MinimapBorderTop:Hide()
 -- GameTimeFrame:Hide()
 
@@ -27,7 +29,7 @@ MinimapBorderTop:SetPoint('CENTER', MinimapZoneTextButton, 'CENTER', 0, 10)
 MinimapCompassTexture:SetScale(0.7)
 
 -- @classic@
-MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
+-- MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 -- @end-classic@
 
 MinimapZoneTextButton:SetSize(155, 20)

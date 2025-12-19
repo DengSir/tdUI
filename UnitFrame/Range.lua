@@ -106,7 +106,10 @@ function Range:OnEvent(event)
 end
 
 Range:New(TargetFrame, 'PLAYER_TARGET_CHANGED')
-Range:New(FocusFrame, 'PLAYER_FOCUS_CHANGED')
+
+if FocusFrame then
+    Range:New(FocusFrame, 'PLAYER_FOCUS_CHANGED')
+end
 
 local frames = {}
 local function Alloc(unitFrame)
