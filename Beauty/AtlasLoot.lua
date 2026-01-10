@@ -141,9 +141,9 @@ local function ApplyAtlasLoot()
 
     ns.override(AtlasLoot.GUI, 'Toggle', function()
         if Window:IsShown() then
-            HideUIPanel(Window)
+            ns.HideUIPanel(Window)
         else
-            ShowUIPanel(Window)
+            ns.ShowUIPanel(Window)
         end
     end)
 end

@@ -15,6 +15,10 @@ local unpack = table.unpack or unpack
 local tinsert = table.insert
 local format = string.format
 
+local LibShowUIPanel = LibStub('LibShowUIPanel-1.0', true)
+ns.ShowUIPanel = LibShowUIPanel and LibShowUIPanel.ShowUIPanel or ShowUIPanel
+ns.HideUIPanel = LibShowUIPanel and LibShowUIPanel.HideUIPanel or HideUIPanel
+
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
 ns.debug = (function()

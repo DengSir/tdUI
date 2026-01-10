@@ -5,10 +5,12 @@
 ---@type ns
 local ns = select(2, ...)
 
-local function AtlasLootMicro()
-    local AtlasLoot = _G.AtlasLoot or _G.AtlasLootMY
+local function AtlasLootMicro(key)
+    local AtlasLoot = _G[key]
     local L = AtlasLoot.Locales
     local SlashCommands = AtlasLoot.SlashCommands
+
+    local Minimap = LibStub('LibDataBroker-1.1'):GetDataObjectByName(key)
 
     ns.CreateMicroButton {
         text = 'AtlasLoot',
@@ -16,14 +18,16 @@ local function AtlasLootMicro()
         template = 'EJ',
         frame = _G['AtlasLoot_GUI-Frame'],
         after = 'LFGMicroButton',
-        onClick = function()
-            return SlashCommands:Run('')
-        end,
+        onClick = Minimap.OnClick,
     }
 end
 
-ns.addon('AtlasLootClassic', AtlasLootMicro)
-ns.addon('AtlasLootMY', AtlasLootMicro)
+ns.addon('AtlasLootClassic', function()
+    AtlasLootMicro('AtlasLootClassic')
+end)
+ns.addon('AtlasLootMY', function()
+    AtlasLootMicro('AtlasLootMY')
+end)
 
 ns.addon('MeetingHorn', function()
     local Addon = LibStub('AceAddon-3.0'):GetAddon('MeetingHorn')
