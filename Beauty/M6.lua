@@ -117,22 +117,22 @@ ns.addon('M6', function()
                 return
             end
 
-            if button.GetCheckedTexture then
-                ---@type Texture
-                local checkedTexture = button:GetCheckedTexture()
-                ---@type Texture
-                local texture = button._CheckedTexture or button:CreateTexture(nil, (checkedTexture:GetDrawLayer()))
+            -- if button.GetCheckedTexture then
+            --     ---@type Texture
+            --     local checkedTexture = button:GetCheckedTexture()
+            --     ---@type Texture
+            --     local texture = button._CheckedTexture or button:CreateTexture(nil, (checkedTexture:GetDrawLayer()))
 
-                texture:Hide()
-                texture:SetAllPoints(checkedTexture)
-                texture:SetTexture(checkedTexture:GetTexture())
-                texture:SetTexCoord(checkedTexture:GetTexCoord())
-                texture:SetBlendMode(checkedTexture:GetBlendMode())
+            --     texture:Hide()
+            --     texture:SetAllPoints(checkedTexture)
+            --     texture:SetTexture(checkedTexture:GetTexture())
+            --     texture:SetTexCoord(checkedTexture:GetTexCoord())
+            --     texture:SetBlendMode(checkedTexture:GetBlendMode())
 
-                checkedTexture:SetAlpha(0)
+            --     checkedTexture:SetAlpha(0)
 
-                button._CheckedTexture = texture
-            end
+            --     button._CheckedTexture = texture
+            -- end
 
             button._NormalTexture = button.NormalTexture or button._NormalTexture
             button.NormalTexture = nil
