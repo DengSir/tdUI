@@ -279,7 +279,9 @@ local UpdatePosition = ns.pend(function()
 
         Bar:Show()
     elseif style == 'HIDE' then
+        point(Bar, 'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT')
         Bar:Hide()
+        Bar:SetWidth(1)
     end
 
     LayoutLFGButtons()
@@ -313,7 +315,6 @@ local LayoutMicroBar = ns.pend(function()
                     end
 
                     tinsert(buttons, button)
-                    count = count + 1
                     prev = button
                 end
             end
@@ -335,12 +336,16 @@ local LayoutMicroBar = ns.pend(function()
         end
     end
 
-    -- @build<3@
-    Bar:SetWidth(26 * count + 12)
-    -- @end-build<3@
-    -- @build>3@
-    Bar:SetWidth(26 * count + 2)
-    -- @end-build>3@
+    if inOverride or not Bar:IsShown() then
+        Bar:SetWidth(1)
+    else
+        -- @build<3@
+        Bar:SetWidth(26 * count + 12)
+        -- @end-build<3@
+        -- @build>3@
+        Bar:SetWidth(26 * count + 2)
+        -- @end-build>3@
+    end
 end)
 
 ns.config('actionbar.micro.position', UpdatePosition)

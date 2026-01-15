@@ -11,7 +11,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local frames = {}
 local rolls = {}
 local buttonKeys = {
-    -- [0] = 'PassButton',
+    [0] = 'PassButton',
     [1] = 'NeedButton',
     [2] = 'GreedButton',
     -- [3] = 'DisenchantButton',
@@ -69,6 +69,17 @@ local function SetupFrame(frame)
     if not frame then
         return
     end
+
+    frame.PassButton:SetSize(32, 32)
+
+    frame.PassButton:SetNormalAtlas('lootroll-toast-icon-pass-up')
+    frame.PassButton:SetHighlightAtlas('lootroll-toast-icon-pass-highlight')
+    frame.PassButton:SetPushedAtlas('lootroll-toast-icon-pass-down')
+
+    frame.PassButton:ClearAllPoints()
+    frame.PassButton:SetPoint('LEFT', frame.NeedButton, 'RIGHT', 6, 2)
+
+    _G[frame:GetName() .. 'Corner']:Hide()
 
     for _, v in pairs(buttonKeys) do
         local button = frame[v]
