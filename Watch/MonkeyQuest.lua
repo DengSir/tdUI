@@ -126,19 +126,26 @@ ns.addonlogin('MonkeyQuest', function()
                 end
             end
 
-            for i = 1, MonkeyQuest.m_iNumQuestButtons, 1 do
-                local _, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(i)
-                if isHeader then
-                    if unfold then
-                        ExpandQuestHeader(i);
-                    else
-                        CollapseQuestHeader(i);
-                    end
-                end
-            end
-
             MonkeyQuest_Refresh()
         end)
+
+        ns.securehook('QuestMapFrame_ResetFilters', function()
+            ExpandQuestHeader(0)
+            -- C_Timer.After(0, function()
+            --     print(C_Map.GetBestMapForUnit('player'))
+            --     C_QuestLog.SetMapForQuestPOIs(C_Map.GetBestMapForUnit('player'))
+            -- end)
+        end)
+
+        ns.securehook(QuestMapFrame, 'SyncQuestSystemWithCurrentMap', function()
+            local mapId = C_Map.GetBestMapForUnit('player')
+            if mapId then
+                C_QuestLog.SetMapForQuestPOIs(mapId)
+            end
+
+        end)
+
+        ExpandQuestHeader(0)
 
         ns.securehook('MonkeyQuest_Refresh', function()
             if not MonkeyQuest.m_bLoaded then
@@ -151,12 +158,6 @@ ns.addonlogin('MonkeyQuest', function()
                 FoldButton:Fold()
             else
                 FoldButton:Unfold()
-                for i = 1, GetNumQuestLogEntries() do
-                    local isHeader, isCollapsed = select(4, GetQuestLogTitle(i))
-                    if isHeader and isCollapsed then
-                        ExpandQuestHeader(i)
-                    end
-                end
             end
         end)
     end
@@ -275,7 +276,7 @@ ns.addonlogin('MonkeyQuest', function()
 
     local function UpdateHeight()
         local visibleHeight = MonkeyQuestFrame:GetTop() - 32 -
-            (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
+                                  (ns.profile.actionbar.micro.position == 'RIGHT' and 88 or 20)
         local totalHeight = 0
 
         for _, button in ipairs(QuestButtons) do
@@ -328,14 +329,6 @@ ns.addonlogin('MonkeyQuest', function()
                 if activeWindow and activeWindow:HasFocus() then
                     return activeWindow:Insert(format('[%s (%d)]', title, questId))
                 end
-            end
-        end
-        local title, level, _, isHeader, _, _, _, questId = GetQuestLogTitle(self.m_iQuestIndex)
-        if isHeader then
-            if not MonkeyQuestConfig[MonkeyQuest.m_strPlayer].m_aQuestList[_G["MonkeyQuestHideButton" .. self.id].m_strQuestLogTitleText].m_bChecked then
-                ExpandQuestHeader(self.m_iQuestIndex);
-            else
-                CollapseQuestHeader(self.m_iQuestIndex);
             end
         end
         return orig(self, button, down)
@@ -403,6 +396,7 @@ ns.addonlogin('MonkeyQuest', function()
                 end
 
                 if quest.isComplete or quest.wasComplete then
+                    ns.ShowUIPanel(WorldMapFrame)
                     TrackerUtils:ShowFinisherOnMap(quest)
                     return
                 end
@@ -415,6 +409,7 @@ ns.addonlogin('MonkeyQuest', function()
 
                     for i, v in ipairs(quest.Objectives) do
                         if v.Description:find(obj) or obj:find(v.Description) then
+                            ns.ShowUIPanel(WorldMapFrame)
                             TrackerUtils:ShowObjectiveOnMap(v)
                             break
                         end
@@ -440,7 +435,7 @@ ns.addonlogin('MonkeyQuest', function()
                         end
                     end
                 end,
-            }, { __index = _G }))
+            }, {__index = _G}))
         end
 
         -- local REPUTATION_ICON_TEXTURE = '|TInterface\\AddOns\\Questie\\Icons\\reputation.blp:14:14:2:0|t'
@@ -477,7 +472,7 @@ ns.addonlogin('MonkeyQuest', function()
                 local aldorPenalty, scryersPenalty
                 local faction = select(2, UnitFactionGroup('player'))
                 local playerIsHuman = select(3, UnitRace('player')) == 1
-                local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, { 935, 8999 }))
+                local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, {935, 8999}))
 
                 for _, rewardPair in pairs(reputationReward) do
                     factionId = rewardPair[1]
@@ -495,7 +490,7 @@ ns.addonlogin('MonkeyQuest', function()
                             rewardValue = math.floor(rewardValue * 1.1)
                         end
 
-                        if factionId == 932 then     -- Aldor
+                        if factionId == 932 then -- Aldor
                             scryersPenalty = -math.floor(rewardValue * 1.1)
                         elseif factionId == 934 then -- Scryers
                             aldorPenalty = -math.floor(rewardValue * 1.1)

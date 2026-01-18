@@ -134,8 +134,8 @@ ns.addon('M6', function()
             --     button._CheckedTexture = texture
             -- end
 
-            button._NormalTexture = button.NormalTexture or button._NormalTexture
-            button.NormalTexture = nil
+            -- button._NormalTexture = button.NormalTexture or button._NormalTexture
+            -- button.NormalTexture = nil
             button.rangeTimer = nil
 
             hooked[button] = true
@@ -184,13 +184,13 @@ ns.addon('M6', function()
                 if state then
                     SetButtonState(button, GetState(state))
 
-                    if button._CheckedTexture and spellId then
-                        button._CheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
-                    end
+                    -- if button._CheckedTexture and spellId then
+                    --     button._CheckedTexture:SetShown(IsCurrentSpell(spellId) or IsAutoRepeatSpell(spellId))
+                    -- end
 
-                    if button.cooldown then
-                        button.cooldown:SetDrawEdge(false)
-                    end
+                    -- if button.cooldown then
+                    --     button.cooldown:SetDrawEdge(false)
+                    -- end
                 end
 
             elseif event == 'M6_BUTTON_RELEASE' then
