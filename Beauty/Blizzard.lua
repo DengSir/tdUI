@@ -19,6 +19,8 @@ Button(GuildInfoSaveButton)
 Button(GuildInfoCancelButton)
 Button(GuildMemberRemoveButton)
 Button(GuildMemberGroupInviteButton)
+Button(GuildInfoGuildEventButton)
+Button(GuildEventLogCancelButton)
 
 Button(RaidFrameConvertToRaidButton)
 Button(RaidFrameRaidInfoButton)
