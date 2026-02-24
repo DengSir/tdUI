@@ -22,7 +22,6 @@
     <Script file="Features\LearnAll.lua" />
     <Script file="Features\DailyAlpha.lua" />
     <Script file="Features\TriggerICD.lua" />
-    <Script file="Features\ChatBlock.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -37,6 +36,7 @@
     <Script file="Beauty\AtlasLoot.lua" />
     <Script file="Beauty\M6.lua" />
     <Script file="Beauty\Macro.lua" />
+    <Script file="Beauty\BiaoGe.lua" />
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
@@ -46,6 +46,7 @@
     <Script file="Chat\Link.lua" />
     <Script file="Chat\Tab.lua" />
     <Script file="Chat\ShortChannel.lua" />
+    <Script file="Chat\ChatBlock.lua" />
 
     <Script file="Quest\Vendo.lua" />
 
@@ -71,7 +72,7 @@
 
     <Script file="Bug\Elephant.lua" />
     <Script file="Bug\MailEdit.lua" />
-    <Script file="Bug\Taint.lua" />
+    <Script file="Bug\Taint.lua" build="<5" />
     <Script file="Bug\Blizzard.lua" />
     <Script file="Bug\Details.lua" />
     <!-- <Script file="Bug\EditBox.lua" /> -->

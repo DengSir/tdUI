@@ -122,6 +122,7 @@ function Action:Update(binding)
     local hotkey = button and button.HotKey
     if hotkey then
         hotkey:SetText(self:ResolveHotkey(binding))
+        hotkey:Show()
     end
 end
 

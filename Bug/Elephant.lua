@@ -16,14 +16,21 @@ ns.addon('Elephant', function()
 
     local Elephant = LibStub('AceAddon-3.0'):GetAddon('Elephant')
 
+    local function text(b, t)
+        if not b then
+            return
+        end
+        b:SetText(t)
+    end
+
     ns.securehook(Elephant, 'OnEnable', function()
-        ElephantFrameGuildTabButton:SetText('会')
-        ElephantFrameOfficerTabButton:SetText('官')
-        ElephantFrameWhisperTabButton:SetText('密')
-        ElephantFramePartyTabButton:SetText('队')
-        ElephantFrameRaidTabButton:SetText('团')
-        -- ElephantFrameInstanceTabButton:SetText('本')
-        ElephantFrameSayTabButton:SetText('说')
-        ElephantFrameYellTabButton:SetText('喊')
+        text(ElephantFrameGuildTabButton, '会')
+        text(ElephantFrameOfficerTabButton, '官')
+        text(ElephantFrameWhisperTabButton, '密')
+        text(ElephantFramePartyTabButton, '队')
+        text(ElephantFrameRaidTabButton, '团')
+        text(ElephantFrameInstanceTabButton, '本')
+        text(ElephantFrameSayTabButton, '说')
+        text(ElephantFrameYellTabButton, '喊')
     end)
 end)

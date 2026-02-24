@@ -41,9 +41,22 @@ local Bar = CreateFrame('Frame', 'MicroButtonAndBagsBar', MainMenuBarArtFrame, '
 
 local MICRO_BUTTONS = (function()
     local t = {}
+    local store = false
     for _, name in ipairs(MICRO_BUTTONS) do
+        if name == 'StoreMicroButton' then
+            store = true
+        end
         tinsert(t, _G[name])
     end
+
+    if store and MainMenuMicroButton then
+        local i = tIndexOf(t, MainMenuMicroButton)
+        if i then
+            tremove(t, i)
+            tinsert(t, MainMenuMicroButton)
+        end
+    end
+
     return t
 end)()
 
@@ -85,7 +98,10 @@ HelpOpenWebTicketButton:ClearAllPoints()
 HelpOpenWebTicketButton:SetPoint('CENTER', MainMenuMicroButton, 'TOPRIGHT', -3, -8)
 
 MainMenuBarBackpackButton:SetParent(Bar)
+MainMenuBarBackpackButton:SetSize(37, 37)
+MainMenuBarBackpackButtonNormalTexture:SetSize(64, 64)
 
+-- @build<5@
 MainMenuBarPerformanceBar:ClearAllPoints()
 MainMenuBarPerformanceBar:SetParent(MainMenuMicroButton)
 MainMenuBarPerformanceBar:SetSize(9.0625, 4.5)
@@ -93,6 +109,21 @@ MainMenuBarPerformanceBar:SetDrawLayer('OVERLAY')
 MainMenuBarPerformanceBar:SetTexture([[Interface\Buttons\WHITE8X8]])
 MainMenuBarPerformanceBar:SetAlpha(0.6)
 MainMenuBarPerformanceBarFrame:EnableMouse(false)
+
+local function UpdatePerformanceBarPushed(self)
+    if self:GetButtonState() == 'PUSHED' then
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.0625, -17.34375)
+        MainMenuBarPerformanceBar:SetAlpha(0.4)
+    else
+        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.96875, -15.53125)
+        MainMenuBarPerformanceBar:SetAlpha(0.6)
+    end
+end
+
+ns.securehook(MainMenuMicroButton, 'SetButtonState', UpdatePerformanceBarPushed)
+ns.hookscript(MainMenuMicroButton, 'OnMouseDown', UpdatePerformanceBarPushed)
+ns.hookscript(MainMenuMicroButton, 'OnMouseUp', UpdatePerformanceBarPushed)
+-- @end-build<5@
 
 ns.hookscript(QueueStatusFrame, 'OnShow', function(self)
     self:ClearAllPoints()
@@ -125,19 +156,6 @@ end)
 --     ns.securehook('UpdateMicroButtons', Update)
 -- end
 
-local function UpdatePerformanceBarPushed(self)
-    if self:GetButtonState() == 'PUSHED' then
-        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.0625, -17.34375)
-        MainMenuBarPerformanceBar:SetAlpha(0.4)
-    else
-        MainMenuBarPerformanceBar:SetPoint('TOPLEFT', 9.96875, -15.53125)
-        MainMenuBarPerformanceBar:SetAlpha(0.6)
-    end
-end
-
-ns.securehook(MainMenuMicroButton, 'SetButtonState', UpdatePerformanceBarPushed)
-ns.hookscript(MainMenuMicroButton, 'OnMouseDown', UpdatePerformanceBarPushed)
-ns.hookscript(MainMenuMicroButton, 'OnMouseUp', UpdatePerformanceBarPushed)
 -- @build<3@
 ns.securehook('MicroButton_OnEnter', function(self)
     if not GameTooltip:IsOwned(self) then
@@ -314,6 +332,7 @@ local LayoutMicroBar = ns.pend(function()
                         button:SetPoint('BOTTOMLEFT', prev, 'BOTTOMRIGHT', -3, 0)
                     end
 
+                    count = count + 1
                     tinsert(buttons, button)
                     prev = button
                 end

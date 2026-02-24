@@ -9,6 +9,9 @@ ns.addonlogin('MonkeyQuest', function()
     if not MonkeyQuestFrame then
         return
     end
+    if not MonkeyQuestConfig then
+        return
+    end
 
     --- fix for quest tag
     QUEST_TAG_GROUP = 1

@@ -53,16 +53,22 @@ function Collect:OnLoad()
     self:InitFrame()
     self:InitEnter()
 
-    -- self:OnLeaveMinimap()
+    self:StartCollect()
 
-    ns.after(3, function()
+    ns.event('PLAYER_REGEN_ENABLED', function()
         return self:Collect()
     end)
+
+    self:SetScript('OnEvent', self.OnEvent)
 
     self.OnLoad = nil
     self.InitMinimap = nil
     self.InitFrame = nil
     self.InitEnter = nil
+end
+
+function Collect:OnEvent()
+    self:StartCollect()
 end
 
 function Collect:InitMinimap()
@@ -192,6 +198,30 @@ function Collect:Collect()
         self:UpdateEdit()
         self:Refresh()
     end
+end
+
+function Collect:StartCollect()
+    if not self.nextDelay then
+        self.nextDelay = 3
+    end
+
+    if self.collectTimer then
+        return
+    end
+
+    local function Delay()
+        self.collectTimer = nil
+        self.nextDelay = self.nextDelay * 2
+        self:Collect()
+
+        if self.nextDelay < 60 then
+            self.collectTimer = ns.oncetimer(self.nextDelay, Delay)
+        else
+            self.nextDelay = nil
+        end
+    end
+
+    self.collectTimer = ns.oncetimer(self.nextDelay, Delay)
 end
 
 function Collect:CheckButton(button)
