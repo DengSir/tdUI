@@ -12,4 +12,6 @@ ns.addon('Details', function(self)
     function DF.Language.GetFontForLanguageID()
         return [[Fonts\ARKai_T.ttf]]
     end
+
+    DF.GetSpecializationRole = nop
 end)
