@@ -2,14 +2,13 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/2/2019, 3:20:41 PM
-
 ---@type ns
 local ns = select(2, ...)
 
 local format = string.format
 local ceil = math.ceil
 
-ns.securehook('AuraButton_UpdateDuration', function(button, timeLeft)
+local function UpdateDuration(button, timeLeft)
     timeLeft = ceil(timeLeft)
     if timeLeft > 60 and timeLeft < 600 then
         button.duration:SetText(format('%d:%02d', timeLeft / 60, ceil(timeLeft % 60)))
@@ -17,4 +16,11 @@ ns.securehook('AuraButton_UpdateDuration', function(button, timeLeft)
     if timeLeft > 3600 and timeLeft <= 7200 then
         button.duration:SetText(format('%d m', ceil(timeLeft / 60)))
     end
-end)
+end
+
+if AuraButton_UpdateDuration then
+    ns.securehook('AuraButton_UpdateDuration', UpdateDuration)
+else
+    ns.securehook(AuraButtonMixin, 'UpdateDuration', UpdateDuration)
+end
+

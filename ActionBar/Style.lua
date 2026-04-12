@@ -52,7 +52,12 @@ end
 
 ns.event('ACTIONBAR_SHOWGRID', ShowGrid)
 ns.event('ACTIONBAR_HIDEGRID', CheckConfig)
-ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
+
+if ActionBarButtonEventsFrame_RegisterFrame then
+    ns.securehook('ActionBarButtonEventsFrame_RegisterFrame', InitActionButton)
+else
+    ns.securehook(ActionBarButtonEventsFrame, 'RegisterFrame', InitActionButton)
+end
 ns.config('actionbar.button.macroName', CheckConfig)
 ns.load(CheckConfig)
 ns.login(CheckConfig)

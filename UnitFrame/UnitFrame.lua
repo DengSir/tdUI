@@ -7,6 +7,28 @@ local ns = select(2, ...)
 
 local OPTIONS_FONT_ALPHA = 0.6
 
+local select = select
+
+local UnitClassBase = UnitClassBase
+local UnitClassification = UnitClassification
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsTapDenied = UnitIsTapDenied
+local UnitPlayerControlled = UnitPlayerControlled
+local UnitSelectionColor = UnitSelectionColor
+local HealthBar_OnValueChanged = HealthBar_OnValueChanged
+local GetClassColor = GetClassColor
+
+local PlayerFrameHealthBar = PlayerFrameHealthBar
+local PlayerLevelText = PlayerLevelText
+local PlayerFrameTexture = PlayerFrameTexture
+
+local function UnitClassColor(unit)
+    local r, g, b, c = GetClassColor(UnitClassBase(unit))
+    return r, g, b, 1.0
+end
+
 local function MoveUp(widget, delta)
     local p, r, rp, x, y = widget:GetPoint(1)
     widget:ClearAllPoints()
@@ -47,6 +69,44 @@ local function BarToLarge(bar)
     LabelToLarge(bar.LeftText)
     LabelToLarge(bar.RightText)
     LabelToLarge(bar.TextString)
+end
+
+local function CheckClassification(self)
+    local classification = UnitClassification(self.unit)
+    if classification == 'rareelite' then
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare-Elite]])
+    elseif classification == 'rare' then
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare]])
+    elseif classification == 'elite' or classification == 'worldboss' then
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Elite]])
+    else
+        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
+    end
+
+    if classification == 'minus' then
+        -- self.healthbar:SetHeight(12)
+        BarToSmall(self.healthbar)
+    else
+        -- self.healthbar:SetHeight(31)
+        BarToLarge(self.healthbar)
+        self.Background:SetHeight(self.Background:GetHeight() + 19)
+    end
+end
+
+local function CheckFaction(self)
+    if UnitIsPlayer(self.unit) then
+        if not self.healthbar.disconnected then
+            self.healthbar:SetStatusBarColor(UnitClassColor(self.unit))
+        else
+            self.healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
+        end
+    else
+        if not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
+            self.healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
+        else
+            self.healthbar:SetStatusBarColor(UnitSelectionColor(self.unit))
+        end
+    end
 end
 
 ---- TargetFrame
@@ -99,6 +159,9 @@ local function InitAlpha(widget)
 end
 
 local function InitFrameFonts(frame)
+    if not frame then
+        return
+    end
     if frame.deadText then
         frame.deadText:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE')
         frame.deadText:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
@@ -138,7 +201,8 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
 
     frame.healthbar.lockColor = true
     frame.healthbar:ClearAllPoints()
-    frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -106, -53)
+    -- frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -106, -53)
+    frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -90, -58)
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
@@ -173,6 +237,14 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
 
     ns.securehook(frame.healthbar, 'SetMinMaxValues', CheckHealthBar)
 
+    if frame.CheckClassification then
+        ns.securehook(frame, 'CheckClassification', CheckClassification)
+    end
+
+    if frame.CheckFaction then
+        ns.securehook(frame, 'CheckFaction', CheckFaction)
+    end
+
     InitFrameFonts(frame)
 end
 
@@ -183,70 +255,18 @@ InitFrameFonts(PartyMemberFrame2)
 InitFrameFonts(PartyMemberFrame3)
 InitFrameFonts(PartyMemberFrame4)
 
-local select = select
-
-local UnitClassBase = UnitClassBase
-local UnitClassification = UnitClassification
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitIsPlayer = UnitIsPlayer
-local UnitIsTapDenied = UnitIsTapDenied
-local UnitPlayerControlled = UnitPlayerControlled
-local UnitSelectionColor = UnitSelectionColor
-local HealthBar_OnValueChanged = HealthBar_OnValueChanged
-local GetClassColor = GetClassColor
-
-local PlayerFrameHealthBar = PlayerFrameHealthBar
-local PlayerLevelText = PlayerLevelText
-local PlayerFrameTexture = PlayerFrameTexture
-
-local function UnitClassColor(unit)
-    local r, g, b, c = GetClassColor(UnitClassBase(unit))
-    return r, g, b, 1.0
+if TargetFrame_CheckClassification then
+    ns.securehook('TargetFrame_CheckClassification', CheckClassification)
 end
 
-ns.securehook('TargetFrame_CheckClassification', function(self)
-    local classification = UnitClassification(self.unit)
-    if classification == 'rareelite' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare-Elite]])
-    elseif classification == 'rare' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Rare]])
-    elseif classification == 'elite' or classification == 'worldboss' then
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame-Elite]])
-    else
-        self.borderTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
-    end
-
-    if classification == 'minus' then
-        -- self.healthbar:SetHeight(12)
-        BarToSmall(self.healthbar)
-    else
-        -- self.healthbar:SetHeight(31)
-        BarToLarge(self.healthbar)
-        self.Background:SetHeight(self.Background:GetHeight() + 19)
-    end
-end)
-
-ns.securehook('TargetFrame_CheckFaction', function(self)
-    if UnitIsPlayer(self.unit) then
-        if not self.healthbar.disconnected then
-            self.healthbar:SetStatusBarColor(UnitClassColor(self.unit))
-        else
-            self.healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
-        end
-    else
-        if not UnitPlayerControlled(self.unit) and UnitIsTapDenied(self.unit) then
-            self.healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
-        else
-            self.healthbar:SetStatusBarColor(UnitSelectionColor(self.unit))
-        end
-    end
-end)
+if TargetFrame_CheckFaction then
+    ns.securehook('TargetFrame_CheckFaction', CheckFaction)
+end
 
 ns.securehook('PlayerFrame_ToPlayerArt', function()
     PlayerName:SetAlpha(0)
-    PlayerFrameHealthBar:SetPoint('TOPLEFT', 106, -22)
-    -- PlayerFrameHealthBar:SetHeight(31)
+    -- PlayerFrameHealthBar:SetPoint('TOPLEFT', 106, -22)
+    PlayerFrameHealthBar:SetPoint('TOPLEFT', 90, -27);
     BarToLarge(PlayerFrameHealthBar)
     PlayerFrameHealthBar.lockColor = true
     PlayerFrameHealthBar:SetStatusBarColor(UnitClassColor('player'))
@@ -260,23 +280,29 @@ ns.securehook('PlayerFrame_ToVehicleArt', function()
     HealthBar_OnValueChanged(PlayerFrameHealthBar, PlayerFrameHealthBar:GetValue())
 end)
 
-ns.securehook('PlayerFrame_UpdateLevelTextAnchor', function()
-    PlayerLevelText:SetPoint('CENTER', PlayerFrameTexture, 'CENTER', -63, -16)
-end)
+if PlayerFrame_UpdateLevelTextAnchor then
+    ns.securehook('PlayerFrame_UpdateLevelTextAnchor', function()
+        PlayerLevelText:SetPoint('CENTER', PlayerFrameTexture, 'CENTER', -63, -16)
+    end)
+end
 
-ns.securehook('TargetFrame_UpdateLevelTextAnchor', function(self)
-    self.levelText:SetPoint('CENTER', 63, -16)
-end)
+if TargetFrame_UpdateLevelTextAnchor then
+    ns.securehook('TargetFrame_UpdateLevelTextAnchor', function()
+        TargetLevelText:SetPoint('CENTER', TargetFrameTexture, 'CENTER', 63, -16)
+    end)
+end
 
-ns.securehook('TargetofTarget_CheckDead', function(self)
-    if UnitExists(self.unit) then
-        if UnitIsPlayer(self.unit) then
-            self.name:SetTextColor(UnitClassColor(self.unit))
-        else
-            self.name:SetTextColor(1, 0.81, 0)
+if TargetofTarget_CheckDead then
+    ns.securehook('TargetofTarget_CheckDead', function(self)
+        if UnitExists(self.unit) then
+            if UnitIsPlayer(self.unit) then
+                self.name:SetTextColor(UnitClassColor(self.unit))
+            else
+                self.name:SetTextColor(1, 0.81, 0)
+            end
         end
-    end
-end)
+    end)
+end
 
 -- @build<3@
 local function GetThreatStatusColor(status)

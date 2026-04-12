@@ -155,11 +155,13 @@ ns.addon('M6', function()
             hooked[button] = nil
         end
 
-        ns.securehook('ActionButton_ShowGrid', function(button)
-            if button._NormalTexture then
-                button._NormalTexture:SetVertexColor(1.0, 1.0, 1.0, 0.5)
-            end
-        end)
+        if ActionButton_ShowGrid then
+            ns.securehook('ActionButton_ShowGrid', function(button)
+                if button._NormalTexture then
+                    button._NormalTexture:SetVertexColor(1.0, 1.0, 1.0, 0.5)
+                end
+            end)
+        end
 
         M6:RegisterButtonUpdateListener(function(event, ...)
             if event == 'M6_BUTTON_UPDATE' then

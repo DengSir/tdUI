@@ -12,7 +12,7 @@
     <!-- <Script file="Features\RemoveOptions.lua" /> -->
     <Script file="Features\RemoveMacros.lua" />
     <Script file="Features\CVars.lua" />
-    <Script file="Features\Aura.lua" />
+    <!-- <Script file="Features\Aura.lua" /> -->
     <Script file="Features\Roll.lua" />
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
@@ -28,16 +28,17 @@
     <Script file="ActionBar\ReturnPage.lua" />
     <Script file="ActionBar\OverrideBinding.lua" />
 
-    <Script file="ActionBar\Retail\ActionBar.lua" />
-    <Script file="ActionBar\Retail\MicroBar.lua" />
-    <Script file="ActionBar\Retail\AddonMicro.lua" />
-    <Script file="ActionBar\Retail\Scale.lua" />
+    <!-- <Script file="ActionBar\Retail\ActionBar.lua" /> -->
+    <!-- <Script file="ActionBar\Retail\MicroBar.lua" /> -->
+    <!-- <Script file="ActionBar\Retail\AddonMicro.lua" /> -->
+    <!-- <Script file="ActionBar\Retail\Scale.lua" /> -->
 
     <Script file="Beauty\Blizzard.lua" />
     <Script file="Beauty\AtlasLoot.lua" />
     <Script file="Beauty\M6.lua" />
     <Script file="Beauty\Macro.lua" />
     <Script file="Beauty\BiaoGe.lua" />
+    <!-- <Script file="Beauty\Merchant.lua" /> -->
 
     <Script file="PaperDoll\PaperDoll.lua" />
     <Script file="PaperDoll\Inspect.lua" />
@@ -66,8 +67,8 @@
     <Script file="Watch\Details.lua" />
 
     <Script file="UnitFrame\UnitFrame.lua" />
-    <Script file="UnitFrame\ToToTFrame.lua" />
-    <Include file="UnitFrame\ToToTFrame.xml" />
+    <!-- <Script file="UnitFrame\ToToTFrame.lua" /> -->
+    <!-- <Include file="UnitFrame\ToToTFrame.xml" /> -->
     <Script file="UnitFrame\Range.lua" />
     <Script file="UnitFrame\Visible.lua" />
 

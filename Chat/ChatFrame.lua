@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/5/2019, 3:55:56 PM
-
 ---@type ns
 local ns = select(2, ...)
 
@@ -79,7 +78,11 @@ for _, name in ipairs(CHAT_FRAMES) do
     InitChatFrame(_G[name])
 end
 
-ns.securehook('FloatingChatFrame_OnLoad', InitChatFrame)
+if FloatingChatFrame_OnLoad then
+    ns.securehook('FloatingChatFrame_OnLoad', InitChatFrame)
+else
+    ns.securehook(FloatingChatFrameMixin, 'OnLoad', InitChatFrame)
+end
 
 ---- chat tab size
 ns.securehook('FCFDock_UpdateTabs', function(dock, force)

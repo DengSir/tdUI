@@ -7,12 +7,8 @@ local ns = select(2, ...)
 
 MinimapZoomIn:Hide()
 MinimapZoomOut:Hide()
--- @build<3@
 MinimapToggleButton:Hide()
--- @end-build<3@
--- @build=1@
 MiniMapWorldMapButton:Hide()
--- @end-build=1@
 -- MinimapBorderTop:Hide()
 -- GameTimeFrame:Hide()
 
@@ -20,11 +16,14 @@ MinimapCluster:SetPoint('TOPRIGHT', 0, -10)
 
 MinimapBorder:SetTexture([[Interface\AddOns\tdUI\Media\UI-MINIMAP-BORDER]])
 
-MinimapBorderTop:SetTexture([[Interface\AddOns\tdUI\Media\Minimap.tga]])
-MinimapBorderTop:SetSize(210, 39.78515625)
-MinimapBorderTop:SetTexCoord(0, 1, 0, 0.189453125)
-MinimapBorderTop:ClearAllPoints()
-MinimapBorderTop:SetPoint('CENTER', MinimapZoneTextButton, 'CENTER', 0, 10)
+if MinimapBorderTop then
+    MinimapBorderTop:SetTexture([[Interface\AddOns\tdUI\Media\Minimap.tga]])
+    MinimapBorderTop:SetSize(210, 39.78515625)
+    MinimapBorderTop:SetTexCoord(0, 1, 0, 0.189453125)
+    MinimapBorderTop:ClearAllPoints()
+    MinimapBorderTop:SetPoint('CENTER', MinimapZoneTextButton, 'CENTER', 0, 10)
+elseif MinimapCluster.BorderTop then
+end
 
 MinimapCompassTexture:SetScale(0.7)
 
@@ -48,9 +47,11 @@ Minimap:SetScript('OnMouseWheel', function(self, direction)
     end
 end)
 
-ns.securehook('Minimap_UpdateRotationSetting', function()
-    MinimapNorthTag:Hide()
-end)
+ns.hide(MinimapNorthTag)
+
+-- ns.securehook('Minimap_UpdateRotationSetting', function()
+--     MinimapNorthTag:Hide()
+-- end)
 
 ns.addon('Blizzard_TimeManager', function()
     for i, region in ipairs {TimeManagerClockButton:GetRegions()} do
