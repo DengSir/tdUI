@@ -65,7 +65,7 @@ local function BarToSmall(bar)
 end
 
 local function BarToLarge(bar)
-    bar:SetHeight(32)
+    bar:SetHeight(30)
     LabelToLarge(bar.LeftText)
     LabelToLarge(bar.RightText)
     LabelToLarge(bar.TextString)
