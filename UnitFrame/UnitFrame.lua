@@ -292,16 +292,20 @@ if TargetFrame_UpdateLevelTextAnchor then
     end)
 end
 
-if TargetofTarget_CheckDead then
-    ns.securehook('TargetofTarget_CheckDead', function(self)
-        if UnitExists(self.unit) then
-            if UnitIsPlayer(self.unit) then
-                self.name:SetTextColor(UnitClassColor(self.unit))
-            else
-                self.name:SetTextColor(1, 0.81, 0)
-            end
+local function UpdateTargetofTargetName(self)
+    if UnitExists(self.unit) then
+        if UnitIsPlayer(self.unit) then
+            self.name:SetTextColor(UnitClassColor(self.unit))
+        else
+            self.name:SetTextColor(1, 0.81, 0)
         end
-    end)
+    end
+end
+
+if TargetofTarget_CheckDead then
+    ns.securehook('TargetofTarget_CheckDead', UpdateTargetofTargetName)
+else
+    ns.securehook(TargetFrameToT, 'CheckDead', UpdateTargetofTargetName)
 end
 
 -- @build<3@

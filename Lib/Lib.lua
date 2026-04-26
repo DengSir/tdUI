@@ -265,6 +265,14 @@ end
 
 ns.securehook = hooksecurefunc
 
+function ns.securehookall(t, method, func)
+    for _, v in ipairs(t) do
+        if v[method] then
+            hooksecurefunc(v, method, func)
+        end
+    end
+end
+
 local function pendingOnUpdate(self)
     self:SetScript('OnUpdate', nil)
 

@@ -12,17 +12,52 @@ MiniMapWorldMapButton:Hide()
 -- MinimapBorderTop:Hide()
 -- GameTimeFrame:Hide()
 
-MinimapCluster:SetPoint('TOPRIGHT', 0, -10)
-
 MinimapBorder:SetTexture([[Interface\AddOns\tdUI\Media\UI-MINIMAP-BORDER]])
 
+-- MinimapZoneText:SetDrawLayer('OVERLAY')
+-- MinimapZoneText:SetFont(MinimapZoneText:GetFont(), 15, 'OUTLINE')
+-- MinimapZoneText:ClearAllPoints()
+-- MinimapZoneText:SetPoint('CENTER')
+
 if MinimapBorderTop then
+    MinimapCluster:SetPoint('TOPRIGHT', 0, -10)
     MinimapBorderTop:SetTexture([[Interface\AddOns\tdUI\Media\Minimap.tga]])
     MinimapBorderTop:SetSize(210, 39.78515625)
     MinimapBorderTop:SetTexCoord(0, 1, 0, 0.189453125)
     MinimapBorderTop:ClearAllPoints()
     MinimapBorderTop:SetPoint('CENTER', MinimapZoneTextButton, 'CENTER', 0, 10)
+
+    MinimapZoneTextButton:ClearAllPoints()
+    MinimapZoneTextButton:SetSize(155, 20)
+    MinimapZoneTextButton:SetPoint('CENTER', Minimap, 'TOP', 0, 20)
+
 elseif MinimapCluster.BorderTop then
+
+    local BorderTop = MinimapCluster.BorderTop
+
+    BorderTop:SetAlpha(0)
+
+    local Texture = MinimapCluster:CreateTexture(nil, 'OVERLAY')
+    Texture:SetSize(BorderTop:GetWidth(), 20)
+    Texture:SetTexture([[Interface\AddOns\tdUI\Media\Minimap.tga]])
+    Texture:SetTexCoord(0, 1, 0.095238, 0.189453125)
+    Texture:SetPoint('TOP', BorderTop, 'TOP', 0, 0)
+
+    MinimapZoneTextButton:SetSize(155, 20)
+    MinimapZoneTextButton:ClearAllPoints()
+    MinimapZoneTextButton:SetPoint('CENTER', Texture, 'CENTER')
+
+    ns.securehook(MinimapCluster, 'SetHeaderUnderneath', function(self, underneath)
+        if not underneath then
+            Texture:ClearAllPoints()
+            Texture:SetPoint('TOP', BorderTop, 'TOP', 0, 0)
+            BorderTop:SetHeight(37)
+        else
+            Texture:ClearAllPoints()
+            Texture:SetPoint('BOTTOM', BorderTop, 'BOTTOM', 0, 0)
+            BorderTop:SetHeight(31)
+        end
+    end)
 end
 
 MinimapCompassTexture:SetScale(0.7)
@@ -30,13 +65,6 @@ MinimapCompassTexture:SetScale(0.7)
 -- @classic@
 -- MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 -- @end-classic@
-
-MinimapZoneTextButton:SetSize(155, 20)
-MinimapZoneTextButton:SetPoint('CENTER', Minimap, 'TOP', 0, 20)
-MinimapZoneText:SetDrawLayer('OVERLAY')
-MinimapZoneText:SetFont(MinimapZoneText:GetFont(), 15, 'OUTLINE')
-MinimapZoneText:ClearAllPoints()
-MinimapZoneText:SetPoint('CENTER')
 
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript('OnMouseWheel', function(self, direction)

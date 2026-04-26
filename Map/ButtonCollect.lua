@@ -122,13 +122,18 @@ function Collect:InitFrame()
 end
 
 function Collect:InitEnter()
-    local EnterListener = CreateFrame('Frame', nil, Minimap)
-    local LeaveListener = CreateFrame('Frame', nil, Minimap)
+    local parent = MinimapCluster and MinimapCluster.MinimapContainer or Minimap
+
+    ---@type Frame
+    local EnterListener = CreateFrame('Frame', nil, parent)
+    local LeaveListener = CreateFrame('Frame', nil, parent)
 
     EnterListener:SetFrameStrata('TOOLTIP')
     EnterListener:SetPoint('TOPLEFT', -20, 20)
     EnterListener:SetPoint('BOTTOMRIGHT', 20, -20)
-    EnterListener:SetFrameLevel(MinimapBackdrop:GetFrameLevel() + 100)
+    EnterListener:SetPropagateMouseMotion(true)
+    EnterListener:SetPropagateMouseClicks(true)
+    EnterListener:SetFrameLevel(parent:GetFrameLevel() + 100)
     EnterListener:SetScript('OnEnter', function()
         return LeaveListener:Show()
     end)
@@ -137,11 +142,9 @@ function Collect:InitEnter()
 
     LeaveListener:SetScript('OnShow', function()
         timer = nil
-        EnterListener:Hide()
         self:OnEnterMinimap()
     end)
     LeaveListener:SetScript('OnHide', function()
-        EnterListener:Show()
         self:OnLeaveMinimap()
     end)
     LeaveListener:SetScript('OnUpdate', function(_, elapsed)

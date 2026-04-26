@@ -9,12 +9,13 @@ local format = string.format
 local ceil = math.ceil
 
 local function UpdateDuration(button, timeLeft)
+    local duration = button.Duration or button.duration
     timeLeft = ceil(timeLeft)
     if timeLeft > 60 and timeLeft < 600 then
-        button.duration:SetText(format('%d:%02d', timeLeft / 60, ceil(timeLeft % 60)))
+        duration:SetText(format('%d:%02d', timeLeft / 60, ceil(timeLeft % 60)))
     end
     if timeLeft > 3600 and timeLeft <= 7200 then
-        button.duration:SetText(format('%d m', ceil(timeLeft / 60)))
+        duration:SetText(format('%d m', ceil(timeLeft / 60)))
     end
 end
 
@@ -22,5 +23,7 @@ if AuraButton_UpdateDuration then
     ns.securehook('AuraButton_UpdateDuration', UpdateDuration)
 else
     ns.securehook(AuraButtonMixin, 'UpdateDuration', UpdateDuration)
+    ns.securehookall(BuffFrame.auraFrames, 'UpdateDuration', UpdateDuration)
+    ns.securehookall(DebuffFrame.auraFrames, 'UpdateDuration', UpdateDuration)
 end
 

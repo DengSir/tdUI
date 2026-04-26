@@ -12,7 +12,7 @@
     <!-- <Script file="Features\RemoveOptions.lua" /> -->
     <Script file="Features\RemoveMacros.lua" />
     <Script file="Features\CVars.lua" />
-    <!-- <Script file="Features\Aura.lua" /> -->
+    <Script file="Features\Aura.lua" />
     <Script file="Features\Roll.lua" />
     <Script file="Features\Fonts.lua" />
     <Script file="Features\Channel.lua" />
@@ -30,6 +30,7 @@
 
     <!-- <Script file="ActionBar\Retail\ActionBar.lua" /> -->
     <!-- <Script file="ActionBar\Retail\MicroBar.lua" /> -->
+    <!-- <Script file="ActionBar\Retail\MicroButton.lua" /> -->
     <!-- <Script file="ActionBar\Retail\AddonMicro.lua" /> -->
     <!-- <Script file="ActionBar\Retail\Scale.lua" /> -->
 
