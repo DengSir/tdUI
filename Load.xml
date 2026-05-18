@@ -23,6 +23,7 @@
     <Script file="Features\DailyAlpha.lua" />
     <Script file="Features\TriggerICD.lua" />
     <Script file="Features\AudioDevices.lua" />
+    <Script file="Features\Questie.lua" />
 
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
@@ -61,11 +62,11 @@
     <Script file="Friend\Who.lua" />
     <Script file="Friend\Guild.lua" />
 
-    <Script file="Watch\WatchManager.lua" />
+    <!-- <Script file="Watch\WatchManager.lua" /> -->
     <!-- <Script file="Watch\Recount.lua" /> -->
     <!-- <Script file="Watch\ThreatClassic2.lua" /> -->
-    <Script file="Watch\MonkeyQuest.lua" />
-    <Script file="Watch\Details.lua" />
+    <!-- <Script file="Watch\MonkeyQuest.lua" /> -->
+    <!-- <Script file="Watch\Details.lua" /> -->
 
     <Script file="UnitFrame\UnitFrame.lua" />
     <!-- <Script file="UnitFrame\ToToTFrame.lua" /> -->

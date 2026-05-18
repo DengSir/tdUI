@@ -6,21 +6,29 @@
 ---@type ns
 local ns = select(2, ...)
 
+local tasks = {}
+
+local function Using(bag, slot)
+    for i, v in pairs(tasks) do
+        if v[1] == bag and v[2] == slot then
+            return true
+        end
+    end
+end
+
 local function FindEmptyBagSlot()
     for bag = 0, 4 do
         local free, family = C_Container.GetContainerNumFreeSlots(bag)
         if free > 0 and family == 0 then
             for slot = 1, C_Container.GetContainerNumSlots(bag) do
                 local itemId = C_Container.GetContainerItemID(bag, slot)
-                if not itemId then
+                if not itemId and not Using(bag, slot) then
                     return bag, slot
                 end
             end
         end
     end
 end
-
-local tasks = {}
 
 function TriggerICD(slot)
     if InCombatLockdown() then

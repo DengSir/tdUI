@@ -202,7 +202,8 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
     frame.healthbar.lockColor = true
     frame.healthbar:ClearAllPoints()
     -- frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -106, -53)
-    frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -90, -58)
+    -- frame.healthbar:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', -90, -58)
+    frame.healthbar:SetPoint('TOPRIGHT', frame, 'TOPRIGHT', -90, -26)
 
     frame.name:SetFont(frame.name:GetFont(), 14, 'OUTLINE')
 
@@ -266,7 +267,7 @@ end
 ns.securehook('PlayerFrame_ToPlayerArt', function()
     PlayerName:SetAlpha(0)
     -- PlayerFrameHealthBar:SetPoint('TOPLEFT', 106, -22)
-    PlayerFrameHealthBar:SetPoint('TOPLEFT', 90, -27);
+    PlayerFrameHealthBar:SetPoint('TOPLEFT', 90, -26);
     BarToLarge(PlayerFrameHealthBar)
     PlayerFrameHealthBar.lockColor = true
     PlayerFrameHealthBar:SetStatusBarColor(UnitClassColor('player'))

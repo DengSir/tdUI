@@ -8,48 +8,121 @@ local ns = select(2, ...)
 
 local ipairs, pairs = ipairs, pairs
 
-local buttons = ActionBarButtonEventsFrame.frames
+local inited = {}
+
+---@param button Button
+local function OnSizeChanged(button)
+    local buttonWidth, buttonHeight = button:GetSize()
+    buttonWidth = buttonWidth / 36 * 40
+    buttonHeight = buttonHeight / 36 * 40
+
+    local function Layout(texture, anchor, origWidth, origHeight)
+        if not texture then
+            return
+        end
+        local x, y
+        if anchor == 'TOPLEFT' then
+            x = (origWidth - 45) / 2 / 45 * buttonWidth
+            y = -(origHeight - 45) / 2 / 45 * buttonHeight
+        else
+            x = 0
+            y = 0
+        end
+        local w = origWidth / 45 * buttonWidth
+        local h = origHeight / 45 * buttonHeight
+        texture:ClearAllPoints()
+        texture:SetPoint('CENTER', button, 'CENTER', x, y)
+        texture:SetSize(w, h)
+    end
+
+    Layout(button.SlotBackground, 'TOPLEFT', 45, 45)
+    Layout(button.NormalTexture, 'TOPLEFT', 51, 51)
+    Layout(button.PushedTexture, 'TOPLEFT', 51, 51)
+    Layout(button.HighlightTexture, 'TOPLEFT', 46, 45)
+    Layout(button.CheckedTexture, 'TOPLEFT', 46, 45)
+    Layout(button.Border, 'TOPLEFT', 46, 45)
+    Layout(button.SpellHighlightTexture, 'TOPLEFT', 46, 45)
+    Layout(button.NewActionTexture, 'TOPLEFT', 46, 45)
+
+    Layout(button.QuickKeybindHighlightTexture, 'CENTER', 52.9, 51.75)
+    Layout(button.IconMask, 'CENTER', 64, 64)
+    Layout(button.icon, 'CENTER', 45, 45)
+end
 
 local function InitActionButton(button)
-    button.HotKey:SetFontObject('NumberFontNormal')
-
-    if button:GetWidth() < 40 then
-        button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+    if inited[button] then
+        return
     end
+    inited[button] = true
 
-    if button:GetWidth() < 35 then
-        local s = button:GetWidth() / 36 * 15
-        button.SlotBackground:ClearAllPoints()
-        button.SlotBackground:SetPoint('TOPLEFT', button, 'TOPLEFT', -s, s)
-        button.SlotBackground:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', s, -s)
-        button.SlotBackground:Hide()
-
-        button.NormalTexture:SetAlpha(1)
-        button.NormalTexture:ClearAllPoints()
-        button.NormalTexture:SetSize(54, 54)
-        button.NormalTexture:SetPoint('CENTER', 0, -1)
-        button.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
-        button.NormalTexture:SetTexCoord(0, 1, 0, 1)
-        -- button:SetNormalTexture(button.NormalTexture)
-    end
+    button.HotKey:SetFontObject('NumberFontNormalSmallGray')
 
     if button.SlotBackground then
-        button.SlotBackground:Hide()
+        button.SlotBackground:SetAtlas('UI-HUD-ActionBar-IconFrame-Background')
+        button.SlotBackground:SetAlpha(1)
+    end
+
+    if button.NormalTexture then
+        -- button:SetNormalAtlas('UI-HUD-ActionBar-IconFrame-AddRow')
+        button.NormalTexture:SetTexture(4615764)
+        button.NormalTexture:SetTexCoord(0.701171875, 0.900390625, 0.21533203125, 0.26513671875)
+        button.NormalTexture:SetDrawLayer('OVERLAY')
+        button.NormalTexture:SetAlpha(1)
+    end
+
+    if button.PushedTexture then
+        button:SetPushedAtlas('UI-HUD-ActionBar-IconFrame-AddRow-Down')
+        button.PushedTexture:SetAlpha(1)
+    end
+
+    if button.HighlightTexture then
+        button:SetHighlightAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+    end
+
+    if button.CheckedTexture then
+        button.CheckedTexture:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+        button.CheckedTexture:SetAlpha(1)
+    end
+
+    if button.Border then
+        button.Border:SetAtlas('UI-HUD-ActionBar-IconFrame-Border')
+        button.Border:SetAlpha(1)
+    end
+
+    if button.SpellHighlightTexture then
+        button.SpellHighlightTexture:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+        button.SpellHighlightTexture:SetAlpha(0.4)
+        button.SpellHighlightTexture:SetBlendMode('ADD')
+    end
+
+    if button.NewActionTexture then
+        button.NewActionTexture:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+        button.NewActionTexture:SetAlpha(1)
+    end
+
+    if button.QuickKeybindHighlightTexture then
+        button.QuickKeybindHighlightTexture:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+    end
+
+    if button.IconMask then
+        button.IconMask:SetAtlas('UI-HUD-ActionBar-IconFrame-Mask')
+    end
+
+    button:HookScript('OnSizeChanged', OnSizeChanged)
+    OnSizeChanged(button)
+end
+
+local function InitButtons(buttons)
+    for _, button in ipairs(buttons) do
+        InitActionButton(button)
     end
 end
 
-for _, v in ipairs(StanceBar.actionButtons) do
-    InitActionButton(v)
-    -- v.SlotBackground:Hide()
-end
+local buttons = ActionBarButtonEventsFrame.frames
 
-for _, button in ipairs(buttons) do
-    InitActionButton(button)
-end
-
-for i = 1, NUM_PET_ACTION_SLOTS do
-    InitActionButton(_G['PetActionButton' .. i])
-end
+InitButtons(ActionBarButtonEventsFrame.frames)
+InitButtons(StanceBar.actionButtons)
+InitButtons(PetActionBar.actionButtons)
 
 local function ShowGrid()
     for _, button in pairs(buttons) do
@@ -87,7 +160,14 @@ ns.config('actionbar.button.macroName', CheckConfig)
 ns.load(CheckConfig)
 ns.login(CheckConfig)
 
-EventRegistry:UnregisterCallback('MainActionBarMixin.UpdateEndCaps', BagsBar)
+if BagsBar then
+    EventRegistry:UnregisterCallback('MainActionBarMixin.UpdateEndCaps', BagsBar)
+end
+
+if ActionBarController then
+    -- ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_USABLE')
+    -- ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_FORM')
+end
 
 -- for _, button in ipairs {CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot} do
 --     local name = button:GetName()
@@ -103,3 +183,7 @@ EventRegistry:UnregisterCallback('MainActionBarMixin.UpdateEndCaps', BagsBar)
 -- local MainMenuBarArtLarge = ArtFrame:CreateTexture(nil, 'BACKGROUND')
 -- MainMenuBarArtLarge:SetAtlas('hud-MainMenuBar-large', true)
 -- MainMenuBarArtLarge:SetPoint('BOTTOM')
+
+ns.securehook(MainActionBar, 'SetPoint', function(self, point, relativeTo, relativePoint, xOfs, yOfs)
+    print(debugstack())
+end)

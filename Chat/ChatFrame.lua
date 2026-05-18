@@ -112,10 +112,10 @@ local function BiggerChatFrame(frame)
     end
 end
 
-ns.securehook('RedockChatWindows', BiggerChatFrame)
-ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
-ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
-ns.login(BiggerChatFrame)
+-- ns.securehook('RedockChatWindows', BiggerChatFrame)
+-- ns.securehook('FCF_ResetChatWindows', BiggerChatFrame)
+-- ns.securehook('FCF_RestorePositionAndDimensions', BiggerChatFrame)
+-- ns.login(BiggerChatFrame)
 ns.login(function()
     TextToSpeechButtonFrame:EnableMouse(false)
 end)

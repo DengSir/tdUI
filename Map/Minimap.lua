@@ -55,6 +55,7 @@ elseif MinimapCluster.BorderTop then
         else
             Texture:ClearAllPoints()
             Texture:SetPoint('BOTTOM', BorderTop, 'BOTTOM', 0, 0)
+            Texture:SetPoint('TOP', BorderTop, 'TOP', 0, 0)
             BorderTop:SetHeight(31)
         end
     end)
