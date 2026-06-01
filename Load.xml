@@ -28,11 +28,12 @@
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
     <Script file="ActionBar\OverrideBinding.lua" />
+    <!-- <Script file="ActionBar\Retail.lua" /> -->
 
     <!-- <Script file="ActionBar\Retail\ActionBar.lua" /> -->
     <!-- <Script file="ActionBar\Retail\MicroBar.lua" /> -->
     <!-- <Script file="ActionBar\Retail\MicroButton.lua" /> -->
-    <!-- <Script file="ActionBar\Retail\AddonMicro.lua" /> -->
+    <Script file="ActionBar\Retail\AddonMicro.lua" />
     <!-- <Script file="ActionBar\Retail\Scale.lua" /> -->
 
     <Script file="Beauty\Blizzard.lua" />

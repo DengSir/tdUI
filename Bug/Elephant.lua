@@ -23,6 +23,10 @@ ns.addon('Elephant', function()
         b:SetText(t)
     end
 
+    local l = LibStub('AceLocale-3.0').apps.Elephant
+
+    l.STRING_FILTER_VALIDATION_REGEXP = '.+'
+
     ns.securehook(Elephant, 'OnEnable', function()
         text(ElephantFrameGuildTabButton, '会')
         text(ElephantFrameOfficerTabButton, '官')
