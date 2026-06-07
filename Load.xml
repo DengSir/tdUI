@@ -81,4 +81,6 @@
     <Script file="Bug\Blizzard.lua" />
     <Script file="Bug\Details.lua" />
     <!-- <Script file="Bug\EditBox.lua" /> -->
+
+    <Script file="Better\alaTradeSkill.lua" />
 </Ui>
