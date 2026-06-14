@@ -63,22 +63,30 @@ ns.addon('Questie', function()
         end
     end
 
+    local function SetOnClick(orig, self, onClickMode)
+        orig(self, onClickMode)
+
+        if onClickMode == 'quest' then
+
+            if not orig_OnClickQuest then
+                orig_OnClickQuest = self:GetScript('OnClick')
+            end
+
+            self:SetScript('OnClick', OnQuestClick)
+        end
+    end
+
+    local function ExpandButtonShow(orig, self)
+        orig(self)
+
+        self:ClearAllPoints()
+        self:SetPoint('TOPLEFT', self:GetParent(), 'TOPLEFT', 26, 0)
+    end
+
     ns.hook(TrackerLine, 'New', function(orig, ...)
         local line = orig(...)
-
-        ns.hook(line, 'SetOnClick', function(orig, self, onClickMode)
-            orig(self, onClickMode)
-
-            if onClickMode == 'quest' then
-
-                if not orig_OnClickQuest then
-                    orig_OnClickQuest = self:GetScript('OnClick')
-                end
-
-                self:SetScript('OnClick', OnQuestClick)
-            end
-        end)
-
+        ns.hook(line, 'SetOnClick', SetOnClick)
+        ns.hook(line.expandZone, 'Show', ExpandButtonShow)
         return line
     end)
 
