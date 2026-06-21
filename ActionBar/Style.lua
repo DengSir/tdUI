@@ -183,7 +183,3 @@ end
 -- local MainMenuBarArtLarge = ArtFrame:CreateTexture(nil, 'BACKGROUND')
 -- MainMenuBarArtLarge:SetAtlas('hud-MainMenuBar-large', true)
 -- MainMenuBarArtLarge:SetPoint('BOTTOM')
-
-ns.securehook(MainActionBar, 'SetPoint', function(self, point, relativeTo, relativePoint, xOfs, yOfs)
-    print(debugstack())
-end)

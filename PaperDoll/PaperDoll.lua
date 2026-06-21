@@ -176,3 +176,22 @@ hook('PaperDollItemSlotButton_OnEvent', function(self, event)
 end)
 
 InitButtons('Character%sSlot', 'player')
+
+ns.securehook('SetItemButtonQuality', function(button, quality, itemId)
+    if quality and quality > 1 then
+        local r, g, b = GetItemQualityColor(quality)
+        button.IconBorder:SetVertexColor(r, g, b)
+        button.IconBorder:Show()
+    else
+        button.IconBorder:Hide()
+    end
+end)
+
+-- ns.securehook('SetItemButtonTexture', function(button, texture)
+--     if not button then
+--         return
+--     end
+
+--     local icon = button.Icon or button.icon or _G[button:GetName() .. 'IconTexture']
+--     icon:SetTexCoord()
+-- end)
