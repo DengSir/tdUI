@@ -28,6 +28,7 @@
     <Script file="ActionBar\Style.lua" />
     <Script file="ActionBar\ReturnPage.lua" />
     <Script file="ActionBar\OverrideBinding.lua" />
+    <Script file="ActionBar\LFG.lua" />
     <!-- <Script file="ActionBar\Retail.lua" /> -->
 
     <!-- <Script file="ActionBar\Retail\ActionBar.lua" /> -->
