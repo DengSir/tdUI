@@ -164,22 +164,10 @@ if BagsBar then
     EventRegistry:UnregisterCallback('MainActionBarMixin.UpdateEndCaps', BagsBar)
 end
 
-if ActionBarController then
-    -- ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_USABLE')
-    -- ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_FORM')
+local function ShouldUseMainMenuBarAsEndCaps(actionBar)
+    return not actionBar:IsSystemSettingDefault(Enum.EditModeActionBarSetting.HideBarArt)
 end
 
--- for _, button in ipairs {CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot} do
---     local name = button:GetName()
-
---     _G[name .. 'NormalTexture']:SetSize(64, 64)
---     button:SetSize(37, 37)
--- end
-
--- local ArtFrame = CreateFrame('Frame', nil, UIParent)
--- ArtFrame:SetPoint('BOTTOM')
--- ArtFrame:SetSize(512, 256)
-
--- local MainMenuBarArtLarge = ArtFrame:CreateTexture(nil, 'BACKGROUND')
--- MainMenuBarArtLarge:SetAtlas('hud-MainMenuBar-large', true)
--- MainMenuBarArtLarge:SetPoint('BOTTOM')
+ns.securehook(MainActionBar, 'UpdateEndCaps', function(self, flag)
+    self.EndCaps:SetShown(flag or ShouldUseMainMenuBarAsEndCaps(self))
+end)
