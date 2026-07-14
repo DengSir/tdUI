@@ -20,19 +20,33 @@ function Range:Constructor(parent, event, isNameplate)
     self.parent = parent
     self.event = event
     self.isNameplate = isNameplate
-    self.elapsed = 0
     self.text = self:CreateFontString(nil, 'BORDER')
     self.text:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
 
-    self:SetScript('OnUpdate', self.OnUpdate)
     self:SetScript('OnEvent', self.OnEvent)
-    self:SetScript('OnShow', self.Update)
-    self:SetScript('OnHide', self.Update)
+    self:SetScript('OnShow', self.OnShow)
+    self:SetScript('OnHide', self.OnHide)
 
     self:RegisterEvent('RAID_TARGET_UPDATE')
     if event then
         self:RegisterEvent(event)
     end
+end
+
+function Range:OnShow()
+    self.timer = C_Timer.NewTicker(0.1, function()
+        self:Update()
+    end)
+    self:Update()
+end
+
+function Range:OnHide()
+    if self.timer then
+        self.timer:Cancel()
+        self.timer = nil
+    end
+
+    self.text:SetText('')
 end
 
 function Range:GetUnit()
@@ -65,14 +79,6 @@ function Range:Update()
         elseif max <= 35 then
             self.text:SetTextColor(1, 1, 0)
         end
-    end
-end
-
-function Range:OnUpdate(elapsed)
-    self.elapsed = self.elapsed - elapsed
-    if self.elapsed < 0 then
-        self.elapsed = 0.1
-        self:Update()
     end
 end
 
