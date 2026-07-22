@@ -6,8 +6,11 @@
 ---@class ns
 local ns = select(2, ...)
 
-ns.IS_CLASSIC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-ns.IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+ns.BUILD = tonumber(GetBuildInfo():match('^(%d+)%.')) or 0
+
+ns.BUILD_VANILLA = ns.BUILD == 1
+ns.BUILD_TBC = ns.BUILD == 2
+ns.BUILD_MAINLINE = ns.BUILD >= 12
 
 local _G = _G
 local ipairs = ipairs

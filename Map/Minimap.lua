@@ -63,10 +63,6 @@ end
 
 MinimapCompassTexture:SetScale(0.7)
 
--- @classic@
--- MiniMapTrackingFrame:SetFrameLevel(Minimap:GetFrameLevel() + 10)
--- @end-classic@
-
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript('OnMouseWheel', function(self, direction)
     if direction > 0 then

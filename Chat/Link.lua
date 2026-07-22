@@ -2,6 +2,10 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/14/2020, 11:36:55 PM
+--
+---@type ns
+local ns = select(2, ...)
+
 local select = select
 local format = string.format
 
@@ -29,12 +33,11 @@ local FIXES = {
     spell = Colorful('71d5ff'),
 }
 
--- @classic@
-FIXES.enchant = Colorful('ffffff')
--- @end-classic@
--- @bcc@
-FIXES.enchant = Colorful('ffd000')
--- @end-bcc@
+if ns.BUILD_VANILLA then
+    FIXES.enchant = Colorful('ffffff')
+elseif ns.BUILD_TBC then
+    FIXES.enchant = Colorful('ffd000')
+end
 
 local function FixLinkColor(frame, event, msg, ...)
     msg = msg:gsub(LINK_PATTERN, function(text, type, link, ...)

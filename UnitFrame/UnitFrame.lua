@@ -211,8 +211,7 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
         frame.threatIndicator = _G[frame:GetName() .. 'Flash']
     end
 
-    -- @build<2@
-    if not frame.threatIndicator then
+    if ns.BUILD_VANILLA and not frame.threatIndicator then
         frame.threatIndicator = frame:CreateTexture(nil, 'ARTWORK')
         frame.threatIndicator:SetTexture([[Interface\TargetingFrame\UI-TargetingFrame-Flash]])
         frame.threatIndicator:SetTexCoord(0, 0.9453125, 0, 0.181640625)
@@ -220,8 +219,7 @@ for _, frame in ipairs({TargetFrame, FocusFrame}) do
         frame.threatIndicator:SetPoint('TOPLEFT', -24, 0)
         frame.threatIndicator:Hide()
     end
-    -- frame.threatIndicator:SetAlpha(0.8)
-    -- @end-build<2@
+
     ns.hookscript(frame, 'OnHide', FrameOnHide)
 
     InitLabelPoints(frame.name, 16)
@@ -309,43 +307,43 @@ else
     ns.securehook(TargetFrameToT, 'CheckDead', UpdateTargetofTargetName)
 end
 
--- @build<3@
-local function GetThreatStatusColor(status)
-    if status == 0 then
-        return 0.69, 0.69, 0.69
-    elseif status == 1 then
-        return 1, 1, 0.47
-    elseif status == 2 then
-        return 1, 0.6, 0
-    elseif status == 3 then
-        return 1, 0, 0
-    end
-end
-
-ns.securehook('TargetFrame_OnUpdate', function(self, elapsed)
-    self.elapsed = (self.elapsed or 0) + elapsed;
-    if self.elapsed > 0.5 then
-        self.elapsed = 0
-
-        local unit = self.unit
-        local status = UnitThreatSituation('player', unit)
-
-        if status and status > 0 then
-            self.threatIndicator:SetVertexColor(GetThreatStatusColor(status))
-            self.threatIndicator:Show()
-        else
-            self.threatIndicator:Hide()
+if ns.BUILD < 3 then
+    local function GetThreatStatusColor(status)
+        if status == 0 then
+            return 0.69, 0.69, 0.69
+        elseif status == 1 then
+            return 1, 1, 0.47
+        elseif status == 2 then
+            return 1, 0.6, 0
+        elseif status == 3 then
+            return 1, 0, 0
         end
     end
-end)
--- @end-build<3@
+
+    ns.securehook('TargetFrame_OnUpdate', function(self, elapsed)
+        self.elapsed = (self.elapsed or 0) + elapsed;
+        if self.elapsed > 0.5 then
+            self.elapsed = 0
+
+            local unit = self.unit
+            local status = UnitThreatSituation('player', unit)
+
+            if status and status > 0 then
+                self.threatIndicator:SetVertexColor(GetThreatStatusColor(status))
+                self.threatIndicator:Show()
+            else
+                self.threatIndicator:Hide()
+            end
+        end
+    end)
+end
 
 PlayerStatusTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-Player-Status]])
 PlayerFrameTexture:SetTexture([[Interface\AddOns\tdUI\Media\TargetingFrame\UI-TargetingFrame]])
 TargetFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() + 10)
 
--- @build>2@
-TargetFrame:SetAttribute('alt-type1', 'focus')
-FocusFrame:SetAttribute('alt-type1', 'macro')
-FocusFrame:SetAttribute('alt-macrotext1', '/clearfocus')
--- @end-build>2@
+if FocusFrame then
+    TargetFrame:SetAttribute('alt-type1', 'focus')
+    FocusFrame:SetAttribute('alt-type1', 'macro')
+    FocusFrame:SetAttribute('alt-macrotext1', '/clearfocus')
+end

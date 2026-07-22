@@ -11,14 +11,14 @@ if SettingsTooltip then
     SettingsTooltip:SetFrameStrata('TOOLTIP')
 end
 
--- @build>3@
-QuestMapFrame:HookScript('OnShow', function(self)
-    self:RegisterEvent('CVAR_UPDATE')
-end)
+if ns.BUILD > 3 then
+    QuestMapFrame:HookScript('OnShow', function(self)
+        self:RegisterEvent('CVAR_UPDATE')
+    end)
 
-QuestMapFrame:HookScript('OnHide', function(self)
-    self:UnregisterEvent('CVAR_UPDATE')
-end)
+    QuestMapFrame:HookScript('OnHide', function(self)
+        self:UnregisterEvent('CVAR_UPDATE')
+    end)
 
-QuestMapFrame:UnregisterEvent('CVAR_UPDATE')
--- @end-build>3@
+    QuestMapFrame:UnregisterEvent('CVAR_UPDATE')
+end

@@ -156,7 +156,7 @@ local function hook(k, v)
     return ns.securehook(k, gen(v))
 end
 
-hook('PaperDollItemSlotButton_Update', function(self)
+hook('PaperDollItemSlotButton_Update', ns.BUILD_MAINLINE and UpdateDurability or function(self)
     UpdateQuality(self)
     UpdateDurability(self)
 end)
@@ -177,21 +177,14 @@ end)
 
 InitButtons('Character%sSlot', 'player')
 
-ns.securehook('SetItemButtonQuality', function(button, quality, itemId)
-    if quality and quality > 1 then
-        local r, g, b = GetItemQualityColor(quality)
-        button.IconBorder:SetVertexColor(r, g, b)
-        button.IconBorder:Show()
-    else
-        button.IconBorder:Hide()
-    end
-end)
-
--- ns.securehook('SetItemButtonTexture', function(button, texture)
---     if not button then
---         return
---     end
-
---     local icon = button.Icon or button.icon or _G[button:GetName() .. 'IconTexture']
---     icon:SetTexCoord()
--- end)
+if not ns.BUILD_MAINLINE then
+    ns.securehook('SetItemButtonQuality', function(button, quality, itemId)
+        if quality and quality > 1 then
+            local r, g, b = GetItemQualityColor(quality)
+            button.IconBorder:SetVertexColor(r, g, b)
+            button.IconBorder:Show()
+        else
+            button.IconBorder:Hide()
+        end
+    end)
+end

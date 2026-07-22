@@ -21,11 +21,14 @@
     "curse_id": 0,
     "builds": {
       "Vanilla": "11508",
-      "Wrath": "38000",
-      "Mists": "50502"
+      "TBC": "20506",
+      "Wrath": "38001",
+      "Mists": "50504",
+      "Mainline": "120007"
     },
     "addons": {
       "tdUI-SavedVariables": "SavedVariables"
-    }
+    },
+    "single": true
   }
 }

@@ -58,20 +58,11 @@ local function OnHyperlinkLeave(self)
     GameTooltip:Hide()
 end
 
-local function OnDropDown(dropdown, level)
-    if level == 1 then
-        local chatFrame = FCF_GetCurrentChatFrame(dropdown)
-        ns.InsertDropdownAfter(1, BACKGROUND, CLEAR_ALL, chatFrame.Clear, chatFrame)
-    end
-end
-
 local function InitChatFrame(self)
     self:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
     self:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
     self.UpdateTooltip = UpdateTooltip
     self.editBox:SetAltArrowKeyMode(false)
-
-    -- ns.securehook(_G[self:GetName() .. 'TabDropDown'], 'initialize', OnDropDown)
 end
 
 for _, name in ipairs(CHAT_FRAMES) do
@@ -120,7 +111,9 @@ ns.login(function()
     TextToSpeechButtonFrame:EnableMouse(false)
 end)
 
-ns.after(5, function()
-    SetChatColorNameByClass('GUILD_ACHIEVEMENT', true)
-    SetChatColorNameByClass('ACHIEVEMENT', true)
-end)
+if not ns.BUILD_MAINLINE then
+    ns.after(5, function()
+        SetChatColorNameByClass('GUILD_ACHIEVEMENT', true)
+        SetChatColorNameByClass('ACHIEVEMENT', true)
+    end)
+end

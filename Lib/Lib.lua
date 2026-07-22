@@ -55,16 +55,30 @@ local function call(t, k, ...)
     end
 end
 
+local function isCustomEvent(event)
+    return event:sub(1, 1) == '!'
+end
+
 local function register(event)
-    if event:sub(1, 1) ~= '!' then
+    if isCustomEvent(event) then
+        return
+    end
+
+    if C_EventUtils.IsEventValid(event) then
         events:RegisterEvent(event)
+    else
+        EventRegistry:RegisterCallback(event, function(...)
+            return ns.fire(event, ...)
+        end, events)
     end
 end
 
 local function done(event)
-    if event:sub(1, 1) ~= '!' then
-        if not onceEventCallbacks[event] and not eventCallbacks[event] then
+    if not isCustomEvent(event) and not onceEventCallbacks[event] and not eventCallbacks[event] then
+        if C_EventUtils.IsEventValid(event) then
             events:UnregisterEvent(event)
+        else
+            EventRegistry:UnregisterCallback(event, events)
         end
     end
 end

@@ -6,4 +6,72 @@
 ## Category: td`s AddOns
 ## Dependencies: tdUI-SavedVariables
 
-Load.xml
+Libs\Libs.xml
+Template.xml
+
+Lib\Lib.lua
+Lib\Api.lua
+
+Config.lua
+Option.lua
+
+Features\RemoveMacros.lua
+Features\CVars.lua
+Features\Aura.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\Roll.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\Fonts.lua
+Features\Channel.lua
+Features\TradeBlock.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\Flyable.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+Features\LearnAll.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\DailyAlpha.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\TriggerICD.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Features\AudioDevices.lua
+Features\Questie.lua
+
+ActionBar\Style.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+ActionBar\ReturnPage.lua
+ActionBar\OverrideBinding.lua
+ActionBar\LFG.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+ActionBar\Retail\AddonMicro.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+Beauty\Blizzard.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Beauty\AtlasLoot.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Beauty\M6.lua
+Beauty\Macro.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Beauty\BiaoGe.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Beauty\Meter.lua [AllowLoadGameType mainline]
+
+PaperDoll\PaperDoll.lua
+PaperDoll\Inspect.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+PaperDoll\Engraving.lua [AllowLoadGameType vanilla]
+
+Chat\ChatFrame.lua
+Chat\Link.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Chat\Tab.lua
+Chat\ShortChannel.lua
+Chat\ChatBlock.lua [AllowLoadGameType wrath]
+
+Quest\Vendo.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+Map\Minimap.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Map\Coords.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Map\ButtonCollect.lua
+
+Friend\Friends.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Friend\Who.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Friend\Guild.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+UnitFrame\UnitFrame.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+UnitFrame\Range.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+UnitFrame\Visible.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+Bug\Elephant.lua
+Bug\MailEdit.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Bug\Taint.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Bug\Blizzard.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Bug\Details.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+
+Better\alaTradeSkill.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
