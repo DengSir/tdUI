@@ -48,9 +48,10 @@ PaperDoll\Inspect.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 PaperDoll\Engraving.lua [AllowLoadGameType vanilla]
 
 Chat\ChatFrame.lua
+# [AllowLoadGameType vanilla, tbc, wrath, mists]
 Chat\Link.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
-Chat\Tab.lua
-Chat\ShortChannel.lua
+Chat\Tab.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Chat\ShortChannel.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Chat\ChatBlock.lua [AllowLoadGameType wrath]
 
 Quest\Vendo.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
