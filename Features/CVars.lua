@@ -21,3 +21,17 @@ ns.addon('AdvancedInterfaceOptions', function()
         AIOSlidercameraDistanceMaxZoomFactor.maxText:SetText('4')
     end
 end)
+
+ns.addon('Blizzard_MovePad', function()
+
+    local function ClosePad()
+        C_CVar.SetCVar('enableMovePad', nil)
+    end
+
+    Menu.ModifyMenu('MOVE_PAD_SETTINGS_MENU', function(_, root)
+        if InCombatLockdown() then
+            return
+        end
+        root:CreateButton(CLOSE, ClosePad)
+    end)
+end)
