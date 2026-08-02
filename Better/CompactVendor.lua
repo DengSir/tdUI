@@ -22,7 +22,15 @@ ns.addon('CompactVendor', function()
                     count = math.min(count, math.floor(info.quantity / cost))
                 end
 
-                BuyMerchantItem(id, count)
+                while true do
+                    local buyCount = math.min(10, count)
+                    if buyCount > 0 then
+                        BuyMerchantItem(id, count)
+                        count = count - buyCount
+                    else
+                        break
+                    end
+                end
             end
         else
             return orig(self, button)
