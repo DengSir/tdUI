@@ -43,7 +43,7 @@ Beauty\Macro.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\BiaoGe.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\Meter.lua [AllowLoadGameType mainline]
 
-PaperDoll\PaperDoll.lua
+PaperDoll\PaperDoll.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 PaperDoll\Inspect.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 PaperDoll\Engraving.lua [AllowLoadGameType vanilla]
 
