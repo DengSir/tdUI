@@ -77,3 +77,4 @@ Bug\Details.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 
 Better\alaTradeSkill.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Better\CompactVendor.lua
+Better\Clique.lua
