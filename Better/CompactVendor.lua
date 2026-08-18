@@ -22,10 +22,11 @@ ns.addon('CompactVendor', function()
                     count = math.min(count, math.floor(info.quantity / cost))
                 end
 
+                local stackSize = C_Item.GetItemMaxStackSizeByID(item.itemID)
                 while true do
-                    local buyCount = math.min(10, count)
+                    local buyCount = math.min(stackSize, count)
                     if buyCount > 0 then
-                        BuyMerchantItem(id, count)
+                        BuyMerchantItem(id, buyCount)
                         count = count - buyCount
                     else
                         break

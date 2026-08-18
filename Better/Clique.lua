@@ -15,7 +15,7 @@ ns.addon('Clique', function()
 
                     return setmetatable({
                         New = function(_, n, default)
-                            local _, classKey = UnitClass('player')
+                            local classKey = UnitClass('player')
                             return LibStub('AceDB-3.0'):New(n, default, classKey)
                         end,
                     }, {__index = AceDB})
