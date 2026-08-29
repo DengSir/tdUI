@@ -7,17 +7,9 @@
 local ns = select(2, ...)
 
 ns.addon('Blizzard_DamageMeter', function()
-
-    local function Init(self)
-        -- self:SetClipsChildren(false)
-
-        -- local statusBar = self:GetStatusBar()
-        -- statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\TargetingFrame\UI-StatusBar.blp]])
-    end
-
     local function UpdateStyle(self)
         local statusBar = self:GetStatusBar()
-        statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\TargetingFrame\UI-StatusBar.blp]])
+        statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
 
         for _, v in ipairs(self:GetBackgroundRegions()) do
             -- ns.hide(v)
@@ -42,31 +34,28 @@ ns.addon('Blizzard_DamageMeter', function()
         statusBar:SetPoint('BOTTOMRIGHT', -4, 0)
     end
 
-    local function SetBarHeight(self, height)
-        self:SetHeight(height)
-    end
-
     local function Hook(self)
-        ns.securehook(self, 'Init', Init)
         ns.securehook(self, 'UpdateStyle', UpdateStyle)
         ns.securehook(self, 'SetupDefaultStyle', SetupDefaultStyle)
-        -- ns.securehook(self, 'SetBarHeight', SetBarHeight)
     end
 
-    local function SetupFrame(self)
-        Hook(self)
-        Init(self)
-        UpdateStyle(self)
-        SetupDefaultStyle(self)
+    local function SetupFrame(frame)
+        if not frame then
+            return
+        end
+        Hook(frame)
+        UpdateStyle(frame)
+        SetupDefaultStyle(frame)
     end
 
     Hook(DamageMeterEntryMixin)
 
-    for _, v in ipairs(DamageMeterSessionWindow1.MinimizeContainer.ScrollBox.view.frames) do
-        SetupFrame(v)
-    end
+    local MinimizeContainer = DamageMeterSessionWindow1 and DamageMeterSessionWindow1.MinimizeContainer
+    if MinimizeContainer then
+        for _, v in ipairs(MinimizeContainer.ScrollBox.view.frames) do
+            SetupFrame(v)
+        end
 
-    if DamageMeterSessionWindow1.MinimizeContainer.LocalPlayerEntry then
-        SetupFrame(DamageMeterSessionWindow1.MinimizeContainer.LocalPlayerEntry)
+        SetupFrame(MinimizeContainer.LocalPlayerEntry)
     end
 end)

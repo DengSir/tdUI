@@ -6,18 +6,37 @@
 local ns = select(2, ...)
 
 if GetLocale() == 'zhCN' then
-    NumberFont_GameNormal:SetFont([[Fonts\ARHei.TTF]], 13, 'OUTLINE')
 
-    NumberFont_Outline_Med:SetFont([[Fonts\ARKai_T.TTF]], 13, 'OUTLINE')
-    NumberFont_Outline_Large:SetFont([[Fonts\ARKai_T.TTF]], 14, 'OUTLINE')
-    NumberFont_OutlineThick_Mono_Small:SetFont([[Fonts\ARKai_T.TTF]], 12, 'OUTLINE')
+    local function Font(obj, font, size, flag)
+        if not obj then
+            return
+        end
 
-    SystemFont_Shadow_Med1:SetFont([[Fonts\ARKai_T.TTF]], 15, (select(3, SystemFont_Shadow_Med1:GetFont())))
-    SystemFont_Shadow_Small:SetFont([[Fonts\ARKai_T.TTF]], 13, (select(3, SystemFont_Shadow_Small:GetFont())))
-    SystemFont_Shadow_Large:SetFont([[Fonts\ARKai_T.TTF]], 17, (select(3, SystemFont_Shadow_Large:GetFont())))
+        local _font, _size, _flag = obj:GetFont()
+        font = font or _font
+        size = size or _size
+        flag = flag or _flag
 
-    TextStatusBarText:SetFont([[Fonts\ARHei.TTF]], 11, 'OUTLINE')
+        obj:SetFont(font, size, flag)
+    end
 
-    CombatTextFont:SetFont([[Fonts\ARKai_C.TTF]], 24, (select(3, CombatTextFont:GetFont())))
-    CombatTextFontOutline:SetFont([[Fonts\ARKai_C.TTF]], 24, (select(3, CombatTextFontOutline:GetFont())))
+    Font(PriceFont, [[Fonts\ARKai_T.TTF]], 13)
+    Font(Number13Font, [[Fonts\ARHei.TTF]], 14)
+    Font(Number12Font, [[Fonts\ARHei.TTF]], 13)
+
+    Font(NumberFont_Normal_Med, [[Fonts\ARHei.TTF]], 13)
+    Font(NumberFont_GameNormal, [[Fonts\ARHei.TTF]], 13)
+
+    Font(NumberFont_Outline_Med, [[Fonts\ARKai_T.TTF]], 13, 'OUTLINE')
+    Font(NumberFont_Outline_Large, [[Fonts\ARKai_T.TTF]], 14, 'OUTLINE')
+    Font(NumberFont_OutlineThick_Mono_Small, [[Fonts\ARKai_T.TTF]], 12, 'OUTLINE')
+
+    Font(SystemFont_Shadow_Med1, [[Fonts\ARKai_T.TTF]], 15)
+    Font(SystemFont_Shadow_Small, [[Fonts\ARKai_T.TTF]], 13)
+    Font(SystemFont_Shadow_Large, [[Fonts\ARKai_T.TTF]], 17)
+
+    Font(TextStatusBarText, [[Fonts\ARHei.TTF]], 11, 'OUTLINE')
+
+    Font(CombatTextFont, [[Fonts\ARKai_C.TTF]], 24)
+    Font(CombatTextFontOutline, [[Fonts\ARKai_C.TTF]], 24)
 end
