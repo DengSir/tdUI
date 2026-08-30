@@ -10,6 +10,19 @@ ns.addon('CompactVendor', function()
 
     local items = {[263977] = true, [246751] = true, [246752] = true, [246753] = true}
 
+    local function BuyItem(item, count)
+        local stackSize = C_Item.GetItemMaxStackSizeByID(item.itemID)
+        while true do
+            local buyCount = math.min(stackSize, count)
+            if buyCount > 0 then
+                BuyMerchantItem(item.index, buyCount)
+                count = count - buyCount
+            else
+                break
+            end
+        end
+    end
+
     ns.hook(assert(CompactVendorFrameMerchantButtonTemplate), 'OnClick', function(orig, self, button)
         if button == 'LeftButton' and IsAltKeyDown() then
             local item = self.merchantItem
@@ -22,15 +35,15 @@ ns.addon('CompactVendor', function()
                     count = math.min(count, math.floor(info.quantity / cost))
                 end
 
+                BuyItem(item, count)
+            else
                 local stackSize = C_Item.GetItemMaxStackSizeByID(item.itemID)
-                while true do
-                    local buyCount = math.min(stackSize, count)
-                    if buyCount > 0 then
-                        BuyMerchantItem(id, buyCount)
-                        count = count - buyCount
-                    else
-                        break
-                    end
+                local count = C_Item.GetItemCount(item.itemID)
+
+                if count == 0 then
+                    BuyItem(item, stackSize)
+                else
+                    BuyItem(item, stackSize - count)
                 end
             end
         else

@@ -12,9 +12,20 @@ ns.addon('Blizzard_DamageMeter', function()
         statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
 
         for _, v in ipairs(self:GetBackgroundRegions()) do
-            -- ns.hide(v)
             v:Hide()
         end
+
+        pcall(function()
+            local name = self:GetName()
+            local value = self:GetValue()
+            -- local font, size, flag = name:GetFont()
+            -- name:SetFont(font, size, '')
+            -- name:SetShadowColor(0, 0, 0)
+            -- value:SetFont(font, size, '')
+
+            name:SetFontObject('GameFontHighlight')
+            value:SetFontObject('GameFontHighlight')
+        end)
     end
 
     local function SetupDefaultStyle(self)
