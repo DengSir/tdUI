@@ -7,8 +7,12 @@
 local ns = select(2, ...)
 
 ns.addon('CompactVendor', function()
-
-    local items = {[263977] = true, [246751] = true, [246752] = true, [246753] = true}
+    local items = { --
+        [263977] = true,
+        [246751] = true,
+        [246752] = true,
+        [246753] = true,
+    }
 
     local function BuyItem(item, count)
         local stackSize = C_Item.GetItemMaxStackSizeByID(item.itemID)

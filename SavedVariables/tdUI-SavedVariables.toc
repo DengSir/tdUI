@@ -1,7 +1,0 @@
-##Interface: @project-interface@
-## Title: tdUI SavedVariables
-## IconTexture: Interface\Icons\INV_Drink_15
-## Author: Dencer
-## Version: @project-version@
-## SavedVariables: TDDB_UI
-## SavedVariablesPerCharacter: TDDB_UI_CHAR

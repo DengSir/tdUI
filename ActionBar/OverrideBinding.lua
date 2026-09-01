@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 local MAX_ACTIONS = 6
 
-local Action = CreateFrame('Frame', 'tdUIOverrideButton', UIParent, 'SecureHandlerStateTemplate')
+local Action = CreateFrame('Frame', 'tdUIOverrideButton', OverrideActionBar, 'SecureHandlerShowHideTemplate')
 local Donothing = CreateFrame('Button', 'tdUIOverrideDonothing', UIParent, 'SecureHandlerClickTemplate')
 
 local ACTIONS = { --
@@ -59,17 +59,13 @@ Action:Execute [[
     ]=]
 
     Update = [=[
-        if self:GetAttribute('state-usable') == 1 then
+        if self:GetAttribute('on') then
             self:Run(SetupHotkeys)
         else
             self:ClearBindings()
         end
     ]=]
 ]]
-
-Action:SetAttribute('_onstate-usable', [[
-    self:Run(Update)
-]])
 
 function Action:IsHotkeyInUse(hotkey)
     local keys = ns.profile.keybindings.vehicle
@@ -95,15 +91,11 @@ function Action:ResolveHotkey(binding)
         return hotkey
     end
     if binding:sub(1, 12) == 'ACTIONBUTTON' then
-         self:ResolveHotkey('action' .. binding:sub(13))
+        self:ResolveHotkey('action' .. binding:sub(13))
     end
 end
 
 function Action:UpdateConfig()
-    UnregisterStateDriver(self, 'usable')
-
-    self:SetAttribute('state-usable', nil)
-
     for _, binding in ipairs(ACTIONS) do
         local hotkey = self:ResolveHotkey(binding)
         if hotkey then
@@ -112,8 +104,6 @@ function Action:UpdateConfig()
             self:SetAttribute(binding, nil)
         end
     end
-
-    RegisterStateDriver(self, 'usable', '[vehicleui] 1; 0')
 end
 
 function Action:Update(binding)
@@ -127,6 +117,16 @@ function Action:Update(binding)
 end
 
 function Action:OnLoad()
+    self:SetAttribute('_onshow', [[
+        self:SetAttribute('on', true)
+        self:Run(Update)
+    ]])
+
+    self:SetAttribute('_onhide', [[
+        self:SetAttribute('on', false)
+        self:Run(Update)
+    ]])
+
     local UpdateConfig = ns.nocombated(function()
         return Action:UpdateConfig()
     end)

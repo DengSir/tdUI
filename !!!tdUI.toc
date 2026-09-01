@@ -4,7 +4,9 @@
 ## Author: Dencer
 ## Version: @project-version@
 ## Category: td`s AddOns
-## Dependencies: tdUI-SavedVariables
+## LoadSavedVariablesFirst: 1
+## SavedVariables: TDDB_UI
+## SavedVariablesPerCharacter: TDDB_UI_CHAR
 
 Libs\Libs.xml
 Template.xml
@@ -29,6 +31,7 @@ Features\DailyAlpha.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Features\TriggerICD.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Features\AudioDevices.lua
 Features\Questie.lua
+Features\WeeklyRewards.lua
 
 ActionBar\Style.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 ActionBar\ReturnPage.lua
@@ -39,7 +42,8 @@ ActionBar\Retail\AddonMicro.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\Blizzard.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\AtlasLoot.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\M6.lua
-Beauty\Macro.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Beauty\Macro.lua
+## [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\BiaoGe.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Beauty\Meter.lua [AllowLoadGameType mainline]
 

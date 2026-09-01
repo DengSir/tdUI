@@ -26,9 +26,6 @@
       "Mists": "50504",
       "Mainline": "120007"
     },
-    "addons": {
-      "tdUI-SavedVariables": "SavedVariables"
-    },
     "single": true
   }
 }

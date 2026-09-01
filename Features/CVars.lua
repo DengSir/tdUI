@@ -36,51 +36,9 @@ ns.addon('Blizzard_MovePad', function()
     end)
 end)
 
-ns.addon('Blizzard_WeeklyRewards', function()
-    local parent = WeeklyRewardsFrame
-    local module = CreateFrame('Frame', nil, parent)
-
-    local button
-
-    local function refresh()
-        if not parent.Overlay then
-            return
-        end
-
-        local hasOverlay = parent:ShouldShowOverlay()
-        if hasOverlay and not button then
-            button = CreateFrame('Button', nil, parent.Overlay)
-            button:SetFrameLevel(5510)
-            button:SetAllPoints(parent.Overlay)
-            button:SetScript('OnClick', function()
-                parent.Overlay:Hide()
-                if parent.Blackout then
-                    parent.Blackout:Hide()
-                end
-            end)
-        end
-
-        if button then
-            button:SetShown(hasOverlay)
-        end
-    end
-
-    local function OnShow()
-        refresh()
-        ns.event('WEEKLY_REWARDS_UPDATE', refresh)
-    end
-
-    local function OnHide()
-        ns.unevent('WEEKLY_REWARDS_UPDATE', refresh)
-    end
-
-    module:SetScript('OnShow', OnShow)
-    module:SetScript('OnHide', OnHide)
-end)
-
-ns.addon('Blizzard_CompactRaidFrames', function()
-    ns.securehook('CompactRaidFrameReservation_RegisterReservation', function(o, f, _)
-        print(o)
-        f.healthBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
-    end)
-end)
+-- ns.addon('Blizzard_CompactRaidFrames', function()
+--     ns.securehook('CompactRaidFrameReservation_RegisterReservation', function(o, f, _)
+--         print(o)
+--         f.healthBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
+--     end)
+-- end)

@@ -1,6 +1,11 @@
 {
   "hashes": {
-    "github@DengSir/tdOptions@master": "077cf959a464aa80a83368c75a28b539b0e67409"
+    "github@DengSir/tdOptions@master": "077cf959a464aa80a83368c75a28b539b0e67409",
+    "curse@Ace3": "895dd1c7b45fcefae75b722149fe58df",
+    "curse@LibDBIcon-1.0": "40206eaa19329efea6724685cbac5cb5"
   },
-  "curseIds": {}
+  "curseIds": {
+    "curse@Ace3": 13376,
+    "curse@LibDBIcon-1.0": 15552
+  }
 }

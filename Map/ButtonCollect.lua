@@ -524,18 +524,34 @@ function Button:SetPoint(...)
     return Collect:OnButtonSetPoint(self, ...)
 end
 
-local function AnchorTip(tip, owner)
+local function AnchorTip(tip, owner, anchorTo)
     if tip and tip:IsVisible() and tip:IsOwned(owner) then
         tip:SetAnchorType('ANCHOR_NONE')
-        tip:SetPoint('TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
+        tip:SetPoint('TOPRIGHT', anchorTo or Collect, 'TOPLEFT', -2, 0)
     end
 end
 
-local function AnchorFrame(frame)
+local function AnchorFrame(frame, anchorTo)
     if frame and frame:IsVisible() then
         frame:ClearAllPoints()
-        frame:SetPoint('TOPRIGHT', Collect, 'TOPLEFT', -2, 0)
+        frame:SetPoint('TOPRIGHT', anchorTo or Collect, 'TOPLEFT', -2, 0)
     end
+end
+
+local function SilverDragonTooltip()
+    local lib = LibStub('LibQTip-1.0')
+    if lib and lib:IsAcquired('SilverDragonTooltip') then
+        local frame = lib:Acquire('SilverDragonTooltip')
+        if frame then
+            return frame
+        end
+    end
+end
+
+local function AnchorTips(owner, anchorTo)
+    AnchorTip(GameTooltip, owner, anchorTo)
+    AnchorTip(LibDBIconTooltip, owner, anchorTo)
+    AnchorFrame(SilverDragonTooltip(), anchorTo)
 end
 
 function Button:OnEnter()
@@ -543,8 +559,7 @@ function Button:OnEnter()
     local env = Collect.buttonEnv[button]
     if env then
         env.OnEnter(self)
-        AnchorTip(GameTooltip, self)
-        AnchorTip(LibDBIconTooltip, self)
+        AnchorTips(self)
     end
 end
 
@@ -599,3 +614,18 @@ ns.addon('BiaoGe', function()
         end
     end)
 end)
+
+-- AddonCompartment
+if AddonCompartmentFrame then
+    local function OnEnter(self)
+        AnchorTips(self, self)
+    end
+
+    ns.securehook(AddonCompartmentFrame, 'RegisterAddon', function(_, addon)
+        if addon.funcOnEnter then
+            ns.securehook(addon, 'funcOnEnter', OnEnter)
+        end
+    end)
+
+    ns.securehookall(AddonCompartmentFrame.registeredAddons, 'funcOnEnter', OnEnter)
+end
