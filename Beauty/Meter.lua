@@ -7,46 +7,39 @@
 local ns = select(2, ...)
 
 ns.addon('Blizzard_DamageMeter', function()
-    local function UpdateStyle(self)
-        local statusBar = self:GetStatusBar()
-        statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
-
-        for _, v in ipairs(self:GetBackgroundRegions()) do
-            v:Hide()
-        end
-
-        pcall(function()
-            local name = self:GetName()
-            local value = self:GetValue()
-            -- local font, size, flag = name:GetFont()
-            -- name:SetFont(font, size, '')
-            -- name:SetShadowColor(0, 0, 0)
-            -- value:SetFont(font, size, '')
-
-            name:SetFontObject('GameFontHighlight')
-            value:SetFontObject('GameFontHighlight')
-        end)
-    end
-
     local function SetupDefaultStyle(self)
-        if self:GetStyle() ~= Enum.DamageMeterStyle.Default then
-            return
-        end
         local statusBar = self:GetStatusBar()
-        statusBar:ClearAllPoints()
+        local background = self:GetBackground()
+        local bgEdge = self:GetBackgroundEdge()
 
-        if self:ShouldShowBarIcons() then
-            statusBar:SetPoint('LEFT', self:GetIcon(), 'RIGHT', 0, 0)
+        if self:GetStyle() == Enum.DamageMeterStyle.Default then
+            statusBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
+
+            statusBar:ClearAllPoints()
+            if self:ShouldShowBarIcons() then
+                statusBar:SetPoint('LEFT', self:GetIcon(), 'RIGHT', 0, 0)
+            else
+                statusBar:SetPoint('LEFT', 0, 0)
+            end
+            statusBar:SetPoint('TOP', 0, 0)
+            statusBar:SetPoint('BOTTOMRIGHT', -4, 0)
+
+            background:SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
+
+            bgEdge:Hide()
         else
-            statusBar:SetPoint('LEFT', 0, 0)
+            statusBar:GetStatusBarTexture():SetAtlas([[UI-HUD-CoolDownManager-Bar]])
+
+            background:SetAtlas([[ui-damagemeters-bar-shadowbg]])
+
+            bgEdge:Show()
         end
 
-        statusBar:SetPoint('TOP', 0, 0)
-        statusBar:SetPoint('BOTTOMRIGHT', -4, 0)
+        self:GetName():SetFontObject('GameFontHighlight')
+        self:GetValue():SetFontObject('GameFontHighlight')
     end
 
     local function Hook(self)
-        ns.securehook(self, 'UpdateStyle', UpdateStyle)
         ns.securehook(self, 'SetupDefaultStyle', SetupDefaultStyle)
     end
 
@@ -55,7 +48,7 @@ ns.addon('Blizzard_DamageMeter', function()
             return
         end
         Hook(frame)
-        UpdateStyle(frame)
+        -- UpdateStyle(frame)
         SetupDefaultStyle(frame)
     end
 
