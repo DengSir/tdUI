@@ -12,6 +12,8 @@ ns.addon('CompactVendor', function()
         [246751] = true,
         [246752] = true,
         [246753] = true,
+
+        [281223] = true,
     }
 
     local function BuyItem(item, count)

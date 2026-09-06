@@ -24,15 +24,13 @@ ns.addon('Blizzard_DamageMeter', function()
             statusBar:SetPoint('TOP', 0, 0)
             statusBar:SetPoint('BOTTOMRIGHT', -4, 0)
 
-            background:SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
-
             bgEdge:Hide()
+            background:Hide()
         else
             statusBar:GetStatusBarTexture():SetAtlas([[UI-HUD-CoolDownManager-Bar]])
 
-            background:SetAtlas([[ui-damagemeters-bar-shadowbg]])
-
             bgEdge:Show()
+            background:Show()
         end
 
         self:GetName():SetFontObject('GameFontHighlight')
