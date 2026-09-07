@@ -46,7 +46,6 @@ ns.addon('Blizzard_DamageMeter', function()
             return
         end
         Hook(frame)
-        -- UpdateStyle(frame)
         SetupDefaultStyle(frame)
     end
 

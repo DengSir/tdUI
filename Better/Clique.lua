@@ -30,7 +30,6 @@ ns.addon('Clique', function()
     end)
 
     if GetLocale() == 'zhCN' then
-
         Clique:RegisterLocale('zhCN', {
             ['A binding that belongs to the \'default\' binding-set will always be active on your unit frames, unless you override it with another binding.'] = '默认组别，设置将对所有框体有效，除非有其他组别的相同按键设置。',
             ['A binding that belongs to the \'enemy\' binding-set will always be active when clicking on unit frames that display enemy units, i.e. those you can attack. If you click on a unit that you cannot attack, nothing will happen.'] = '敌对组别，设置只对敌对的框体有效，当你对敌对的框体点击施法时，这个设置将被触发。',
