@@ -21,8 +21,11 @@ if GetLocale() == 'zhCN' then
     end
 
     Font(PriceFont, [[Fonts\ARKai_T.TTF]], 13)
+
     Font(Number13Font, [[Fonts\ARHei.TTF]], 14)
     Font(Number12Font, [[Fonts\ARHei.TTF]], 13)
+
+    Font(Number12FontOutline, [[Fonts\ARKai_T.TTF]], 13) -- Blizzard_ProfessionsRankBar.xml
 
     Font(NumberFont_Normal_Med, [[Fonts\ARHei.TTF]], 13)
     Font(NumberFont_GameNormal, [[Fonts\ARHei.TTF]], 13)

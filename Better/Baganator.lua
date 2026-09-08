@@ -7,34 +7,50 @@
 local ns = select(2, ...)
 
 ns.addon('Baganator', function()
-    -- BAGANATOR_CONFIG.Profiles.DEFAULT.bank_view_type = 'single'
-
-    -- SlashCmdList['Baganator']('切换')
-
     local addonTable = C_AddOns.GetAddOnLocalTable('Baganator')
-    print(addonTable)
     if not addonTable then
         return
     end
 
-    ns.securehook(addonTable.Utilities, 'AddBagSortManager', function(frame)
+    local buttonEnv = {}
+
+    local function SwapViewType(viewType)
+        local current = addonTable.Config.Get(viewType)
+        addonTable.Config.Set(viewType, current == 'category' and 'single' or 'category')
+    end
+
+    local function OnClick(button, clicked)
+        local env = buttonEnv[button]
+        if not env then
+            return
+        end
+        if clicked == 'LeftButton' then
+            env.OnClick(button, clicked)
+        else
+            SwapViewType(env.viewType)
+        end
+    end
+
+    ns.securehook(addonTable.ItemViewCommon, 'GetAnchorSetter', function(frame, setting)
         local button = frame.CustomiseButton
         if not button then
             return
         end
 
+        local Options = addonTable.Config.Options
+        local viewType = setting == Options.BANK_ONLY_VIEW_POSITION and Options.BANK_VIEW_TYPE or setting ==
+                             Options.MAIN_VIEW_POSITION and Options.BAG_VIEW_TYPE
+
+        if not viewType then
+            return
+        end
+
+        buttonEnv[button] = { --
+            OnClick = button:GetScript('OnClick'),
+            viewType = viewType,
+        }
+
         button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
-
-        local OnClick = button:GetScript('OnClick')
-
-        button:SetScript('OnClick', function(f, btn)
-            if btn == 'LeftButton' then
-                OnClick(f)
-            else
-                local v = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE)
-                addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE,
-                                      v == 'category' and 'single' or 'category')
-            end
-        end)
+        button:SetScript('OnClick', OnClick)
     end)
 end)

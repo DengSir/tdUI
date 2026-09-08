@@ -16,16 +16,28 @@ ns.addon('Blizzard_CompactRaidFrames', function()
         frame.healthBar:GetStatusBarTexture():SetTexture([[Interface\AddOns\!!!tdUI\Media\Statusbar_Clean.blp]])
     end)
 
-    ns.securehook('CompactUnitFrame_UpdateRoleIcon', function(frame)
-        if not frame.groupType then
-            return
+    local function IsDpsFrame(frame)
+        local atlas = frame.roleIcon:GetAtlas()
+
+        if not issecretvalue(atlas) then
+            return atlas == 'UI-LFG-RoleIcon-DPS-Micro-GroupFinder'
         end
+    end
+
+    local GroupType = Enum.EditModeUnitFrameSystemIndices
+
+    ns.securehook('CompactUnitFrame_UpdateRoleIcon', function(frame)
         if not frame.roleIcon then
             return
         end
+        if not frame.groupType then
+            return
+        end
+        if not (frame.groupType == GroupType.Raid or frame.groupType == GroupType.Party) then
+            return
+        end
 
-        local atlas = frame.roleIcon:GetAtlas()
-        if atlas == 'UI-LFG-RoleIcon-DPS-Micro-GroupFinder' then
+        if IsDpsFrame(frame) then
             frame.roleIcon:Hide()
             frame.roleIcon:SetWidth(1)
         end
