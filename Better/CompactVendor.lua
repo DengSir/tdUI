@@ -46,10 +46,11 @@ ns.addon('CompactVendor', function()
                 local stackSize = C_Item.GetItemMaxStackSizeByID(item.itemID)
                 local count = C_Item.GetItemCount(item.itemID)
 
-                if count == 0 then
-                    BuyItem(item, stackSize)
+                local buyCount = stackSize - count
+                if buyCount > 0 then
+                    BuyItem(item, buyCount)
                 else
-                    BuyItem(item, stackSize - count)
+                    BuyItem(item, stackSize)
                 end
             end
         else

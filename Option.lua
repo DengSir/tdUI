@@ -2,8 +2,11 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/2/2020, 12:57:20 PM
+--
 ---@type ns
 local ns = select(2, ...)
+
+local addonName = ...
 
 local optionFrame
 local tdOptions = LibStub('tdOptions')
@@ -242,7 +245,7 @@ ns.login(function()
         },
     }
 
-    tdOptions:Register('tdUI', options)
+    tdOptions:Register('tdUI', options, addonName)
 end)
 
 function ns.OpenOption()

@@ -41,7 +41,7 @@ local UNKNOWN_BUTTONS = {}
 local Button = {}
 local EditButton = ns.class('Button')
 
-local methods = {'SetParent', 'SetPoint', 'ClearAllPoints', 'SetFrameStrata'}
+local methods = {'SetParent', 'SetPoint', 'ClearAllPoints', 'SetFrameStrata', 'SetFrameLevel'}
 local scripts = {'OnDragStart', 'OnDragStop', 'OnMouseDown', 'OnMouseUp', 'OnEnter'}
 
 function Collect:OnLoad()
@@ -96,7 +96,24 @@ function Collect:InitMinimap()
     LDBIcon:Register(ADDON, obj, ns.profile.window.minimap)
 
     local button = LDBIcon:GetMinimapButton(ADDON)
+    button:SetFixedFrameStrata(false)
+    button:SetFixedFrameLevel(false)
+
+    button:SetParent(UIParent)
+
+    button:SetFrameStrata('DIALOG')
+    button:SetFixedFrameStrata(true)
+    button:SetFrameLevel(3000)
+    button:SetFixedFrameLevel(true)
+
+    button.SetFrameStrata = nop
+    button.SetFixedFrameStrata = nop
+    button.SetFrameLevel = nop
+    button.SetFixedFrameLevel = nop
+
     self.ToggleButton = button
+
+    _G.BTN = button
 end
 
 function Collect:InitFrame()
@@ -445,11 +462,15 @@ function Collect:Update()
 
             local env = self.buttonEnv[button]
 
+            button:SetFixedFrameLevel(false)
+            button:SetFixedFrameStrata(false)
+
             env.ClearAllPoints(button)
             env.SetPoint(button, 'CENTER', self, 'TOPLEFT', x * SIZE + HALF_SIZE + MARGIN_LEFT,
                          -y * SIZE - HALF_SIZE - MARGIN_TOP)
             env.SetFrameStrata(button, self:GetFrameStrata())
-            button:SetFrameLevel(self:GetFrameLevel() + 5)
+            env.SetFrameLevel(button, self:GetFrameLevel() + 5)
+            -- button:SetFrameLevel(self:GetFrameLevel() + 5)
 
             x = x + 1
         end

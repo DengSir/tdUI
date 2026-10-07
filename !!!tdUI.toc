@@ -85,3 +85,4 @@ Better\CompactVendor.lua
 Better\Clique.lua
 Better\idTip.lua
 Better\Baganator.lua
+Better\Professions.lua
