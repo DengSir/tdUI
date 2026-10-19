@@ -560,7 +560,7 @@ local function AnchorFrame(frame, anchorTo)
 end
 
 local function SilverDragonTooltip()
-    local lib = LibStub('LibQTip-1.0')
+    local lib = LibStub('LibQTip-1.0', true)
     if lib and lib:IsAcquired('SilverDragonTooltip') then
         local frame = lib:Acquire('SilverDragonTooltip')
         if frame then
