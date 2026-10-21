@@ -62,6 +62,7 @@ Chat\ChatBlock.lua [AllowLoadGameType wrath]
 Quest\Vendo.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 
 Map\Minimap.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+Map\MinimapRetail.lua [AllowLoadGameType mainline]
 Map\Coords.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Map\ButtonCollect.lua
 
@@ -86,3 +87,4 @@ Better\Clique.lua
 Better\idTip.lua
 Better\Baganator.lua
 Better\Professions.lua
+Better\AlterEgo.lua
