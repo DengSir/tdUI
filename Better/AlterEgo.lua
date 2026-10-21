@@ -42,10 +42,16 @@ ns.addon('AlterEgo', function()
     -- local font, _, fontFlags = ChatFontNormal:GetFont()
     -- local _, fontHeight = GameFontHighlightSmall:GetFont()
 
+    local function SetText(label, text)
+        text = text:gsub('%[', ''):gsub('%]', '')
+        getmetatable(label).__index.SetText(label, text)
+    end
+
     local function SetupEquipmentCell(row)
         -- row.label:SetFont(font, fontHeight, fontFlags)
         row.label:SetFontObject(ChatFontNormal)
         row.label.SetFontObject = nop
+        row.label.SetText = SetText
     end
 
     local equipmentCellMetatable = {
@@ -64,9 +70,20 @@ ns.addon('AlterEgo', function()
         end,
     }
 
-    ns.hook(LiqUI, 'NewElement', function(orig, lib, elementType, ...)
+    ns.hook(LiqUI, 'NewElement', function(orig, lib, elementType, options)
+        -- print(options, options.name)
+
+        if elementType == 'Table' and options.name == 'AlterEgoEquipment' then
+            local columns = options.columns
+            columns[1].width = 50
+            columns[2].width = 220
+            columns[3].width = 50
+            columns[4].width = 80
+            -- columns[5]
+        end
+
         ---@type Frame
-        local instance = orig(lib, elementType, ...)
+        local instance = orig(lib, elementType, options)
         local name = instance:GetName()
         if name == 'LiqUIWindowAlterEgoEquipment' then
             HookPosition(instance, 'TOPLEFT', 'LiqUIWindowAlterEgoMain', 'TOPRIGHT', 1, 0)
