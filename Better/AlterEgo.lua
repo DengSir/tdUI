@@ -39,62 +39,67 @@ ns.addon('AlterEgo', function()
         frame:SetScript('OnSizeChanged', UpdateWindowClampInsets)
     end
 
-    -- local font, _, fontFlags = ChatFontNormal:GetFont()
-    -- local _, fontHeight = GameFontHighlightSmall:GetFont()
-
-    local function SetText(label, text)
-        text = text:gsub('%[', ''):gsub('%]', '')
-        getmetatable(label).__index.SetText(label, text)
+    local function HookCreate(elementType, fn)
+        ns.hook(LiqUI.elements, elementType, fn)
     end
 
-    local function SetupEquipmentCell(row)
-        -- row.label:SetFont(font, fontHeight, fontFlags)
-        row.label:SetFontObject(ChatFontNormal)
-        row.label.SetFontObject = nop
-        row.label.SetText = SetText
+    local function ItemNameRender(cellData, rowData, rowIndex)
+        local text = cellData.data:gsub('%[', ''):gsub('%]', '')
+        return text
     end
 
-    local equipmentCellMetatable = {
-        __newindex = function(o, k, v)
-            rawset(o, k, v)
-            if k == 2 then
-                SetupEquipmentCell(v)
-            end
-        end,
-    }
-
-    local equipmentRowMetatable = {
-        __newindex = function(o, k, v)
-            rawset(o, k, v)
-            setmetatable(v.cells, equipmentCellMetatable)
-        end,
-    }
-
-    ns.hook(LiqUI, 'NewElement', function(orig, lib, elementType, options)
-        -- print(options, options.name)
-
-        if elementType == 'Table' and options.name == 'AlterEgoEquipment' then
-            local columns = options.columns
-            columns[1].width = 50
-            columns[2].width = 220
-            columns[3].width = 50
-            columns[4].width = 80
-            -- columns[5]
-        end
-
-        ---@type Frame
-        local instance = orig(lib, elementType, options)
+    HookCreate('Window', function(orig, options)
+        local instance = orig(options)
         local name = instance:GetName()
         if name == 'LiqUIWindowAlterEgoEquipment' then
             HookPosition(instance, 'TOPLEFT', 'LiqUIWindowAlterEgoMain', 'TOPRIGHT', 1, 0)
         elseif name == 'LiqUIWindowAlterEgoAffixes' then
             HookPosition(instance, 'BOTTOMLEFT', 'LiqUIWindowAlterEgoMain', 'BOTTOMRIGHT', 1, 0)
         end
-        if elementType == 'Window' then
-            HookSize(instance)
+        HookSize(instance)
+
+        return instance
+    end)
+
+    local function EquipmentRender(orig, frame)
+        orig(frame)
+
+        if frame.isRendering or frame.renderQueued then
+            return
         end
+
+        local inited = false
+
+        for _, row in ipairs(frame.rowFrames) do
+            if row.cells[2] then
+                local label = row.cells[2].label
+                label:SetFontObject(ChatFontNormal)
+                label.SetFontObject = nop
+
+                inited = true
+            end
+        end
+
+        if inited then
+            frame.Render = orig
+        end
+    end
+
+    HookCreate('Table', function(orig, options)
+        if options.name == 'AlterEgoEquipment' then
+            local columns = options.columns
+            columns[1].width = 50
+            columns[2].width = 220
+            columns[3].width = 50
+            columns[4].width = 80
+
+            columns[2].render = ItemNameRender
+        end
+
+        local instance = orig(options)
+        local name = instance:GetName()
         if name == 'LiqUITableAlterEgoEquipment' then
-            setmetatable(instance.rowFrames, equipmentRowMetatable)
+            ns.hook(instance, 'Render', EquipmentRender)
         end
         return instance
     end)
