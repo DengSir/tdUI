@@ -29,16 +29,6 @@ ns.addon('AlterEgo', function()
         window:HookScript('OnShow', OnShow)
     end
 
-    local function UpdateWindowClampInsets(window)
-        local width = window:GetWidth()
-        local height = window:GetHeight()
-        window:SetClampRectInsets(0, width, 0, height)
-    end
-
-    local function HookSize(frame)
-        frame:SetScript('OnSizeChanged', UpdateWindowClampInsets)
-    end
-
     local function HookCreate(elementType, fn)
         ns.hook(LiqUI.elements, elementType, fn)
     end
@@ -56,7 +46,9 @@ ns.addon('AlterEgo', function()
         elseif name == 'LiqUIWindowAlterEgoAffixes' then
             HookPosition(instance, 'BOTTOMLEFT', 'LiqUIWindowAlterEgoMain', 'BOTTOMRIGHT', 1, 0)
         end
-        HookSize(instance)
+
+        instance:SetClampRectInsets(0, 0, 0, 0)
+        instance.SetClampRectInsets = nop
 
         return instance
     end)

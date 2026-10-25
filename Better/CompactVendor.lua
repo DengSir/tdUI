@@ -13,6 +13,11 @@ ns.addon('CompactVendor', function()
         [246752] = true,
         [246753] = true,
 
+        [269866] = true,
+        [269865] = true,
+        [269864] = true,
+        [269867] = true,
+
         [281223] = true,
     }
 
