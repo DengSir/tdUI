@@ -87,4 +87,5 @@ Better\Clique.lua
 Better\idTip.lua
 Better\Baganator.lua
 Better\Professions.lua
+Better\Cooking.lua
 Better\AlterEgo.lua
