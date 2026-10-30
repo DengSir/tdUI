@@ -32,6 +32,7 @@ Features\TriggerICD.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Features\AudioDevices.lua
 Features\Questie.lua
 Features\WeeklyRewards.lua
+Features\Molinari.lua
 
 ActionBar\Style.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 ActionBar\ReturnPage.lua

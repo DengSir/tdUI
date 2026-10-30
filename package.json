@@ -26,6 +26,9 @@
       "Mists": "50504",
       "Mainline": "120007"
     },
+    "res-filters": [
+      "**.png"
+    ],
     "single": true
   }
 }
