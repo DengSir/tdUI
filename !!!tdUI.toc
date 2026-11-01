@@ -53,6 +53,7 @@ PaperDoll\PaperDoll.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 PaperDoll\Inspect.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 PaperDoll\Engraving.lua [AllowLoadGameType vanilla]
 PaperDoll\Stats.lua [AllowLoadGameType mainline]
+PaperDoll\QuickMenu.lua [AllowLoadGameType mainline]
 
 Chat\ChatFrame.lua
 # [AllowLoadGameType vanilla, tbc, wrath, mists]
