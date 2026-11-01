@@ -13,6 +13,33 @@ ns.addon('AlterEgo', function()
         return
     end
 
+    local function TranslateDungeons(dungeons)
+        local abbrs = {
+            [658] = '矿坑',
+            [1209] = '通天',
+            [1753] = '执政',
+            [2526] = '学院',
+            [2805] = '风塔',
+            [2811] = '平台',
+            [2874] = '洞窟',
+            [2915] = '节点',
+            [2993] = '毒牙',
+            [2813] = '密谋',
+            [2825] = '洞穴',
+            [2859] = '夺目',
+            [2923] = '虚痕',
+            [1762] = '诸王',
+            [1877] = '神庙',
+            [2521] = '红玉',
+        }
+
+        for _, v in ipairs(dungeons) do
+            v.abbr = abbrs[v.mapId] or v.abbr
+        end
+    end
+
+    TranslateDungeons(LiqUI.Data.dungeons)
+
     local positions = {}
 
     local function OnShow(window)
@@ -77,6 +104,15 @@ ns.addon('AlterEgo', function()
         end
     end
 
+    local function AffixesSetColumns(orig, frame, columns)
+        columns[1].width = 140
+        columns[2].width = 180
+        columns[3].width = 70
+        columns[4].width = 70
+        columns[5].width = 140
+        return orig(frame, columns)
+    end
+
     HookCreate('Table', function(orig, options)
         if options.name == 'AlterEgoEquipment' then
             local columns = options.columns
@@ -89,9 +125,10 @@ ns.addon('AlterEgo', function()
         end
 
         local instance = orig(options)
-        local name = instance:GetName()
-        if name == 'LiqUITableAlterEgoEquipment' then
+        if options.name == 'AlterEgoEquipment' then
             ns.hook(instance, 'Render', EquipmentRender)
+        elseif options.name == 'AlterEgoAffixes' then
+            ns.hook(instance, 'SetColumns', AffixesSetColumns)
         end
         return instance
     end)

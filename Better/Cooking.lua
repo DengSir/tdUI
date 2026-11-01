@@ -125,7 +125,7 @@ ns.addon('Blizzard_Professions', function()
     HatButton:SetAttribute('toy', CHEF_HAT_ITEM_ID)
     HatButton:SetAttribute('*type2', 'cancelaura')
     local spellInfo = C_Spell.GetSpellInfo(CHEF_HAT_BUFF_SPELL_ID)
-    HatButton:SetAttribute('spell-2', spellInfo and spellInfo.name)
+    HatButton:SetAttribute('spell', spellInfo and spellInfo.name)
     HatButton:SetScript('OnEnter', HatButton.UpdateTooltip)
     HatButton:SetScript('OnLeave', GameTooltip_Hide)
 

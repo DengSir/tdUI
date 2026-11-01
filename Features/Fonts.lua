@@ -6,6 +6,7 @@
 local ns = select(2, ...)
 
 if GetLocale() == 'zhCN' then
+    local HOLD = {}
 
     local function Font(obj, font, size, flag)
         if not obj then
@@ -13,9 +14,9 @@ if GetLocale() == 'zhCN' then
         end
 
         local _font, _size, _flag = obj:GetFont()
-        font = font or _font
-        size = size or _size
-        flag = flag or _flag
+        font = font ~= HOLD and font or _font
+        size = size ~= HOLD and size or _size
+        flag = flag ~= HOLD and flag or _flag
 
         obj:SetFont(font, size, flag)
     end
@@ -42,4 +43,6 @@ if GetLocale() == 'zhCN' then
 
     Font(CombatTextFont, [[Fonts\ARKai_C.TTF]], 24)
     Font(CombatTextFontOutline, [[Fonts\ARKai_C.TTF]], 24)
+
+    Font(CharacterStatsPane.ItemLevelFrame.Value, HOLD, 20)
 end
