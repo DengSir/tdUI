@@ -217,6 +217,9 @@ ns.login(function()
                     autoHide = fulltoggle('Auto hide unit frame when power full'),
                     totot = fulltoggle('Target Of Target Of Target'),
                 },
+                castbar = inline 'CastBar' {
+                    interruptColor = fulltoggle('Red cast bar when interrupt is on cooldown'),
+                },
             },
             featurs = {
                 type = 'group',

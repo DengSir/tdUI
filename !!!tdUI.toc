@@ -74,6 +74,7 @@ Friend\Who.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 Friend\Guild.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 
 UnitFrame\UnitFrame.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
+UnitFrame\CastBar.lua [AllowLoadGameType mainline]
 
 UnitFrame\Range.lua [AllowLoadGameType vanilla, tbc, wrath, mists]
 UnitFrame\Visible.lua [AllowLoadGameType vanilla, tbc, wrath, mists]

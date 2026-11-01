@@ -40,7 +40,10 @@ local DEFAULT_PROFILE = {
         },
     },
     window = {minimap = {minimapPos = 215.34}},
-    unitframe = {frame = {autoHide = true, totot = false}},
+    unitframe = { --
+        frame = {autoHide = true, totot = false},
+        castbar = {interruptColor = true},
+    },
     keybindings = {vehicle = {}},
 }
 
